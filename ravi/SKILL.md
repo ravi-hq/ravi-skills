@@ -1,0 +1,50 @@
+---
+name: ravi
+description: >
+  Use when you need to understand what Ravi is or decide which Ravi skill to use.
+  Ravi gives AI agents real email inboxes, phone numbers, and an encrypted
+  credential vault via a CLI. Do NOT use for tasks unrelated to agent identity,
+  email, phone, or credentials.
+---
+
+# Ravi — Identity Provider for AI Agents
+
+Ravi gives you (the agent) your own email address, phone number, and encrypted credential vault via the `ravi` CLI. One identity bundles all three into a coherent persona.
+
+## When to Use Each Skill
+
+| I need to... | Use skill |
+|--------------|-----------|
+| Check if I'm authenticated or get my email/phone | **ravi-identity** |
+| Read incoming SMS or email (OTPs, verification links) | **ravi-inbox** |
+| Send an email, reply, or forward | **ravi-email-send** |
+| Sign up for a service, log in, or complete 2FA | **ravi-signup** |
+| Store, retrieve, or generate passwords | **ravi-vault** |
+
+## Quick Start
+
+```bash
+# Check auth
+ravi auth status --json
+
+# Get your email and phone
+ravi get email --json
+ravi get phone --json
+
+# Read incoming messages
+ravi inbox sms --unread --json
+ravi inbox email --unread --json
+
+# Send an email
+ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there</p>" --json
+
+# Store a password
+ravi vault create example.com --json
+```
+
+## Key Rules
+
+- **Always use `--json`** — all commands support it. Human-readable output is not for parsing.
+- **Auth is automatic** — token refresh is transparent. On auth errors, ask the user to run `ravi auth login`.
+- **E2E encryption is transparent** — the CLI handles encrypt/decrypt. You see plaintext.
+- **Install:** `brew install ravi-hq/tap/ravi`
