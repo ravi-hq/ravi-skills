@@ -21,7 +21,7 @@ jobs:
           node-version: "22"
 
       - name: Install ClawdHub CLI
-        run: npm i -g clawdhub
+        run: npm i -g clawdhub undici
 
       - name: Authenticate
         run: clawdhub login --token "$CLAWDHUB_TOKEN" --no-browser
