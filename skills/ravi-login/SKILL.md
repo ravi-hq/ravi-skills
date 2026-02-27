@@ -29,7 +29,7 @@ PHONE=$(ravi get phone --json | jq -r '.phone_number')
 # 2. Fill the signup form with $EMAIL, $PHONE, and identity name
 
 # 3. Generate and store a password
-CREDS=$(ravi passwords create example.com --username "$EMAIL" --json)
+CREDS=$(ravi vault create example.com --username "$EMAIL" --json)
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $PASSWORD in the signup form
 
@@ -43,11 +43,11 @@ ravi inbox email --unread --json # Check for email verification
 
 ```bash
 # Find stored credentials
-ENTRY=$(ravi passwords list --json | jq -r '.[] | select(.domain == "example.com")')
-UUID=$(echo "$ENTRY" | jq -r '.id')
+ENTRY=$(ravi vault list --json | jq -r '.[] | select(.domain == "example.com")')
+UUID=$(echo "$ENTRY" | jq -r '.uuid')
 
 # Get decrypted credentials
-CREDS=$(ravi passwords get "$UUID" --json)
+CREDS=$(ravi vault get "$UUID" --json)
 USERNAME=$(echo "$CREDS" | jq -r '.username')
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $USERNAME and $PASSWORD to log in

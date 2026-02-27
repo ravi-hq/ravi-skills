@@ -11,29 +11,29 @@ Store and retrieve key-value secrets (API keys, environment variables, tokens). 
 
 ```bash
 # Store a secret (creates or updates)
-ravi vault set OPENAI_API_KEY "sk-abc123..." --json
+ravi secrets set OPENAI_API_KEY "sk-abc123..." --json
 
 # With optional notes
-ravi vault set STRIPE_SECRET_KEY "sk_live_..." --notes "Production key" --json
+ravi secrets set STRIPE_SECRET_KEY "sk_live_..." --json
 
 # Retrieve a secret by key
-ravi vault get OPENAI_API_KEY --json
+ravi secrets get OPENAI_API_KEY --json
 # -> {"key": "OPENAI_API_KEY", "value": "sk-abc123...", "notes": "", ...}
 
 # List all secrets (values redacted in list view)
-ravi vault list --json
+ravi secrets list --json
 
 # Delete a secret by key
-ravi vault delete OPENAI_API_KEY --json
+ravi secrets delete OPENAI_API_KEY --json
 ```
 
 ## JSON Shapes
 
-**`ravi vault list --json`:**
+**`ravi secrets list --json`:**
 ```json
 [
   {
-    "id": "uuid",
+    "uuid": "...",
     "key": "OPENAI_API_KEY",
     "notes": "",
     "created_dt": "2026-02-25T10:30:00Z",
@@ -42,10 +42,10 @@ ravi vault delete OPENAI_API_KEY --json
 ]
 ```
 
-**`ravi vault get KEY --json`:**
+**`ravi secrets get KEY --json`:**
 ```json
 {
-  "id": "uuid",
+  "uuid": "...",
   "key": "OPENAI_API_KEY",
   "value": "sk-abc123...",
   "notes": "",
@@ -60,18 +60,18 @@ When an agent needs API keys or secrets at runtime, use Ravi Vault as the backin
 
 ```bash
 # Store a key for the agent to use later
-ravi vault set OPENAI_API_KEY "sk-abc123..." --json
+ravi secrets set OPENAI_API_KEY "sk-abc123..." --json
 
 # At runtime, retrieve the key
-API_KEY=$(ravi vault get OPENAI_API_KEY --json | jq -r '.value')
+API_KEY=$(ravi secrets get OPENAI_API_KEY --json | jq -r '.value')
 curl -H "Authorization: Bearer $API_KEY" https://api.openai.com/v1/...
 
 # Store multiple service keys
-ravi vault set ANTHROPIC_API_KEY "sk-ant-..." --json
-ravi vault set GITHUB_TOKEN "ghp_..." --json
+ravi secrets set ANTHROPIC_API_KEY "sk-ant-..." --json
+ravi secrets set GITHUB_TOKEN "ghp_..." --json
 
 # List all available keys
-ravi vault list --json | jq -r '.[].key'
+ravi secrets list --json | jq -r '.[].key'
 ```
 
 ## Important Notes
@@ -80,4 +80,4 @@ ravi vault list --json | jq -r '.[].key'
 - **Keys are unique per identity** — setting a key that already exists updates it.
 - **Keys are plaintext** — only values and notes are E2E encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 - **Always use `--json`** — human-readable output is not designed for parsing.
-- **For website credentials** (domain + username + password), use `ravi passwords` instead — see the `ravi-passwords` skill.
+- **For website credentials** (domain + username + password), use `ravi vault create/get/list` instead — see the `ravi-passwords` skill.

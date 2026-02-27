@@ -37,10 +37,10 @@ ravi inbox email --unread --json
 ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there</p>" --json
 
 # Store a website password
-ravi passwords create example.com --json
+ravi vault create example.com --json
 
 # Store an API key
-ravi vault set OPENAI_API_KEY "sk-..." --json
+ravi secrets set OPENAI_API_KEY "sk-..." --json
 ```
 
 ## Key Rules

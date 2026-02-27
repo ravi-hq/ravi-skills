@@ -11,23 +11,23 @@ Store and retrieve passwords for services you sign up for. All fields are E2E en
 
 ```bash
 # Create entry (auto-generates password if --password not given)
-ravi passwords create example.com --json
-ravi passwords create example.com --username "me@ravi.app" --password 'S3cret!' --json
+ravi vault create example.com --json
+ravi vault create example.com --username "me@ravi.app" --password 'S3cret!' --json
 
 # List all entries
-ravi passwords list --json
+ravi vault list --json
 
 # Retrieve (decrypted)
-ravi passwords get <uuid> --json
+ravi vault get <uuid> --json
 
 # Update
-ravi passwords edit <uuid> --password 'NewPass!' --json
+ravi vault edit <uuid> --password 'NewPass!' --json
 
 # Delete
-ravi passwords delete <uuid> --json
+ravi vault delete <uuid> --json
 
 # Generate a password without storing it
-ravi passwords generate --length 24 --json
+ravi vault generate --length 24 --json
 # -> {"password": "xK9#mL2..."}
 ```
 
@@ -35,11 +35,11 @@ ravi passwords generate --length 24 --json
 
 ## JSON Shapes
 
-**`ravi passwords list --json`:**
+**`ravi vault list --json`:**
 ```json
 [
   {
-    "id": "uuid",
+    "uuid": "uuid",
     "domain": "example.com",
     "username": "me@ravi.app",
     "created_dt": "2026-02-25T10:30:00Z"
@@ -47,10 +47,10 @@ ravi passwords generate --length 24 --json
 ]
 ```
 
-**`ravi passwords get <uuid> --json`:**
+**`ravi vault get <uuid> --json`:**
 ```json
 {
-  "id": "uuid",
+  "uuid": "uuid",
   "domain": "example.com",
   "username": "me@ravi.app",
   "password": "S3cret!",
@@ -62,6 +62,6 @@ ravi passwords generate --length 24 --json
 ## Important Notes
 
 - **E2E encryption is transparent** — the CLI encrypts vault fields before sending and decrypts on retrieval. You see plaintext.
-- **Domain cleaning** — `ravi passwords create` auto-cleans URLs to base domains (e.g., `https://mail.google.com/inbox` becomes `google.com`).
+- **Domain cleaning** — `ravi vault create` auto-cleans URLs to base domains (e.g., `https://mail.google.com/inbox` becomes `google.com`).
 - **Always use `--json`** — human-readable output is not designed for parsing.
-- **For API keys and env vars** (key-value secrets), use `ravi vault` instead — see the `ravi-vault` skill.
+- **For API keys and env vars** (key-value secrets), use `ravi secrets` instead — see the `ravi-vault` skill.
