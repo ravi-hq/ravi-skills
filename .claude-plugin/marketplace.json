@@ -1,0 +1,12 @@
+{
+  "name": "ravi",
+  "description": "Claude Code plugins by Ravi",
+  "owner": { "name": "Ravi" },
+  "plugins": [
+    {
+      "name": "ravi",
+      "source": "./",
+      "description": "Ravi CLI — identity, email, phone, and credentials for AI agents"
+    }
+  ]
+}

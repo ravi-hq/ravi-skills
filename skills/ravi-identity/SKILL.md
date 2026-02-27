@@ -1,9 +1,6 @@
 ---
 name: ravi-identity
-description: >
-  Use when you need to check Ravi authentication status, get your agent's email
-  address or phone number, list or switch between identities, or create a new
-  identity. Do NOT use for reading messages, sending email, or vault operations.
+description: Check Ravi auth status and get your agent identity (email, phone, owner name). Do NOT use for reading messages (use ravi-inbox), sending email (use ravi-email-send), or credentials (use ravi-passwords or ravi-vault).
 ---
 
 # Ravi Identity
@@ -89,3 +86,12 @@ ravi identity create --name "Project Name" --json
 - **Auth is automatic** — token refresh happens transparently. If you get auth errors, ask the user to re-login.
 - **Identity resolution** — `.ravi/config.json` in CWD takes priority over `~/.ravi/config.json`.
 - **Identities are permanent** — each identity has its own email, phone, and vault. Don't create new identities unless the user asks for it.
+
+## Related Skills
+
+- **ravi-inbox** — Read SMS and email messages
+- **ravi-email-send** — Compose and reply to emails
+- **ravi-passwords** — Store and retrieve website credentials (domain + username + password)
+- **ravi-vault** — Store and retrieve key-value secrets (API keys, env vars)
+- **ravi-login** — Sign up for and log into services, handle 2FA/OTPs
+- **ravi-feedback** — Send feedback, report bugs, request features

@@ -1,9 +1,6 @@
 ---
 name: ravi-email-send
-description: >
-  Use when you need to send, compose, reply, or reply-all to emails with HTML
-  formatting and optional attachments. Do NOT use for reading incoming email
-  (use ravi-inbox) or for credentials (use ravi-vault).
+description: Send, compose, reply, or reply-all to emails with HTML formatting and attachments. Do NOT use for reading incoming email (use ravi-inbox) or for credentials (use ravi-passwords or ravi-vault).
 ---
 
 # Ravi Email — Send

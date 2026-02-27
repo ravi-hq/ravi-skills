@@ -1,13 +1,9 @@
 ---
-name: ravi-signup
-description: >
-  Use when you need to sign up for a new service, log into an existing service,
-  or complete 2FA/OTP verification using your Ravi identity. Orchestrates
-  identity, inbox, and vault skills into end-to-end auth workflows. Do NOT use
-  for standalone email sending or inbox reading outside of auth flows.
+name: ravi-login
+description: Sign up for and log into services using your Ravi identity — handles forms, 2FA, OTPs, and credential storage. Do NOT use for standalone inbox reading (use ravi-inbox) or email sending (use ravi-email-send).
 ---
 
-# Ravi Signup
+# Ravi Login
 
 End-to-end workflows for signing up, logging in, and completing verification using your Ravi identity.
 
@@ -33,7 +29,7 @@ PHONE=$(ravi get phone --json | jq -r '.phone_number')
 # 2. Fill the signup form with $EMAIL, $PHONE, and identity name
 
 # 3. Generate and store a password
-CREDS=$(ravi vault create example.com --username "$EMAIL" --json)
+CREDS=$(ravi passwords create example.com --username "$EMAIL" --json)
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $PASSWORD in the signup form
 
@@ -47,11 +43,11 @@ ravi inbox email --unread --json # Check for email verification
 
 ```bash
 # Find stored credentials
-ENTRY=$(ravi vault list --json | jq -r '.[] | select(.service_name == "example.com")')
+ENTRY=$(ravi passwords list --json | jq -r '.[] | select(.domain == "example.com")')
 UUID=$(echo "$ENTRY" | jq -r '.id')
 
 # Get decrypted credentials
-CREDS=$(ravi vault get "$UUID" --json)
+CREDS=$(ravi passwords get "$UUID" --json)
 USERNAME=$(echo "$CREDS" | jq -r '.username')
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $USERNAME and $PASSWORD to log in
@@ -76,6 +72,6 @@ ravi inbox email "$THREAD_ID" --json | jq -r '.messages[].text_content' | grep -
 ## Tips
 
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
-- **Store credentials immediately** — create a vault entry during signup so you don't lose the password.
+- **Store credentials immediately** — create a passwords entry during signup so you don't lose the password.
 - **Identity name for forms** — always use the identity name, not the owner name.
 - **Rate limits apply to sending** — 60 emails/hour, 500/day. See `ravi-email-send` skill for details.

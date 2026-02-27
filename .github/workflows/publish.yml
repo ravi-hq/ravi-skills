@@ -1,0 +1,71 @@
+name: Publish Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/*/SKILL.md"
+      - ".claude-plugin/plugin.json"
+
+jobs:
+  publish-clawhub:
+    name: Publish to ClawdHub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install ClawdHub CLI
+        run: npm i -g clawdhub
+
+      - name: Authenticate
+        run: clawdhub login --token "$CLAWDHUB_TOKEN" --no-browser
+        env:
+          CLAWDHUB_TOKEN: ${{ secrets.CLAWDHUB_TOKEN }}
+
+      - name: Read version from plugin.json
+        id: version
+        run: echo "version=$(jq -r .version .claude-plugin/plugin.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Detect changed skills
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'skills/*/SKILL.md' | sed 's|skills/||;s|/SKILL.md||' | tr '\n' ' ')
+          VERSION_BUMPED=$(git diff --name-only HEAD~1 HEAD -- '.claude-plugin/plugin.json')
+          if [ -n "$VERSION_BUMPED" ]; then
+            # Version bumped — publish all skills
+            CHANGED=$(ls -d skills/*/ | sed 's|skills/||;s|/||' | tr '\n' ' ')
+          fi
+          echo "skills=$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "Changed skills: $CHANGED"
+
+      - name: Publish changed skills
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+          VERSION: ${{ steps.version.outputs.version }}
+          SKILLS: ${{ steps.changed.outputs.skills }}
+        run: |
+          if [ -z "$SKILLS" ]; then
+            echo "No skills to publish"
+            exit 0
+          fi
+          count=0
+          for slug in $SKILLS; do
+            echo "Publishing $slug@$VERSION"
+            clawdhub publish "skills/$slug" \
+              --slug "$slug" \
+              --name "Ravi ${slug#ravi-}" \
+              --version "$VERSION" \
+              --changelog "Auto-published from $COMMIT_SHA" \
+              || echo "WARN: Failed to publish $slug (may already exist at this version)"
+            count=$((count + 1))
+            # ClawdHub rate limits at 5 new skills/hour. Existing skills
+            # (version updates) are not rate-limited the same way.
+            sleep 2
+          done
+          echo "Published $count skills"

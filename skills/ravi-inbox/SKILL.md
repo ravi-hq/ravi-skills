@@ -1,9 +1,6 @@
 ---
 name: ravi-inbox
-description: >
-  Use when you need to read incoming SMS or email messages — check for OTPs,
-  verification codes, verification links, or any incoming mail. Do NOT use for
-  sending email (use ravi-email-send) or managing credentials (use ravi-vault).
+description: Read incoming SMS or email messages — OTPs, verification codes, verification links, incoming mail. Do NOT use for sending email (use ravi-email-send) or managing credentials (use ravi-passwords or ravi-vault).
 ---
 
 # Ravi Inbox

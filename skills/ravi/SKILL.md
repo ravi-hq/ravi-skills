@@ -1,10 +1,6 @@
 ---
 name: ravi
-description: >
-  Use when you need to understand what Ravi is or decide which Ravi skill to use.
-  Ravi gives AI agents real email inboxes, phone numbers, and an encrypted
-  credential vault via a CLI. Do NOT use for tasks unrelated to agent identity,
-  email, phone, or credentials.
+description: Overview of Ravi and when to use each skill. Ravi gives AI agents real email inboxes, phone numbers, and an encrypted credential vault via a CLI. Do NOT use for tasks unrelated to agent identity, email, phone, or credentials.
 ---
 
 # Ravi — Identity Provider for AI Agents
@@ -18,8 +14,10 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted c
 | Check if I'm authenticated or get my email/phone | **ravi-identity** |
 | Read incoming SMS or email (OTPs, verification links) | **ravi-inbox** |
 | Send an email, reply, or forward | **ravi-email-send** |
-| Sign up for a service, log in, or complete 2FA | **ravi-signup** |
-| Store, retrieve, or generate passwords | **ravi-vault** |
+| Sign up for a service, log in, or complete 2FA | **ravi-login** |
+| Store, retrieve, or generate website passwords | **ravi-passwords** |
+| Store or retrieve API keys and secrets | **ravi-vault** |
+| Send feedback, report bugs, or request features | **ravi-feedback** |
 
 ## Quick Start
 
@@ -38,8 +36,11 @@ ravi inbox email --unread --json
 # Send an email
 ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there</p>" --json
 
-# Store a password
-ravi vault create example.com --json
+# Store a website password
+ravi passwords create example.com --json
+
+# Store an API key
+ravi vault set OPENAI_API_KEY "sk-..." --json
 ```
 
 ## Key Rules
