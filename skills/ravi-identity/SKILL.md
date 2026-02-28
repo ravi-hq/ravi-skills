@@ -90,7 +90,8 @@ ravi identity create --name "Project Name" --json
 ## Related Skills
 
 - **ravi-inbox** — Read SMS and email messages
-- **ravi-email-send** — Compose and reply to emails
+- **ravi-email-send** — Compose, reply, forward emails
+- **ravi-email-writing** — Write professional emails with proper formatting and tone
 - **ravi-passwords** — Store and retrieve website credentials (domain + username + password)
 - **ravi-vault** — Store and retrieve key-value secrets (API keys, env vars)
 - **ravi-login** — Sign up for and log into services, handle 2FA/OTPs

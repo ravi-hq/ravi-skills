@@ -75,3 +75,14 @@ ravi inbox email "$THREAD_ID" --json | jq -r '.messages[].text_content' | grep -
 - **Store credentials immediately** — create a passwords entry during signup so you don't lose the password.
 - **Identity name for forms** — always use the identity name, not the owner name.
 - **Rate limits apply to sending** — 60 emails/hour, 500/day. See `ravi-email-send` skill for details.
+- **Email quality matters** — if you need to send an email during a workflow (e.g., contacting support), see **ravi-email-writing** for formatting and anti-spam tips.
+
+## Related Skills
+
+- **ravi-identity** — Get your email, phone, and identity name for form fields
+- **ravi-inbox** — Read OTPs, verification codes, and confirmation emails
+- **ravi-email-send** — Send emails during workflows (support requests, confirmations)
+- **ravi-email-writing** — Write professional emails that avoid spam filters
+- **ravi-passwords** — Store and retrieve website credentials after signup
+- **ravi-vault** — Store API keys obtained during service registration
+- **ravi-feedback** — Report login flow issues or suggest workflow improvements

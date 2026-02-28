@@ -64,4 +64,10 @@ ravi vault generate --length 24 --json
 - **E2E encryption is transparent** — the CLI encrypts vault fields before sending and decrypts on retrieval. You see plaintext.
 - **Domain cleaning** — `ravi vault create` auto-cleans URLs to base domains (e.g., `https://mail.google.com/inbox` becomes `google.com`).
 - **Always use `--json`** — human-readable output is not designed for parsing.
-- **For API keys and env vars** (key-value secrets), use `ravi secrets` instead — see the `ravi-vault` skill.
+
+## Related Skills
+
+- **ravi-vault** — Store API keys and env vars (key-value secrets, not website credentials)
+- **ravi-login** — End-to-end signup/login workflows that store credentials here
+- **ravi-identity** — Get your email address for the username field
+- **ravi-feedback** — Report password manager issues or suggest improvements

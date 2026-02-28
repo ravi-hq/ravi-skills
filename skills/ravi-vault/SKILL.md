@@ -80,4 +80,9 @@ ravi secrets list --json | jq -r '.[].key'
 - **Keys are unique per identity** — setting a key that already exists updates it.
 - **Keys are plaintext** — only values and notes are E2E encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 - **Always use `--json`** — human-readable output is not designed for parsing.
-- **For website credentials** (domain + username + password), use `ravi vault create/get/list` instead — see the `ravi-passwords` skill.
+
+## Related Skills
+
+- **ravi-passwords** — Store website credentials (domain + username + password, not key-value secrets)
+- **ravi-login** — Signup workflows that may need API keys stored after registration
+- **ravi-feedback** — Report vault issues or suggest improvements

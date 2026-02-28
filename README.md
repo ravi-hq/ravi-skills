@@ -36,7 +36,7 @@ Skills are installed individually on ClawdHub:
 
 ```bash
 # Install all Ravi skills
-for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-login ravi-passwords ravi-vault ravi-feedback; do
+for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-vault ravi-feedback; do
   clawdhub install "$s"
 done
 ```
@@ -48,7 +48,8 @@ done
 | **ravi** | Overview — what Ravi is and when to use each skill | — |
 | **ravi-identity** | Check auth status, get identity details, switch identities | `ravi auth status --json` |
 | **ravi-inbox** | Read SMS and email — OTPs, verification links, incoming mail | `ravi inbox sms --unread --json` |
-| **ravi-email-send** | Compose, reply, reply-all with HTML and attachments | `ravi email compose --to "u@x.com" --subject "Hi" --body "<p>Hello</p>" --json` |
+| **ravi-email-send** | Compose, reply, reply-all, forward with HTML and attachments | `ravi email compose --to "u@x.com" --subject "Hi" --body "<p>Hello</p>" --json` |
+| **ravi-email-writing** | Email content quality — subject lines, HTML formatting, anti-spam | — |
 | **ravi-login** | Signup/login workflows with 2FA and credential storage | `ravi passwords create example.com --json` |
 | **ravi-passwords** | Website credentials (domain + username + password) | `ravi passwords get <uuid> --json` |
 | **ravi-vault** | Key-value secrets (API keys, env vars) | `ravi vault set OPENAI_API_KEY "sk-..." --json` |

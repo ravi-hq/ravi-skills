@@ -111,3 +111,10 @@ ravi inbox email "$THREAD_ID" --json | jq -r '.messages[].text_content' | grep -
 
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
 - **Always use `--json`** — human-readable output is not designed for parsing.
+
+## Related Skills
+
+- **ravi-email-send** — Reply, reply-all, or forward emails you've read
+- **ravi-email-writing** — Write professional replies with proper formatting and tone
+- **ravi-login** — End-to-end signup/login workflows that use inbox for OTP extraction
+- **ravi-feedback** — Report inbox delivery issues or suggest improvements

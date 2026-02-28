@@ -1,11 +1,13 @@
 ---
 name: ravi-email-send
-description: Send, compose, reply, or reply-all to emails with HTML formatting and attachments. Do NOT use for reading incoming email (use ravi-inbox) or for credentials (use ravi-passwords or ravi-vault).
+description: Send, compose, reply, reply-all, or forward emails with HTML formatting and attachments. Do NOT use for reading incoming email (use ravi-inbox) or for credentials (use ravi-passwords or ravi-vault).
 ---
 
 # Ravi Email — Send
 
-Compose new emails or reply to existing ones from your Ravi email address, with optional file attachments.
+Compose new emails, reply to existing ones, or forward them from your Ravi email address, with optional file attachments.
+
+> **Writing quality matters.** Before drafting email content, see the **ravi-email-writing** skill for subject lines, HTML formatting, tone, and anti-spam best practices.
 
 ## Compose a new email
 
@@ -38,7 +40,33 @@ ravi email reply <message_id> --subject "Re: Original Subject" --body "<p>Reply 
 ravi email reply-all <message_id> --subject "Re: Original Subject" --body "<p>Reply content</p>" --json
 ```
 
-**Flags:** `--subject` (required), `--body` (required), `--attach` (optional)
+**Flags:**
+- `--subject` (required): Email subject line
+- `--body` (required): Email body (HTML supported — use tags like `<p>`, `<h2>`, `<ul>` for formatting)
+- `--cc`: CC recipients (comma-separated)
+- `--bcc`: BCC recipients (comma-separated)
+- `--attach`: File path to attach (can be repeated for multiple files)
+
+**Example with CC:**
+```bash
+ravi email reply <message_id> --subject "Re: Project Update" --body "<p>Adding the team.</p>" --cc "team@example.com" --json
+```
+
+**Note:** The subject must be provided because the original is E2E encrypted on the server.
+
+## Forward an email
+
+```bash
+ravi email forward <message_id> --to "recipient@example.com" --subject "Fwd: Original Subject" --body "<p>FYI — see below.</p>" --json
+```
+
+**Flags:**
+- `--to` (required): Recipient email address
+- `--subject` (required): Email subject line
+- `--body` (required): Email body (HTML supported — use tags like `<p>`, `<h2>`, `<ul>` for formatting)
+- `--cc`: CC recipients (comma-separated)
+- `--bcc`: BCC recipients (comma-separated)
+- `--attach`: File path to attach (can be repeated for multiple files)
 
 **Note:** The subject must be provided because the original is E2E encrypted on the server.
 
@@ -69,5 +97,12 @@ On hitting a rate limit, you'll get a 429 error with a `retry_after_seconds` val
 
 ## Important Notes
 
-- **HTML email bodies** — The `--body` flag accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed.
+- **HTML email bodies** — The `--body` flag accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed. See **ravi-email-writing** for templates and anti-spam rules.
 - **Always use `--json`** — human-readable output is not designed for parsing.
+
+## Related Skills
+
+- **ravi-email-writing** — Subject lines, HTML templates, tone, and anti-spam best practices
+- **ravi-inbox** — Read incoming email before replying or forwarding
+- **ravi-identity** — Get your email address and identity name for signatures
+- **ravi-feedback** — Report deliverability issues or suggest email feature improvements
