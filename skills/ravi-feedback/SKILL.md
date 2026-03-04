@@ -11,7 +11,7 @@ Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
 ```bash
 # Quick feedback (one-liner)
-ravi feedback "The vault set command is great but needs batch import" --json
+ravi feedback "The secrets set command is great but needs batch import" --json
 
 # With a custom subject
 ravi feedback "SMS delivery is slow in EU regions" --subject "SMS latency issue" --json

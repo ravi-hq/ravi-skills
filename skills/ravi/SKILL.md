@@ -1,11 +1,11 @@
 ---
 name: ravi
-description: Overview of Ravi and when to use each skill. Ravi gives AI agents real email inboxes, phone numbers, and an encrypted credential vault via a CLI. Do NOT use for tasks unrelated to agent identity, email, phone, or credentials.
+description: Overview of Ravi and when to use each skill. Ravi gives AI agents real email inboxes, phone numbers, and an encrypted secret store via a CLI. Do NOT use for tasks unrelated to agent identity, email, phone, or credentials.
 ---
 
 # Ravi — Identity Provider for AI Agents
 
-Ravi gives you (the agent) your own email address, phone number, and encrypted credential vault via the `ravi` CLI. One identity bundles all three into a coherent persona.
+Ravi gives you (the agent) your own email address, phone number, and encrypted secret store via the `ravi` CLI. One identity bundles all three into a coherent persona.
 
 ## When to Use Each Skill
 
@@ -17,7 +17,7 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted c
 | Write a professional email (content, formatting, anti-spam) | **ravi-email-writing** | Subject lines, HTML templates, tone guide, spam avoidance |
 | Sign up for a service, log in, or complete 2FA | **ravi-login** | End-to-end signup/login workflows with OTP handling |
 | Store, retrieve, or generate website passwords | **ravi-passwords** | `ravi passwords create/get/list/edit/delete/generate` |
-| Store or retrieve API keys and secrets | **ravi-vault** | `ravi secrets set/get/list/delete` |
+| Store or retrieve API keys and secrets | **ravi-secrets** | `ravi secrets set/get/list/delete` |
 | Send feedback, report bugs, or request features | **ravi-feedback** | `ravi feedback "message"` — the team reads every one |
 
 ## Quick Start

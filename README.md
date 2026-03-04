@@ -36,7 +36,7 @@ Skills are installed individually on ClawdHub:
 
 ```bash
 # Install all Ravi skills
-for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-vault ravi-feedback; do
+for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-secrets ravi-feedback; do
   clawdhub install "$s"
 done
 ```
@@ -52,7 +52,7 @@ done
 | **ravi-email-writing** | Email content quality — subject lines, HTML formatting, anti-spam | — |
 | **ravi-login** | Signup/login workflows with 2FA and credential storage | `ravi passwords create example.com --json` |
 | **ravi-passwords** | Website credentials (domain + username + password) | `ravi passwords get <uuid> --json` |
-| **ravi-vault** | Key-value secrets (API keys, env vars) | `ravi vault set OPENAI_API_KEY "sk-..." --json` |
+| **ravi-secrets** | Key-value secrets (API keys, env vars) | `ravi secrets set OPENAI_API_KEY "sk-..." --json` |
 | **ravi-feedback** | Send feedback, bugs, or feature requests to the Ravi team | `ravi feedback "Great product!" --json` |
 
 ## What is Ravi?
@@ -62,7 +62,7 @@ Ravi is an identity provider for AI agents. One CLI gives your agent:
 - **Email inbox** — a real email address that receives mail
 - **Phone number** — a real phone number that receives SMS
 - **Password manager** — E2E-encrypted website credentials
-- **Secret vault** — E2E-encrypted key-value secrets (API keys, env vars)
+- **Secret store** — E2E-encrypted key-value secrets (API keys, env vars)
 - **Multiple identities** — separate personas for different projects
 
 ## License

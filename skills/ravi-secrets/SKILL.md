@@ -1,9 +1,9 @@
 ---
-name: ravi-vault
-description: Store and retrieve key-value secrets — E2E encrypted vault for API keys and env vars. Do NOT use for website passwords (use ravi-passwords) or reading messages (use ravi-inbox).
+name: ravi-secrets
+description: Store and retrieve key-value secrets — E2E encrypted secret store for API keys and env vars. Do NOT use for website passwords (use ravi-passwords) or reading messages (use ravi-inbox).
 ---
 
-# Ravi Vault
+# Ravi Secrets
 
 Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are E2E encrypted — the CLI handles encryption/decryption transparently. Keys are stored in plaintext for lookup/filtering.
 
@@ -23,8 +23,8 @@ ravi secrets get OPENAI_API_KEY --json
 # List all secrets (values redacted in list view)
 ravi secrets list --json
 
-# Delete a secret by key
-ravi secrets delete OPENAI_API_KEY --json
+# Delete a secret by UUID
+ravi secrets delete <uuid> --json
 ```
 
 ## JSON Shapes
@@ -35,6 +35,7 @@ ravi secrets delete OPENAI_API_KEY --json
   {
     "uuid": "...",
     "key": "OPENAI_API_KEY",
+    "value": "sk-abc123...",
     "notes": "",
     "created_dt": "2026-02-25T10:30:00Z",
     "updated_dt": "2026-02-25T10:30:00Z"
@@ -56,7 +57,7 @@ ravi secrets delete OPENAI_API_KEY --json
 
 ## OpenClaw Integration
 
-When an agent needs API keys or secrets at runtime, use Ravi Vault as the backing store:
+When an agent needs API keys or secrets at runtime, use Ravi Secrets as the backing store:
 
 ```bash
 # Store a key for the agent to use later
@@ -85,4 +86,4 @@ ravi secrets list --json | jq -r '.[].key'
 
 - **ravi-passwords** — Store website credentials (domain + username + password, not key-value secrets)
 - **ravi-login** — Signup workflows that may need API keys stored after registration
-- **ravi-feedback** — Report vault issues or suggest improvements
+- **ravi-feedback** — Report secrets issues or suggest improvements

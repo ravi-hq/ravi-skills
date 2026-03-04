@@ -1,11 +1,11 @@
 ---
 name: ravi-identity
-description: Check Ravi auth status and get your agent identity (email, phone, owner name). Do NOT use for reading messages (use ravi-inbox), sending email (use ravi-email-send), or credentials (use ravi-passwords or ravi-vault).
+description: Check Ravi auth status and get your agent identity (email, phone, owner name). Do NOT use for reading messages (use ravi-inbox), sending email (use ravi-email-send), or credentials (use ravi-passwords or ravi-secrets).
 ---
 
 # Ravi Identity
 
-You have access to `ravi`, a CLI that gives you your own phone number, email address, and credential vault.
+You have access to `ravi`, a CLI that gives you your own phone number, email address, and secret store.
 
 ## Prerequisites
 
@@ -45,7 +45,7 @@ ravi get owner --json
 
 ## Switching Identities
 
-Ravi supports multiple identities. Each identity has its own email, phone, and vault.
+Ravi supports multiple identities. Each identity has its own email, phone, and secrets.
 
 ### Listing identities
 
@@ -59,7 +59,13 @@ Use this when the user wants a different identity for a specific project:
 
 1. List identities: `ravi identity list --json`
 2. Set for this project (per-directory override):
-   - `mkdir -p .ravi && echo '{"identity_uuid":"<uuid>","identity_name":"<name>"}' > .ravi/config.json`
+   ```bash
+   # Recommended: use the CLI (handles bound tokens automatically)
+   ravi identity use "<uuid>"
+
+   # Manual fallback (identity only, no bound tokens):
+   mkdir -p .ravi && echo '{"identity_uuid":"<uuid>","identity_name":"<name>"}' > .ravi/config.json
+   ```
    - Add `.ravi/` to `.gitignore`
 
 All `ravi` commands in this directory will use the specified identity.
@@ -67,7 +73,7 @@ All `ravi` commands in this directory will use the specified identity.
 ### Switching identity globally
 
 ```bash
-ravi identity use "<name-or-uuid>"
+ravi identity use "<uuid>"
 ```
 
 ### Creating a new identity
@@ -85,7 +91,7 @@ ravi identity create --name "Project Name" --json
 - **Always use `--json`** — all commands support it. Human-readable output is not designed for parsing.
 - **Auth is automatic** — token refresh happens transparently. If you get auth errors, ask the user to re-login.
 - **Identity resolution** — `.ravi/config.json` in CWD takes priority over `~/.ravi/config.json`.
-- **Identities are permanent** — each identity has its own email, phone, and vault. Don't create new identities unless the user asks for it.
+- **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks for it.
 
 ## Related Skills
 
@@ -93,6 +99,6 @@ ravi identity create --name "Project Name" --json
 - **ravi-email-send** — Compose, reply, forward emails
 - **ravi-email-writing** — Write professional emails with proper formatting and tone
 - **ravi-passwords** — Store and retrieve website credentials (domain + username + password)
-- **ravi-vault** — Store and retrieve key-value secrets (API keys, env vars)
+- **ravi-secrets** — Store and retrieve key-value secrets (API keys, env vars)
 - **ravi-login** — Sign up for and log into services, handle 2FA/OTPs
 - **ravi-feedback** — Send feedback, report bugs, request features
