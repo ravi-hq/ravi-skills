@@ -9,6 +9,19 @@ Compose new emails, reply to existing ones, or forward them from your Ravi email
 
 > **Writing quality matters.** Before drafting email content, see the **ravi-email-writing** skill for subject lines, HTML formatting, tone, and anti-spam best practices.
 
+## Resolving Recipients by Name
+
+If you have the recipient's name but not their email address (e.g. "email Alice"), **use ravi-contacts first**:
+
+```bash
+# Search contacts by name
+ravi contacts search "Alice" --json
+# → Returns matches with email, phone, display_name
+# If one match → use the email from the result
+# If multiple matches → confirm with the user which Alice they mean
+# If no matches → ask the user for the email address directly
+```
+
 ## Compose a new email
 
 ```bash
@@ -102,6 +115,7 @@ On hitting a rate limit, you'll get a 429 error with a `retry_after_seconds` val
 
 ## Related Skills
 
+- **ravi-contacts** — Look up a person's email address by name before sending
 - **ravi-email-writing** — Subject lines, HTML templates, tone, and anti-spam best practices
 - **ravi-inbox** — Read incoming email before replying or forwarding
 - **ravi-identity** — Get your email address and identity name for signatures

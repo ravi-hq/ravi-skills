@@ -14,11 +14,17 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted s
 | Check if I'm authenticated or get my email/phone | **ravi-identity** | `ravi auth status`, `ravi get email/phone`, identity switching |
 | Read incoming SMS or email (OTPs, verification links) | **ravi-inbox** | `ravi inbox sms/email`, OTP extraction recipes |
 | Send an email, reply, or forward | **ravi-email-send** | `ravi email compose/reply/reply-all/forward`, attachments, rate limits |
+| Send an SMS text message | Plugin: `ravi_sms_send` | Plain text, max 1600 chars. Not available in CLI — plugin only |
 | Write a professional email (content, formatting, anti-spam) | **ravi-email-writing** | Subject lines, HTML templates, tone guide, spam avoidance |
 | Sign up for a service, log in, or complete 2FA | **ravi-login** | End-to-end signup/login workflows with OTP handling |
-| Store, retrieve, or generate website passwords | **ravi-passwords** | `ravi passwords create/get/list/edit/delete/generate` |
+| Store, retrieve, or generate website passwords | **ravi-passwords** | `ravi passwords create/get/list/update/delete/generate` |
 | Store or retrieve API keys and secrets | **ravi-secrets** | `ravi secrets set/get/list/delete` |
+| Look up someone's email/phone by name, or manage contacts | **ravi-contacts** | `ravi contacts search/list/get/create/update/delete` |
 | Send feedback, report bugs, or request features | **ravi-feedback** | `ravi feedback "message"` — the team reads every one |
+
+## Common Workflows
+
+**Sending email/SMS by name:** When the user says "email Alice" or "text Bob" but doesn't provide an address or number, use **ravi-contacts** to search by name first, then **ravi-email-send** (or SMS) with the resolved address. If multiple contacts match, confirm with the user.
 
 ## Quick Start
 

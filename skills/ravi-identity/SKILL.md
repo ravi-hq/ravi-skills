@@ -32,7 +32,7 @@ If `"authenticated": false`, tell the user to run `ravi auth login` (requires br
 ```bash
 # Your email address (use this for signups)
 ravi get email --json
-# → {"id": 1, "email": "janedoe@ravi.app", "created_dt": "..."}
+# → {"id": 1, "email": "janedoe@example.com", "created_dt": "..."}
 
 # Your phone number (use this for SMS verification)
 ravi get phone --json
@@ -83,8 +83,16 @@ separate project that needs its own email/phone). New identities require a paid
 plan and take a moment to provision.
 
 ```bash
+# Auto-generated email address
 ravi identity create --name "Project Name" --json
+
+# Custom email local part (e.g. "shopping" → shopping@<your-domain>)
+ravi identity create --name "Shopping Agent" --email "shopping" --json
 ```
+
+**Custom email rules:** 3–30 chars, lowercase alphanumeric + dots + hyphens,
+must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`).
+Returns HTTP 409 if the email address is already taken.
 
 ## Important Notes
 
@@ -98,6 +106,7 @@ ravi identity create --name "Project Name" --json
 - **ravi-inbox** — Read SMS and email messages
 - **ravi-email-send** — Compose, reply, forward emails
 - **ravi-email-writing** — Write professional emails with proper formatting and tone
+- **ravi-contacts** — Look up or manage contacts associated with this identity
 - **ravi-passwords** — Store and retrieve website credentials (domain + username + password)
 - **ravi-secrets** — Store and retrieve key-value secrets (API keys, env vars)
 - **ravi-login** — Sign up for and log into services, handle 2FA/OTPs

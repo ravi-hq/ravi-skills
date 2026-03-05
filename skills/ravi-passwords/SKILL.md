@@ -5,14 +5,14 @@ description: Store and retrieve website credentials — E2E encrypted password m
 
 # Ravi Passwords
 
-Store and retrieve passwords for services you sign up for. All fields are E2E encrypted — the CLI handles encryption/decryption transparently.
+Store and retrieve passwords for services you sign up for. Sensitive fields (username, password, notes) are E2E encrypted — the CLI handles encryption/decryption transparently. Domain is stored in plaintext for lookup.
 
 ## Commands
 
 ```bash
 # Create entry (auto-generates password if --password not given)
 ravi passwords create example.com --json
-ravi passwords create example.com --username "me@ravi.app" --password 'S3cret!' --json
+ravi passwords create example.com --username "me@example.com" --password 'S3cret!' --json
 
 # List all entries
 ravi passwords list --json
@@ -21,7 +21,7 @@ ravi passwords list --json
 ravi passwords get <uuid> --json
 
 # Update
-ravi passwords edit <uuid> --password 'NewPass!' --json
+ravi passwords update <uuid> --password 'NewPass!' --json
 
 # Delete
 ravi passwords delete <uuid> --json
@@ -41,7 +41,7 @@ ravi passwords generate --length 24 --json
   {
     "uuid": "uuid",
     "domain": "example.com",
-    "username": "me@ravi.app",
+    "username": "me@example.com",
     "created_dt": "2026-02-25T10:30:00Z"
   }
 ]
@@ -52,7 +52,7 @@ ravi passwords generate --length 24 --json
 {
   "uuid": "uuid",
   "domain": "example.com",
-  "username": "me@ravi.app",
+  "username": "me@example.com",
   "password": "S3cret!",
   "notes": "",
   "created_dt": "2026-02-25T10:30:00Z"
