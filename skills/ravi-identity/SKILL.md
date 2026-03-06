@@ -83,11 +83,17 @@ separate project that needs its own email/phone). New identities require a paid
 plan and take a moment to provision.
 
 ```bash
-# Auto-generated email address
+# Auto-generated email on a random platform domain
 ravi identity create --name "Project Name" --json
 
-# Custom email local part (e.g. "shopping" → shopping@<your-domain>)
+# Custom email local part (domain auto-picked)
 ravi identity create --name "Shopping Agent" --email "shopping" --json
+
+# Full email on a specific domain (must be a domain you have access to)
+ravi identity create --name "Work Agent" --email "work@acme.com" --json
+
+# List available domains
+ravi domains --json
 ```
 
 **Custom email rules:** 3–30 chars, lowercase alphanumeric + dots + hyphens,

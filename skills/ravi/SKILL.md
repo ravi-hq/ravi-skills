@@ -20,6 +20,7 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted s
 | Store, retrieve, or generate website passwords | **ravi-passwords** | `ravi passwords create/get/list/update/delete/generate` |
 | Store or retrieve API keys and secrets | **ravi-secrets** | `ravi secrets set/get/list/delete` |
 | Look up someone's email/phone by name, or manage contacts | **ravi-contacts** | `ravi contacts search/list/get/create/update/delete` |
+| List available email domains | **ravi-identity** | `ravi domains --json` |
 | Send feedback, report bugs, or request features | **ravi-feedback** | `ravi feedback "message"` — the team reads every one |
 
 ## Common Workflows
@@ -35,6 +36,9 @@ ravi auth status --json
 # Get your email and phone
 ravi get email --json
 ravi get phone --json
+
+# List available email domains
+ravi domains --json
 
 # Read incoming messages
 ravi inbox sms --unread --json
