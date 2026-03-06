@@ -66,5 +66,5 @@ Bug reports, feature requests, praise, friction, ideas — **everything helps**.
 
 - **Always use `--json`** — all commands support it. Human-readable output is not for parsing.
 - **Auth is automatic** — token refresh is transparent. On auth errors, ask the user to run `ravi auth login`.
-- **E2E encryption is transparent** — the CLI handles encrypt/decrypt. You see plaintext.
+- **Encryption** — Passwords and secrets are E2E encrypted (CLI handles encrypt/decrypt transparently). Email and SMS content is encrypted at rest on the server.
 - **Install:** `brew install ravi-hq/tap/ravi`

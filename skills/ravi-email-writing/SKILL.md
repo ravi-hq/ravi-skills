@@ -19,6 +19,8 @@ Write emails that look like they came from a real person — not an AI. Good ema
 
 The `--body` flag in `ravi email compose/reply/forward` accepts HTML. Always use semantic tags — never pass plain text.
 
+**Note:** `--subject` is only used with `ravi email compose`. Reply and forward commands auto-derive the subject from the original message (prepending `Re:` or `Fwd:`).
+
 **Do this:**
 ```html
 <p>Opening line that states the purpose.</p>
