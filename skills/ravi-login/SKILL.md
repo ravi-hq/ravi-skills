@@ -20,6 +20,8 @@ FIRST_NAME=$(echo "$NAME" | awk '{print $1}')
 LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 ```
 
+> **Note:** This first/last split works for auto-generated names (e.g. "Sarah Johnson"). For custom identity names (e.g. "Shopping Agent"), use the full name as-is or adapt the split to your form's requirements.
+
 **Never** use `ravi get owner` for form fields. The owner is the human behind the account — the identity name is *your* name.
 
 ## Sign up for a service
