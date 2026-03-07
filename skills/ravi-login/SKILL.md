@@ -9,12 +9,15 @@ End-to-end workflows for signing up, logging in, and completing verification usi
 
 ## Your Name
 
-When a form asks for your name, use your **identity name** — not the account owner's name:
+When a form asks for your name, use your **identity name** — not the account owner's name.
+Identity names look like real human names (e.g. "Sarah Johnson").
 
 ```bash
-# Get identity name (use this for "First Name" / "Full Name" fields)
+# Get identity name — split into first/last for form fields
 IDENTITY=$(ravi identity list --json | jq -r '.[0]')
 NAME=$(echo "$IDENTITY" | jq -r '.name')
+FIRST_NAME=$(echo "$NAME" | awk '{print $1}')
+LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 ```
 
 **Never** use `ravi get owner` for form fields. The owner is the human behind the account — the identity name is *your* name.

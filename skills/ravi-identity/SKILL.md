@@ -83,20 +83,27 @@ separate project that needs its own email/phone). New identities require a paid
 plan and take a moment to provision.
 
 ```bash
-# Auto-generated email on a random platform domain
-ravi identity create --name "Project Name" --json
+# Auto-generated name and email (recommended — looks like a real person)
+ravi identity create --json
+# → name: "Sarah Johnson", email: "sarah.johnson472@ravi.app"
+
+# Custom name, auto-generated email
+ravi identity create --name "Shopping Agent" --json
 
 # Custom email local part (domain auto-picked)
-ravi identity create --name "Shopping Agent" --email "shopping" --json
+ravi identity create --name "Work Agent" --email "shopping" --json
 
 # Full email on a specific domain (must be a domain you have access to)
-ravi identity create --name "Work Agent" --email "work@acme.com" --json
+ravi identity create --email "work@acme.com" --json
 
 # List available domains
 ravi domains --json
 ```
 
-**Custom email rules:** 3–30 chars, lowercase alphanumeric + dots + hyphens,
+When name is omitted, the server generates a realistic human name like "Sarah Johnson".
+The auto-generated email uses the same name: `sarah.johnson472@ravi.app`.
+
+**Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens,
 must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`).
 Returns HTTP 409 if the email address is already taken.
 
