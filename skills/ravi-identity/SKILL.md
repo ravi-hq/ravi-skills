@@ -1,118 +1,115 @@
 ---
 name: ravi-identity
-description: Check Ravi auth status and get your agent identity (email, phone, owner name). Do NOT use for reading messages (use ravi-inbox), sending email (use ravi-email-send), or credentials (use ravi-passwords or ravi-secrets).
+description: Get your agent identity (email, phone, owner name) and manage identities. Do NOT use for reading messages (use ravi-inbox), sending email (use ravi-email-send), or credentials (use ravi-passwords or ravi-secrets).
 ---
 
 # Ravi Identity
 
-You have access to `ravi`, a CLI that gives you your own phone number, email address, and secret store.
+You have access to Ravi, an identity provider that gives you your own phone number, email address, and secret store via its REST API.
 
 ## Prerequisites
 
-### Install the CLI
+You need API keys in your environment:
 
-If `ravi` is not installed, tell the user to install it:
+- `RAVI_MGMT_KEY` — management key (`ravi_mgmt_...`) for account-level operations
+- `RAVI_ID_KEY` — identity key (`ravi_id_...`) for identity-scoped operations
 
-```bash
-brew install ravi-hq/tap/ravi
-```
-
-### Check authentication
-
-Verify you're authenticated before using any command:
-
-```bash
-ravi auth status --json
-```
-
-If `"authenticated": false`, tell the user to run `ravi auth login` (requires browser interaction — you cannot do this yourself).
+If you don't have these, see the **ravi-login** skill for the device code onboarding flow.
 
 ## Your Identity
 
 ```bash
+# List your identities (includes email, phone, name)
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/identities/ | jq
+
+# Get a specific identity by UUID
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/identities/<uuid>/ | jq
+```
+
+**Response shape:**
+```json
+[{
+  "uuid": "...",
+  "name": "Sarah Johnson",
+  "email": "sarah.johnson472@ravi.app",
+  "phone_number": "+15551234567",
+  "created_dt": "2026-02-25T10:30:00Z"
+}]
+```
+
+Extract specific fields:
+```bash
 # Your email address (use this for signups)
-ravi get email --json
-# → {"id": 1, "email": "janedoe@example.com", "created_dt": "..."}
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/identities/ | jq -r '.[0].email'
 
 # Your phone number (use this for SMS verification)
-ravi get phone --json
-# → {"id": 1, "phone_number": "+15551234567", "provider": "twilio", "created_dt": "..."}
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/identities/ | jq -r '.[0].phone_number'
 
-# The human who owns this account
-ravi get owner --json
-# → {"first_name": "Jane", "last_name": "Doe"}
+# Your identity name (use this for form fields, email signatures)
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/identities/ | jq -r '.[0].name'
 ```
 
-## Switching Identities
+## Creating a New Identity
 
-Ravi supports multiple identities. Each identity has its own email, phone, and secrets.
-
-### Listing identities
-
-```bash
-ravi identity list --json
-```
-
-### Setting an identity for this project
-
-Use this when the user wants a different identity for a specific project:
-
-1. List identities: `ravi identity list --json`
-2. Set for this project (per-directory override):
-   ```bash
-   # Recommended: use the CLI (handles bound tokens automatically)
-   ravi identity use "<uuid>"
-
-   # Manual fallback (identity only, no bound tokens):
-   mkdir -p .ravi && echo '{"identity_uuid":"<uuid>","identity_name":"<name>"}' > .ravi/config.json
-   ```
-   - Add `.ravi/` to `.gitignore`
-
-All `ravi` commands in this directory will use the specified identity.
-
-### Switching identity globally
-
-```bash
-ravi identity use "<uuid>"
-```
-
-### Creating a new identity
-
-Only create a new identity when the user explicitly asks for one (e.g., for a
-separate project that needs its own email/phone). New identities require a paid
-plan and take a moment to provision.
+Only create a new identity when the user explicitly asks for one (e.g., for a separate project that needs its own email/phone). New identities require a paid plan.
 
 ```bash
 # Auto-generated name and email (recommended — looks like a real person)
-ravi identity create --json
+curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}' \
+  https://ravi.app/api/identities/ | jq
 # → name: "Sarah Johnson", email: "sarah.johnson472@ravi.app"
 
 # Custom name, auto-generated email
-ravi identity create --name "Shopping Agent" --json
+curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Shopping Agent"}' \
+  https://ravi.app/api/identities/ | jq
 
-# Custom email local part (domain auto-picked)
-ravi identity create --name "Work Agent" --email "shopping" --json
-
-# Full email on a specific domain (must be a domain you have access to)
-ravi identity create --email "work@acme.com" --json
+# Custom email local part
+curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Work Agent", "email_local": "shopping"}' \
+  https://ravi.app/api/identities/ | jq
 
 # List available domains
-ravi domains --json
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.app/api/domains/ | jq
 ```
 
-When name is omitted, the server generates a realistic human name like "Sarah Johnson".
-The auto-generated email uses the same name: `sarah.johnson472@ravi.app`.
+When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@ravi.app`.
 
-**Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens,
-must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`).
-Returns HTTP 409 if the email address is already taken.
+**Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens, must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`). Returns HTTP 409 if the email address is already taken.
+
+The response includes `api_key` — a `ravi_id_...` key for this new identity. Store it as `RAVI_ID_KEY`.
+
+## Identity Keys
+
+Each identity has its own identity key. To list and manage identity keys:
+
+```bash
+# List identity keys
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/auth/keys/identity/ | jq
+
+# Create a new identity key
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-agent-key"}' \
+  https://ravi.app/api/auth/keys/identity/ | jq
+```
 
 ## Important Notes
 
-- **Always use `--json`** — all commands support it. Human-readable output is not designed for parsing.
-- **Auth is automatic** — token refresh happens transparently. If you get auth errors, ask the user to re-login.
-- **Identity resolution** — `.ravi/config.json` in CWD takes priority over `~/.ravi/config.json`.
-- **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks for it.
+- **Identity name for forms** — use the identity name (`.[0].name`) for signup forms, not the account owner's name.
+- **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
+- **`RAVI_ID_KEY` is identity-scoped** — it gives access to one specific identity's inbox, vault, and contacts.
 
 ## Related Skills
 
@@ -120,7 +117,7 @@ Returns HTTP 409 if the email address is already taken.
 - **ravi-email-send** — Compose, reply, forward emails
 - **ravi-email-writing** — Write professional emails with proper formatting and tone
 - **ravi-contacts** — Look up or manage contacts associated with this identity
-- **ravi-passwords** — Store and retrieve website credentials (domain + username + password)
-- **ravi-secrets** — Store and retrieve key-value secrets (API keys, env vars)
-- **ravi-login** — Sign up for and log into services, handle 2FA/OTPs
+- **ravi-passwords** — Store and retrieve website credentials
+- **ravi-secrets** — Store and retrieve key-value secrets
+- **ravi-login** — Device code onboarding, sign up for and log into services, handle 2FA/OTPs
 - **ravi-feedback** — Send feedback, report bugs, request features

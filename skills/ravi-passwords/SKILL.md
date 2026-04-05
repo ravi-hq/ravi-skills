@@ -1,41 +1,67 @@
 ---
 name: ravi-passwords
-description: Store and retrieve website credentials — E2E encrypted password manager for domain/username/password entries. Do NOT use for API keys/secrets (use ravi-secrets) or reading messages (use ravi-inbox).
+description: Store and retrieve website credentials — password manager for domain/username/password entries. Do NOT use for API keys/secrets (use ravi-secrets) or reading messages (use ravi-inbox).
 ---
 
 # Ravi Passwords
 
-Store and retrieve passwords for services you sign up for. Sensitive fields (username, password, notes) are E2E encrypted — the CLI handles encryption/decryption transparently. Domain is stored in plaintext for lookup.
+Store and retrieve passwords for services you sign up for. All credential fields (username, password, notes) are server-side encrypted — you send and receive plaintext.
+
+All password endpoints use the identity key:
+```bash
+-H "Authorization: Bearer $RAVI_ID_KEY"
+```
 
 ## Commands
 
 ```bash
-# Create entry (auto-generates password if --password not given)
-ravi passwords create example.com --json
-ravi passwords create example.com --username "me@example.com" --password 'S3cret!' --json
+# Create entry (auto-generates password if password not given)
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "example.com"}' \
+  https://ravi.app/api/passwords/ | jq
+
+# Create with username and password
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "example.com", "username": "me@example.com", "password": "S3cret!"}' \
+  https://ravi.app/api/passwords/ | jq
 
 # List all entries
-ravi passwords list --json
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/passwords/ | jq
 
-# Retrieve (decrypted)
-ravi passwords get <uuid> --json
+# Retrieve a specific entry by UUID
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/passwords/<uuid>/ | jq
 
-# Update
-ravi passwords update <uuid> --password 'NewPass!' --json
+# Update an entry
+curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"password": "NewPass!"}' \
+  https://ravi.app/api/passwords/<uuid>/ | jq
 
-# Delete
-ravi passwords delete <uuid> --json
+# Delete an entry
+curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/passwords/<uuid>/
 
 # Generate a password without storing it
-ravi passwords generate --length 24 --json
-# -> {"password": "xK9#mL2..."}
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/passwords/generate-password/ | jq
+# → {"password": "xK9#mL2..."}
+
+# Generate with options
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  "https://ravi.app/api/passwords/generate-password/?length=24" | jq
 ```
 
-**Create flags:** `--username`, `--password`, `--notes`, `--generate`, `--length` (default 16), `--no-special`, `--no-digits`, `--exclude-chars`
+**Create body fields:** `domain` (required), `username`, `password`, `notes`
+
+If `password` is omitted, the server auto-generates a strong password.
 
 ## JSON Shapes
 
-**`ravi passwords list --json`:**
+**`GET /api/passwords/`:**
 ```json
 [
   {
@@ -47,7 +73,7 @@ ravi passwords generate --length 24 --json
 ]
 ```
 
-**`ravi passwords get <uuid> --json`:**
+**`GET /api/passwords/<uuid>/`:**
 ```json
 {
   "uuid": "uuid",
@@ -59,11 +85,43 @@ ravi passwords generate --length 24 --json
 }
 ```
 
+## Common Patterns
+
+### Sign up for a service — store credentials immediately
+
+```bash
+# Generate and store credentials during signup
+CREDS=$(curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "example.com", "username": "me@example.com"}' \
+  https://ravi.app/api/passwords/ | jq)
+
+PASSWORD=$(echo "$CREDS" | jq -r '.password')
+# Use $PASSWORD in the signup form
+```
+
+### Log into a service — retrieve stored credentials
+
+```bash
+# Find entry by domain
+ENTRY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
+
+UUID=$(echo "$ENTRY" | jq -r '.uuid')
+
+# Get full credentials including password
+CREDS=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  "https://ravi.app/api/passwords/$UUID/" | jq)
+
+USERNAME=$(echo "$CREDS" | jq -r '.username')
+PASSWORD=$(echo "$CREDS" | jq -r '.password')
+```
+
 ## Important Notes
 
-- **E2E encryption is transparent** — the CLI encrypts credential fields before sending and decrypts on retrieval. You see plaintext.
-- **Domain cleaning** — `ravi passwords create` auto-cleans URLs to base domains (e.g., `https://mail.google.com/inbox` becomes `google.com`).
-- **Always use `--json`** — human-readable output is not designed for parsing.
+- **Server-side encryption is transparent** — you always see plaintext values.
+- **Domain cleaning** — pass the bare domain (e.g., `example.com`), not a full URL. The server normalizes it.
+- **Password in list response** — the list endpoint omits `password` for brevity. Use the detail endpoint (`GET /api/passwords/<uuid>/`) to retrieve the password.
 
 ## Related Skills
 

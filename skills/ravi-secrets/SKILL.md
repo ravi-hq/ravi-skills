@@ -1,35 +1,54 @@
 ---
 name: ravi-secrets
-description: Store and retrieve key-value secrets — E2E encrypted secret store for API keys and env vars. Do NOT use for website passwords (use ravi-passwords) or reading messages (use ravi-inbox).
+description: Store and retrieve key-value secrets — encrypted secret store for API keys and env vars. Do NOT use for website passwords (use ravi-passwords) or reading messages (use ravi-inbox).
 ---
 
 # Ravi Secrets
 
-Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are E2E encrypted — the CLI handles encryption/decryption transparently. Keys are stored in plaintext for lookup/filtering.
+Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are server-side encrypted — you send and receive plaintext. Keys are stored in plaintext for lookup/filtering.
+
+All secrets endpoints use the identity key:
+```bash
+-H "Authorization: Bearer $RAVI_ID_KEY"
+```
 
 ## Commands
 
 ```bash
-# Store a secret (creates or updates)
-ravi secrets set OPENAI_API_KEY "sk-abc123..." --json
+# Store a secret (creates new entry)
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
+  https://ravi.app/api/secrets/ | jq
 
 # With optional notes
-ravi secrets set STRIPE_SECRET_KEY "sk_live_..." --json
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"key": "STRIPE_SECRET_KEY", "value": "sk_live_...", "notes": "Production key"}' \
+  https://ravi.app/api/secrets/ | jq
 
-# Retrieve a secret by key
-ravi secrets get OPENAI_API_KEY --json
-# -> {"key": "OPENAI_API_KEY", "value": "sk-abc123...", "notes": "", ...}
+# List all secrets
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/secrets/ | jq
 
-# List all secrets (values redacted in list view)
-ravi secrets list --json
+# Retrieve a secret by UUID
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/secrets/<uuid>/ | jq
+
+# Update a secret
+curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"value": "sk-new-value..."}' \
+  https://ravi.app/api/secrets/<uuid>/ | jq
 
 # Delete a secret by UUID
-ravi secrets delete <uuid> --json
+curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/secrets/<uuid>/
 ```
 
 ## JSON Shapes
 
-**`ravi secrets list --json`:**
+**`GET /api/secrets/`:**
 ```json
 [
   {
@@ -43,7 +62,7 @@ ravi secrets delete <uuid> --json
 ]
 ```
 
-**`ravi secrets get KEY --json`:**
+**`GET /api/secrets/<uuid>/`:**
 ```json
 {
   "uuid": "...",
@@ -55,32 +74,47 @@ ravi secrets delete <uuid> --json
 }
 ```
 
-## OpenClaw Integration
+## Common Patterns
 
-When an agent needs API keys or secrets at runtime, use Ravi Secrets as the backing store:
+### Store and retrieve API keys at runtime
 
 ```bash
-# Store a key for the agent to use later
-ravi secrets set OPENAI_API_KEY "sk-abc123..." --json
+# Store a key
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
+  https://ravi.app/api/secrets/ | jq
 
-# At runtime, retrieve the key
-API_KEY=$(ravi secrets get OPENAI_API_KEY --json | jq -r '.value')
+# Retrieve the key by searching the list
+API_KEY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/secrets/ | \
+  jq -r '.[] | select(.key == "OPENAI_API_KEY") | .value')
+
 curl -H "Authorization: Bearer $API_KEY" https://api.openai.com/v1/...
 
-# Store multiple service keys
-ravi secrets set ANTHROPIC_API_KEY "sk-ant-..." --json
-ravi secrets set GITHUB_TOKEN "ghp_..." --json
+# List all available key names
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  https://ravi.app/api/secrets/ | jq -r '.[].key'
+```
 
-# List all available keys
-ravi secrets list --json | jq -r '.[].key'
+### Store multiple service keys
+
+```bash
+for item in \
+  '{"key": "ANTHROPIC_API_KEY", "value": "sk-ant-..."}' \
+  '{"key": "GITHUB_TOKEN", "value": "ghp_..."}'; do
+  curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$item" \
+    https://ravi.app/api/secrets/ | jq -r '.key'
+done
 ```
 
 ## Important Notes
 
-- **E2E encryption is transparent** — the CLI encrypts values before sending and decrypts on retrieval. You see plaintext.
-- **Keys are unique per identity** — setting a key that already exists updates it.
-- **Keys are plaintext** — only values and notes are E2E encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
-- **Always use `--json`** — human-readable output is not designed for parsing.
+- **Server-side encryption is transparent** — you always see plaintext values.
+- **Keys must be unique per identity** — if you need to update an existing key, use PATCH on the UUID. Creating a duplicate key name will return a validation error.
+- **Keys are plaintext** — only values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
 ## Related Skills
 

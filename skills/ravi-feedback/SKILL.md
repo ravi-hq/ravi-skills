@@ -10,11 +10,17 @@ Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 ## Send Feedback
 
 ```bash
-# Quick feedback (one-liner)
-ravi feedback "The secrets set command is great but needs batch import" --json
+# Quick feedback
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "The secrets API is great but needs batch import"}' \
+  https://ravi.app/api/feedback/ | jq
 
 # With a custom subject
-ravi feedback "SMS delivery is slow in EU regions" --subject "SMS latency issue" --json
+curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "SMS delivery is slow in EU regions", "subject": "SMS latency issue"}' \
+  https://ravi.app/api/feedback/ | jq
 ```
 
 ## When to Use
@@ -33,11 +39,10 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires authentication** — the user must be logged in (`ravi auth status --json`)
-- **Sent from the user's inbox** — the Ravi team can reply directly to the user's Ravi email
-- **Always use `--json`** — human-readable output is not designed for parsing
+- **Requires identity key** — `RAVI_ID_KEY` must be set
+- **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills
 
 - **ravi** — Overview of all Ravi skills and when to use each one
-- **ravi-identity** — Check auth status and get your identity details
+- **ravi-identity** — Get your identity details
