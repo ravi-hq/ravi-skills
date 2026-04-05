@@ -44,7 +44,7 @@ If you don't have keys yet, see the **ravi-login** skill for the device code onb
 
 ```bash
 # Get your identity details
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   https://ravi.app/api/identities/ | jq '.[0]'
 
 # List available email domains
