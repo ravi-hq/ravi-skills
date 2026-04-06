@@ -123,7 +123,7 @@ SELECTED_NAME="<name from identities list>"
 
 ID_KEY_RESP=$(curl -s -X POST -H "Authorization: Bearer $MGMT_KEY" \
   -H "Content-Type: application/json" \
-  -d "{\"identity\": \"$SELECTED_UUID\", \"label\": \"agent\"}" \
+  -d "{\"identity_uuid\": \"$SELECTED_UUID\", \"label\": \"agent\"}" \
   https://ravi.id/api/auth/keys/identity/)
 
 ID_KEY=$(echo "$ID_KEY_RESP" | jq -r '.key')
