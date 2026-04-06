@@ -12,9 +12,9 @@ End-to-end workflows for onboarding to Ravi, signing up for services, logging in
 Before doing anything, check whether you already have API keys:
 
 ```bash
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 echo "MGMT KEY: ${RAVI_MGMT_KEY:-NOT SET}"
 echo "ID KEY:   ${RAVI_ID_KEY:-NOT SET}"
@@ -91,20 +91,20 @@ fi
 mkdir -p ~/.ravi
 chmod 700 ~/.ravi
 
-# Save management key
+# Save all keys to the global config file
 USER_EMAIL=$(echo "$RESULT" | jq -r '.user.email // empty')
-echo "{\"management_key\": \"$MGMT_KEY\", \"user_email\": \"$USER_EMAIL\"}" > ~/.ravi/auth.json
-chmod 600 ~/.ravi/auth.json
-
-# If signup response includes identity_key, save it too
 ID_KEY=$(echo "$RESULT" | jq -r '.identity_key // empty')
+ID_UUID=$(echo "$RESULT" | jq -r '.identity.uuid // empty')
+ID_NAME=$(echo "$RESULT" | jq -r '.identity.name // empty')
+
+CONFIG="{\"management_key\": \"$MGMT_KEY\", \"user_email\": \"$USER_EMAIL\""
 if [ -n "$ID_KEY" ]; then
-  ID_UUID=$(echo "$RESULT" | jq -r '.identity.uuid')
-  ID_NAME=$(echo "$RESULT" | jq -r '.identity.name')
-  mkdir -p .ravi
-  echo "{\"identity_key\": \"$ID_KEY\", \"identity_uuid\": \"$ID_UUID\", \"identity_name\": \"$ID_NAME\"}" > .ravi/config.json
-  chmod 600 .ravi/config.json
+  CONFIG="$CONFIG, \"identity_key\": \"$ID_KEY\", \"identity_uuid\": \"$ID_UUID\", \"identity_name\": \"$ID_NAME\""
 fi
+CONFIG="$CONFIG}"
+
+echo "$CONFIG" > ~/.ravi/config.json
+chmod 600 ~/.ravi/config.json
 ```
 
 ---
@@ -128,10 +128,10 @@ ID_KEY_RESP=$(curl -s -X POST -H "Authorization: Bearer $MGMT_KEY" \
 
 ID_KEY=$(echo "$ID_KEY_RESP" | jq -r '.key')
 
-# Save to .ravi/config.json
-mkdir -p .ravi
-echo "{\"identity_key\": \"$ID_KEY\", \"identity_uuid\": \"$SELECTED_UUID\", \"identity_name\": \"$SELECTED_NAME\"}" > .ravi/config.json
-chmod 600 .ravi/config.json
+# Update the global config file with identity key
+CONFIG=$(cat ~/.ravi/config.json)
+echo "$CONFIG" | jq ". + {\"identity_key\": \"$ID_KEY\", \"identity_uuid\": \"$SELECTED_UUID\", \"identity_name\": \"$SELECTED_NAME\"}" > ~/.ravi/config.json
+chmod 600 ~/.ravi/config.json
 ```
 
 ---
@@ -141,7 +141,7 @@ chmod 600 .ravi/config.json
 If you have a management key but no identities at all, create one:
 
 ```bash
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 
 IDENTITY=$(curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
@@ -170,9 +170,9 @@ The server auto-generates a realistic human name (e.g. "Sarah Johnson") and matc
 
 ```bash
 # Load keys from config files
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 # 1. Get your identity details
 EMAIL=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
@@ -207,7 +207,7 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 When a form asks for your name, use your **identity name** — not the account owner's name. Identity names look like real human names (e.g. "Sarah Johnson").
 
 ```bash
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   https://ravi.id/api/identities/ | jq -r '.[0].name')
@@ -224,7 +224,7 @@ LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 ```bash
 # Load identity key
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 # Find stored credentials by domain
 ENTRY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
@@ -245,7 +245,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 ```bash
 # Load identity key
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 # After triggering 2FA on a website:
 sleep 5
@@ -260,7 +260,7 @@ CODE=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 ```bash
 # Load identity key
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 THREAD_ID=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   "https://ravi.id/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')

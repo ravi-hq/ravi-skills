@@ -14,11 +14,11 @@ Load your API keys before making requests:
 ```bash
 # Read identity key (for most operations)
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 [ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
 
 # Read management key (for account operations — only needed by ravi-identity)
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 ```
 
 If keys are missing, use the **ravi-login** skill to onboard.
@@ -29,20 +29,16 @@ All API requests require an API key header. Two key types:
 
 - **Management key** (`ravi_mgmt_...`): Account-level operations — create identities, list keys, manage account.
   - Header: `Authorization: Bearer $RAVI_MGMT_KEY`
-  - Stored in: `~/.ravi/auth.json`
 
 - **Identity key** (`ravi_id_...`): Identity-scoped operations — read inbox, manage vault, send email.
   - Header: `Authorization: Bearer $RAVI_ID_KEY`
-  - Stored in: `.ravi/config.json` (per-project) or `~/.ravi/auth.json` (global fallback)
 
-**Resolution order** (identity key):
-  1. `.ravi/config.json` in current directory
-  2. `~/.ravi/auth.json` (if `identity_key` is stored there)
-  3. `$RAVI_ID_KEY` environment variable (last resort)
+Both keys are stored in a single config file: `~/.ravi/config.json`
+To use a different identity in a specific project, override with `.ravi/config.json` in that directory.
 
-**Resolution order** (management key):
-  1. `~/.ravi/auth.json`
-  2. `$RAVI_MGMT_KEY` environment variable (last resort)
+**Resolution order:**
+  1. `.ravi/config.json` in current working directory (override)
+  2. `~/.ravi/config.json` (global default)
 
 ## When to Use Each Skill
 
@@ -67,9 +63,9 @@ All API requests require an API key header. Two key types:
 
 ```bash
 # Load keys from config files first
-RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 # Get your identity details
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
