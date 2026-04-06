@@ -136,6 +136,11 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 - **Domain cleaning** — pass the bare domain (e.g., `example.com`), not a full URL. The server normalizes it.
 - **Password in list response** — the list endpoint omits `password` for brevity. Use the detail endpoint (`GET /api/passwords/<uuid>/`) to retrieve the password.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Passwords](https://ravi.id/docs/schema/passwords.json)
+
 ## Related Skills
 
 - **ravi-secrets** — Store API keys and env vars (key-value secrets, not website credentials)

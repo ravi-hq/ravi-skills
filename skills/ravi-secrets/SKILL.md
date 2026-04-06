@@ -129,6 +129,11 @@ done
 - **Keys must be unique per identity** — if you need to update an existing key, use PATCH on the UUID. Creating a duplicate key name will return a validation error.
 - **Keys are plaintext** — only values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Secrets](https://ravi.id/docs/schema/secrets.json)
+
 ## Related Skills
 
 - **ravi-passwords** — Store website credentials (domain + username + password, not key-value secrets)

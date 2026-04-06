@@ -136,6 +136,11 @@ On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` 
 - **HTML email bodies** — the `body` field accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed. See **ravi-email-writing** for templates and anti-spam rules.
 - **Subject for replies/forwards** — reply and forward endpoints auto-derive the subject from the original message (prepending `Re:` or `Fwd:`). No need to pass `subject`.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Messages](https://ravi.id/docs/schema/messages.json) | [Attachments](https://ravi.id/docs/schema/attachments.json)
+
 ## Related Skills
 
 - **ravi-contacts** — Look up a person's email address by name before sending

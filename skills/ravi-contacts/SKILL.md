@@ -157,6 +157,11 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 - **Auto-contacts from interactions** — sending or receiving email/SMS automatically creates or updates contacts. You do not need to manually create contacts for people you interact with.
 - **Phone numbers in E.164 format** — always include the country code (e.g., `+15551234567`).
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Contacts](https://ravi.id/docs/schema/contacts.json)
+
 ## Related Skills
 
 - **ravi-identity** — Get your own email address and phone number

@@ -158,6 +158,11 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
 - **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use the contacts search endpoint to look up people you've interacted with.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.id/docs/schema/inbox.json) | [Messages](https://ravi.id/docs/schema/messages.json)
+
 ## Related Skills
 
 - **ravi-email-send** — Reply or forward emails you've read

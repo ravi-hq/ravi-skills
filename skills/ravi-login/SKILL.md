@@ -278,6 +278,11 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 - **Rate limits apply to sending** — 60 emails/hour, 500/day. See `ravi-email-send` skill for details.
 - **Email quality matters** — if you need to send an email during a workflow, see **ravi-email-writing** for formatting and anti-spam tips.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Device Auth](https://ravi.id/docs/schema/device-auth.json) | [Auth & Keys](https://ravi.id/docs/schema/auth.json)
+
 ## Related Skills
 
 - **ravi-identity** — Get your email, phone, and identity name for form fields

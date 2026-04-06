@@ -118,6 +118,11 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 - **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
 - **Identity key is identity-scoped** — it gives access to one specific identity's inbox, vault, and contacts.
 
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Identities](https://ravi.id/docs/schema/identities.json)
+
 ## Related Skills
 
 - **ravi-inbox** — Read SMS and email messages
