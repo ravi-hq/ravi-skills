@@ -5,7 +5,24 @@ description: Best practices for writing high-quality emails that look profession
 
 # Email Writing Guide
 
-Write emails that look like they came from a real person — not an AI. Good email hygiene improves deliverability, avoids spam filters, and gets responses.
+Write emails that look like they came from a real person — not an AI.
+
+## Prerequisites
+
+Load your API keys before making requests:
+
+```bash
+# Read management key (needed for identity name lookups)
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
+# Read identity key (needed for sending)
+RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
+```
+
+If keys are missing, use the **ravi-login** skill to onboard.
+
+Good email hygiene improves deliverability, avoids spam filters, and gets responses.
 
 ## Subject Lines
 
