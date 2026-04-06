@@ -30,7 +30,7 @@ If you don't have keys, you need a human to authorize you. This is a one-time se
 DEVICE=$(curl -s -X POST \
   -H "Content-Type: application/json" \
   -d '{}' \
-  https://ravi.app/api/auth/device/)
+  https://ravi.id/api/auth/device/)
 
 DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
 USER_CODE=$(echo "$DEVICE" | jq -r '.user_code')
@@ -45,7 +45,7 @@ echo "Enter code:   $USER_CODE"
 {
   "device_code": "...",
   "user_code": "ABCD-1234",
-  "verification_uri": "https://ravi.app/device",
+  "verification_uri": "https://ravi.id/device",
   "expires_in": 900,
   "interval": 5
 }
@@ -56,7 +56,7 @@ echo "Enter code:   $USER_CODE"
 Present both pieces of information clearly:
 
 ```
-Please visit https://ravi.app/device and enter the code: ABCD-1234
+Please visit https://ravi.id/device and enter the code: ABCD-1234
 ```
 
 The human visits the URL, signs in with Google, and approves the request.
@@ -70,7 +70,7 @@ while true; do
   RESULT=$(curl -s -X POST \
     -H "Content-Type: application/json" \
     -d "{\"device_code\": \"$DEVICE_CODE\"}" \
-    https://ravi.app/api/auth/device/token/)
+    https://ravi.id/api/auth/device/token/)
 
   STATUS=$(echo "$RESULT" | jq -r '.status // empty')
 
@@ -115,7 +115,7 @@ If you don't have an identity key (`RAVI_ID_KEY`), create an identity:
 IDENTITY=$(curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
   -d '{}' \
-  https://ravi.app/api/identities/)
+  https://ravi.id/api/identities/)
 
 RAVI_ID_KEY=$(echo "$IDENTITY" | jq -r '.api_key')
 EMAIL=$(echo "$IDENTITY" | jq -r '.email')
@@ -139,11 +139,11 @@ The server auto-generates a realistic human name (e.g. "Sarah Johnson") and matc
 ```bash
 # 1. Get your identity details
 EMAIL=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].email')
+  https://ravi.id/api/identities/ | jq -r '.[0].email')
 PHONE=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].phone_number')
+  https://ravi.id/api/identities/ | jq -r '.[0].phone_number')
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].name')
+  https://ravi.id/api/identities/ | jq -r '.[0].name')
 FIRST_NAME=$(echo "$NAME" | awk '{print $1}')
 LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 
@@ -153,16 +153,16 @@ LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 CREDS=$(curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d "{\"domain\": \"example.com\", \"username\": \"$EMAIL\"}" \
-  https://ravi.app/api/passwords/ | jq)
+  https://ravi.id/api/passwords/ | jq)
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $PASSWORD in the signup form
 
 # 4. Wait for verification
 sleep 5
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/?unread=true" | jq   # Check for SMS OTP
+  "https://ravi.id/api/sms-inbox/?unread=true" | jq   # Check for SMS OTP
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/?unread=true" | jq  # Check for email verification
+  "https://ravi.id/api/email-inbox/?unread=true" | jq  # Check for email verification
 ```
 
 ## Your Name
@@ -171,7 +171,7 @@ When a form asks for your name, use your **identity name** — not the account o
 
 ```bash
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].name')
+  https://ravi.id/api/identities/ | jq -r '.[0].name')
 FIRST_NAME=$(echo "$NAME" | awk '{print $1}')
 LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 ```
@@ -185,13 +185,13 @@ LAST_NAME=$(echo "$NAME" | awk '{print $2}')
 ```bash
 # Find stored credentials by domain
 ENTRY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
+  https://ravi.id/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
 
 UUID=$(echo "$ENTRY" | jq -r '.uuid')
 
 # Get full credentials including password
 CREDS=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/passwords/$UUID/" | jq)
+  "https://ravi.id/api/passwords/$UUID/" | jq)
 USERNAME=$(echo "$CREDS" | jq -r '.username')
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $USERNAME and $PASSWORD to log in
@@ -203,7 +203,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # After triggering 2FA on a website:
 sleep 5
 CODE=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/?unread=true" | \
+  "https://ravi.id/api/sms-inbox/?unread=true" | \
   jq -r '.[0].preview' | grep -oE '[0-9]{4,8}' | head -1)
 # Use $CODE to complete the login
 ```
@@ -212,10 +212,10 @@ CODE=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ```bash
 THREAD_ID=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')
+  "https://ravi.id/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')
 
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/$THREAD_ID/" | \
+  "https://ravi.id/api/email-inbox/$THREAD_ID/" | \
   jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
 ```
 

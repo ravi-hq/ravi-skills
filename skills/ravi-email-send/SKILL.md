@@ -21,7 +21,7 @@ If you have the recipient's name but not their email address (e.g. "email Alice"
 ```bash
 # Search contacts by name
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/contacts/search/?q=Alice" | jq
+  "https://ravi.id/api/contacts/search/?q=Alice" | jq
 # → Returns matches with email, phone, display_name
 # If one match → use the email from the result
 # If multiple matches → confirm with the user which Alice they mean
@@ -38,7 +38,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
     "subject": "Subject",
     "body": "<p>HTML content</p>"
   }' \
-  https://ravi.app/api/email-messages/compose/ | jq
+  https://ravi.id/api/email-messages/compose/ | jq
 ```
 
 **Body fields:**
@@ -57,7 +57,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
     "subject": "Monthly Report",
     "body": "<h2>Monthly Report</h2><p>Key findings:</p><ul><li>Revenue up 15%</li><li>Churn down 3%</li></ul>"
   }' \
-  https://ravi.app/api/email-messages/compose/ | jq
+  https://ravi.id/api/email-messages/compose/ | jq
 ```
 
 ## Reply to an email
@@ -67,13 +67,13 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"body": "<p>Reply content</p>"}' \
-  https://ravi.app/api/email-messages/<id>/reply/ | jq
+  https://ravi.id/api/email-messages/<id>/reply/ | jq
 
 # Reply to all recipients (reply-all)
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"body": "<p>Reply content</p>"}' \
-  https://ravi.app/api/email-messages/<id>/reply/?reply_all=true | jq
+  https://ravi.id/api/email-messages/<id>/reply/?reply_all=true | jq
 ```
 
 **Optional body fields:**
@@ -85,7 +85,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"body": "<p>Adding the team.</p>", "cc": "team@example.com"}' \
-  https://ravi.app/api/email-messages/<id>/reply/ | jq
+  https://ravi.id/api/email-messages/<id>/reply/ | jq
 ```
 
 ## Forward an email
@@ -97,7 +97,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
     "to": "recipient@example.com",
     "body": "<p>FYI — see below.</p>"
   }' \
-  https://ravi.app/api/email-messages/<id>/forward/ | jq
+  https://ravi.id/api/email-messages/<id>/forward/ | jq
 ```
 
 **Body fields:**

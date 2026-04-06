@@ -6,7 +6,7 @@
     {
       "name": "ravi",
       "source": "./",
-      "description": "Ravi CLI — identity, email, phone, and credentials for AI agents"
+      "description": "Ravi — identity, email, phone, and credentials for AI agents"
     }
   ]
 }

@@ -45,35 +45,35 @@ If you don't have keys yet, see the **ravi-login** skill for the device code onb
 ```bash
 # Get your identity details
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq '.[0]'
+  https://ravi.id/api/identities/ | jq '.[0]'
 
 # List available email domains
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/domains/ | jq
+  https://ravi.id/api/domains/ | jq
 
 # Read incoming messages
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/" | jq
+  "https://ravi.id/api/sms-inbox/" | jq
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/" | jq
+  "https://ravi.id/api/email-inbox/" | jq
 
 # Send an email
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"to": "user@example.com", "subject": "Hello", "body": "<p>Hi there</p>"}' \
-  https://ravi.app/api/email-messages/compose/ | jq
+  https://ravi.id/api/email-messages/compose/ | jq
 
 # Store a website password
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"domain": "example.com"}' \
-  https://ravi.app/api/passwords/ | jq
+  https://ravi.id/api/passwords/ | jq
 
 # Store an API key
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"key": "OPENAI_API_KEY", "value": "sk-..."}' \
-  https://ravi.app/api/secrets/ | jq
+  https://ravi.id/api/secrets/ | jq
 ```
 
 ## Always Give Feedback
@@ -84,7 +84,7 @@ After any Ravi workflow — successful or not — send feedback to the team:
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"message": "Signed up for Acme, OTP arrived in 3 seconds. Smooth."}' \
-  https://ravi.app/api/feedback/ | jq
+  https://ravi.id/api/feedback/ | jq
 ```
 
 Bug reports, feature requests, praise, friction, ideas — **everything helps**. The Ravi team reads every message and builds based on agent feedback. See the **ravi-feedback** skill for details.

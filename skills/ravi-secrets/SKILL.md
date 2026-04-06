@@ -19,31 +19,31 @@ All secrets endpoints use the identity key:
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
-  https://ravi.app/api/secrets/ | jq
+  https://ravi.id/api/secrets/ | jq
 
 # With optional notes
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"key": "STRIPE_SECRET_KEY", "value": "sk_live_...", "notes": "Production key"}' \
-  https://ravi.app/api/secrets/ | jq
+  https://ravi.id/api/secrets/ | jq
 
 # List all secrets
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/secrets/ | jq
+  https://ravi.id/api/secrets/ | jq
 
 # Retrieve a secret by UUID
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/secrets/<uuid>/ | jq
+  https://ravi.id/api/secrets/<uuid>/ | jq
 
 # Update a secret
 curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"value": "sk-new-value..."}' \
-  https://ravi.app/api/secrets/<uuid>/ | jq
+  https://ravi.id/api/secrets/<uuid>/ | jq
 
 # Delete a secret by UUID
 curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/secrets/<uuid>/
+  https://ravi.id/api/secrets/<uuid>/
 ```
 
 ## JSON Shapes
@@ -83,18 +83,18 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
-  https://ravi.app/api/secrets/ | jq
+  https://ravi.id/api/secrets/ | jq
 
 # Retrieve the key by searching the list
 API_KEY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/secrets/ | \
+  https://ravi.id/api/secrets/ | \
   jq -r '.[] | select(.key == "OPENAI_API_KEY") | .value')
 
 curl -H "Authorization: Bearer $API_KEY" https://api.openai.com/v1/...
 
 # List all available key names
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/secrets/ | jq -r '.[].key'
+  https://ravi.id/api/secrets/ | jq -r '.[].key'
 ```
 
 ### Store multiple service keys
@@ -106,7 +106,7 @@ for item in \
   curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
     -H "Content-Type: application/json" \
     -d "$item" \
-    https://ravi.app/api/secrets/ | jq -r '.key'
+    https://ravi.id/api/secrets/ | jq -r '.key'
 done
 ```
 

@@ -19,40 +19,40 @@ All password endpoints use the identity key:
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"domain": "example.com"}' \
-  https://ravi.app/api/passwords/ | jq
+  https://ravi.id/api/passwords/ | jq
 
 # Create with username and password
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"domain": "example.com", "username": "me@example.com", "password": "S3cret!"}' \
-  https://ravi.app/api/passwords/ | jq
+  https://ravi.id/api/passwords/ | jq
 
 # List all entries
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/ | jq
+  https://ravi.id/api/passwords/ | jq
 
 # Retrieve a specific entry by UUID
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/<uuid>/ | jq
+  https://ravi.id/api/passwords/<uuid>/ | jq
 
 # Update an entry
 curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"password": "NewPass!"}' \
-  https://ravi.app/api/passwords/<uuid>/ | jq
+  https://ravi.id/api/passwords/<uuid>/ | jq
 
 # Delete an entry
 curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/<uuid>/
+  https://ravi.id/api/passwords/<uuid>/
 
 # Generate a password without storing it
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/generate-password/ | jq
+  https://ravi.id/api/passwords/generate-password/ | jq
 # → {"password": "xK9#mL2..."}
 
 # Generate with options
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/passwords/generate-password/?length=24" | jq
+  "https://ravi.id/api/passwords/generate-password/?length=24" | jq
 ```
 
 **Create body fields:** `domain` (required), `username`, `password`, `notes`
@@ -94,7 +94,7 @@ If `password` is omitted, the server auto-generates a strong password.
 CREDS=$(curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"domain": "example.com", "username": "me@example.com"}' \
-  https://ravi.app/api/passwords/ | jq)
+  https://ravi.id/api/passwords/ | jq)
 
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $PASSWORD in the signup form
@@ -105,13 +105,13 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 ```bash
 # Find entry by domain
 ENTRY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
+  https://ravi.id/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
 
 UUID=$(echo "$ENTRY" | jq -r '.uuid')
 
 # Get full credentials including password
 CREDS=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/passwords/$UUID/" | jq)
+  "https://ravi.id/api/passwords/$UUID/" | jq)
 
 USERNAME=$(echo "$CREDS" | jq -r '.username')
 PASSWORD=$(echo "$CREDS" | jq -r '.password')

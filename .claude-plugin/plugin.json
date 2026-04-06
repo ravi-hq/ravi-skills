@@ -1,7 +1,7 @@
 {
   "name": "ravi",
-  "description": "Ravi CLI — identity, email, phone, and credentials for AI agents",
-  "version": "1.7.1",
+  "description": "Ravi — identity, email, phone, and credentials for AI agents",
+  "version": "2.0.0",
   "author": { "name": "Ravi" },
   "repository": "https://github.com/ravi-hq/ravi-skills",
   "license": "MIT"

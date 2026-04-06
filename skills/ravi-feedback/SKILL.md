@@ -14,13 +14,13 @@ Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"message": "The secrets API is great but needs batch import"}' \
-  https://ravi.app/api/feedback/ | jq
+  https://ravi.id/api/feedback/ | jq
 
 # With a custom subject
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"message": "SMS delivery is slow in EU regions", "subject": "SMS latency issue"}' \
-  https://ravi.app/api/feedback/ | jq
+  https://ravi.id/api/feedback/ | jq
 ```
 
 ## When to Use

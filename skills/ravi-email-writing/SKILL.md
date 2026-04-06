@@ -51,7 +51,7 @@ Or this:<br><br>Using br chains<br><br>instead of paragraphs
 - Use `<a href="...">descriptive text</a>` for links — never bare URLs
 - No `<html>`, `<head>`, or `<body>` wrapper tags — the email system adds these
 - No `<br>` chains — use separate `<p>` tags instead
-- Get the identity name with: `curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" https://ravi.app/api/identities/ | jq -r '.[0].name'`
+- Get the identity name with: `curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" https://ravi.id/api/identities/ | jq -r '.[0].name'`
 
 ## Recommended Template
 
@@ -59,7 +59,7 @@ Copy-paste starting point for most emails:
 
 ```bash
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].name')
+  https://ravi.id/api/identities/ | jq -r '.[0].name')
 
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
@@ -68,7 +68,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
     \"subject\": \"Specific subject under 60 chars\",
     \"body\": \"<p>Hi Alex,</p><p>I'm reaching out about [specific topic]. [One sentence of context.]</p><p>[Core message — what you need, what you're sharing, or what you're asking.]</p><ul><li>[Key point or action item]</li><li>[Key point or action item]</li></ul><p>[Clear next step — what should the recipient do?]</p><p>Best,<br>$NAME</p>\"
   }" \
-  https://ravi.app/api/email-messages/compose/ | jq
+  https://ravi.id/api/email-messages/compose/ | jq
 ```
 
 ## Tone and Style

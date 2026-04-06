@@ -21,11 +21,11 @@ If you don't have these, see the **ravi-login** skill for the device code onboar
 ```bash
 # List your identities (includes email, phone, name)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq
+  https://ravi.id/api/identities/ | jq
 
 # Get a specific identity by UUID
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/<uuid>/ | jq
+  https://ravi.id/api/identities/<uuid>/ | jq
 ```
 
 **Response shape:**
@@ -33,7 +33,7 @@ curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
 [{
   "uuid": "...",
   "name": "Sarah Johnson",
-  "email": "sarah.johnson472@ravi.app",
+  "email": "sarah.johnson472@ravi.id",
   "phone_number": "+15551234567",
   "created_dt": "2026-02-25T10:30:00Z"
 }]
@@ -43,15 +43,15 @@ Extract specific fields:
 ```bash
 # Your email address (use this for signups)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].email'
+  https://ravi.id/api/identities/ | jq -r '.[0].email'
 
 # Your phone number (use this for SMS verification)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].phone_number'
+  https://ravi.id/api/identities/ | jq -r '.[0].phone_number'
 
 # Your identity name (use this for form fields, email signatures)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/identities/ | jq -r '.[0].name'
+  https://ravi.id/api/identities/ | jq -r '.[0].name'
 ```
 
 ## Creating a New Identity
@@ -63,27 +63,27 @@ Only create a new identity when the user explicitly asks for one (e.g., for a se
 curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
   -d '{}' \
-  https://ravi.app/api/identities/ | jq
-# → name: "Sarah Johnson", email: "sarah.johnson472@ravi.app"
+  https://ravi.id/api/identities/ | jq
+# → name: "Sarah Johnson", email: "sarah.johnson472@ravi.id"
 
 # Custom name, auto-generated email
 curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "Shopping Agent"}' \
-  https://ravi.app/api/identities/ | jq
+  https://ravi.id/api/identities/ | jq
 
 # Custom email local part
 curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "Work Agent", "email_local": "shopping"}' \
-  https://ravi.app/api/identities/ | jq
+  https://ravi.id/api/identities/ | jq
 
 # List available domains
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.app/api/domains/ | jq
+  https://ravi.id/api/domains/ | jq
 ```
 
-When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@ravi.app`.
+When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@ravi.id`.
 
 **Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens, must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`). Returns HTTP 409 if the email address is already taken.
 
@@ -96,13 +96,13 @@ Each identity has its own identity key. To list and manage identity keys:
 ```bash
 # List identity keys
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/auth/keys/identity/ | jq
+  https://ravi.id/api/auth/keys/identity/ | jq
 
 # Create a new identity key
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "my-agent-key"}' \
-  https://ravi.app/api/auth/keys/identity/ | jq
+  https://ravi.id/api/auth/keys/identity/ | jq
 ```
 
 ## Important Notes

@@ -20,59 +20,59 @@ All contacts endpoints use the identity key:
 ```bash
 # List all contacts
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/contacts/ | jq
+  https://ravi.id/api/contacts/ | jq
 
 # Fuzzy search contacts by name or email (phone is not fuzzy-searched)
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/contacts/search/?q=alice" | jq
+  "https://ravi.id/api/contacts/search/?q=alice" | jq
 
 # Find contact by exact email
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/contacts/find/?email=alice@example.com" | jq
+  "https://ravi.id/api/contacts/find/?email=alice@example.com" | jq
 
 # Get a single contact
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/contacts/<uuid>/ | jq
+  https://ravi.id/api/contacts/<uuid>/ | jq
 
 # Create a contact
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"email": "alice@example.com", "display_name": "Alice Smith"}' \
-  https://ravi.app/api/contacts/ | jq
+  https://ravi.id/api/contacts/ | jq
 
 # Create with phone and nickname
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"phone_number": "+15551234567", "nickname": "alice"}' \
-  https://ravi.app/api/contacts/ | jq
+  https://ravi.id/api/contacts/ | jq
 
 # Create a full contact
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"email": "bob@corp.com", "phone_number": "+15559876543", "display_name": "Bob Jones", "nickname": "bob"}' \
-  https://ravi.app/api/contacts/ | jq
+  https://ravi.id/api/contacts/ | jq
 
 # Create a trusted contact
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"email": "alice@example.com", "display_name": "Alice", "is_trusted": true}' \
-  https://ravi.app/api/contacts/ | jq
+  https://ravi.id/api/contacts/ | jq
 
 # Mark existing contact as trusted
 curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"is_trusted": true}' \
-  https://ravi.app/api/contacts/<uuid>/ | jq
+  https://ravi.id/api/contacts/<uuid>/ | jq
 
 # Update a contact
 curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{"nickname": "ally"}' \
-  https://ravi.app/api/contacts/<uuid>/ | jq
+  https://ravi.id/api/contacts/<uuid>/ | jq
 
 # Delete a contact
 curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/contacts/<uuid>/
+  https://ravi.id/api/contacts/<uuid>/
 ```
 
 **Create/update body fields:** `email`, `phone_number`, `display_name`, `nickname`, `is_trusted`
@@ -121,7 +121,7 @@ When the user asks to email or text someone by name (e.g. "email Alice" or "text
 ```bash
 # Step 1: Search by name
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/contacts/search/?q=Alice" | jq
+  "https://ravi.id/api/contacts/search/?q=Alice" | jq
 
 # Step 2: If one match → use the email/phone from the result
 # Step 3: If multiple matches → confirm with the user which one they mean

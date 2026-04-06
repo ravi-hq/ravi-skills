@@ -17,16 +17,16 @@ All inbox endpoints use the identity key:
 ```bash
 # List SMS conversations (grouped by sender)
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/sms-inbox/ | jq
+  https://ravi.id/api/sms-inbox/ | jq
 
 # Only conversations with unread messages
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/?unread=true" | jq
+  "https://ravi.id/api/sms-inbox/?unread=true" | jq
 
 # View a specific conversation (all messages)
 # conversation_id format: {phone_id}_{from_number}, e.g. "1_+15559876543"
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/1_+15559876543/" | jq
+  "https://ravi.id/api/sms-inbox/1_+15559876543/" | jq
 ```
 
 **JSON shape — conversation list:**
@@ -58,15 +58,15 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 ```bash
 # List email threads
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/email-inbox/ | jq
+  https://ravi.id/api/email-inbox/ | jq
 
 # Only threads with unread messages
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/?unread=true" | jq
+  "https://ravi.id/api/email-inbox/?unread=true" | jq
 
 # View a specific thread (all messages with full content)
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/email-inbox/<thread_id>/ | jq
+  https://ravi.id/api/email-inbox/<thread_id>/ | jq
 ```
 
 **JSON shape — thread detail:**
@@ -96,27 +96,27 @@ Use these when you need messages by ID rather than by conversation:
 ```bash
 # All SMS messages
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/messages/sms/ | jq
+  https://ravi.id/api/messages/sms/ | jq
 
 # Unread SMS only
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/messages/sms/?unread=true" | jq
+  "https://ravi.id/api/messages/sms/?unread=true" | jq
 
 # Specific SMS message
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/messages/sms/<message_id>/ | jq
+  https://ravi.id/api/messages/sms/<message_id>/ | jq
 
 # All email messages
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/messages/email/ | jq
+  https://ravi.id/api/messages/email/ | jq
 
 # Unread email only
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/messages/email/?unread=true" | jq
+  "https://ravi.id/api/messages/email/?unread=true" | jq
 
 # Specific email message
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.app/api/messages/email/<message_id>/ | jq
+  https://ravi.id/api/messages/email/<message_id>/ | jq
 ```
 
 ## Quick Recipes
@@ -125,7 +125,7 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ```bash
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/sms-inbox/?unread=true" | \
+  "https://ravi.id/api/sms-inbox/?unread=true" | \
   jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
 ```
 
@@ -133,10 +133,10 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ```bash
 THREAD_ID=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')
+  "https://ravi.id/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')
 
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.app/api/email-inbox/$THREAD_ID/" | \
+  "https://ravi.id/api/email-inbox/$THREAD_ID/" | \
   jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
 ```
 
