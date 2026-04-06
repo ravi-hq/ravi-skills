@@ -7,6 +7,19 @@ description: Send feedback to the Ravi team — bugs, feature requests, praise, 
 
 Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
+## Prerequisites
+
+Load your API keys before making requests:
+
+```bash
+# Read identity key (for most operations)
+RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
+```
+
+If keys are missing, use the **ravi-login** skill to onboard.
+
 ## Send Feedback
 
 ```bash
@@ -39,7 +52,7 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires identity key** — `RAVI_ID_KEY` must be set
+- **Requires identity key** — load from `.ravi/config.json` or `~/.ravi/auth.json`
 - **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills

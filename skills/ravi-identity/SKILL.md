@@ -9,12 +9,19 @@ You have access to Ravi, an identity provider that gives you your own phone numb
 
 ## Prerequisites
 
-You need API keys in your environment:
+Load your API keys before making requests:
 
-- `RAVI_MGMT_KEY` — management key (`ravi_mgmt_...`) for account-level operations
-- `RAVI_ID_KEY` — identity key (`ravi_id_...`) for identity-scoped operations
+```bash
+# Read identity key (for most operations)
+RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.identity_key // empty')
+[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
 
-If you don't have these, see the **ravi-login** skill for the device code onboarding flow.
+# Read management key (for account operations — only needed by ravi-identity)
+RAVI_MGMT_KEY=$(cat ~/.ravi/auth.json 2>/dev/null | jq -r '.management_key // empty')
+```
+
+If keys are missing, use the **ravi-login** skill to onboard.
 
 ## Your Identity
 
@@ -87,7 +94,7 @@ When name is omitted, the server generates a realistic human name like "Sarah Jo
 
 **Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens, must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`). Returns HTTP 409 if the email address is already taken.
 
-The response includes `api_key` — a `ravi_id_...` key for this new identity. Store it as `RAVI_ID_KEY`.
+The response includes `api_key` — a `ravi_id_...` key for this new identity. Save it to `.ravi/config.json`.
 
 ## Identity Keys
 
@@ -109,7 +116,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 - **Identity name for forms** — use the identity name (`.[0].name`) for signup forms, not the account owner's name.
 - **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
-- **`RAVI_ID_KEY` is identity-scoped** — it gives access to one specific identity's inbox, vault, and contacts.
+- **Identity key is identity-scoped** — it gives access to one specific identity's inbox, vault, and contacts.
 
 ## Related Skills
 
