@@ -24,7 +24,7 @@ Users install via `clawdhub install <slug>`. Publishing happens automatically on
 
 **To publish a new version:**
 
-1. Bump the version in `.claude-plugin/plugin.json`
+1. Bump the patch version in `.claude-plugin/plugin.json`
 2. Push to `main`
 3. The workflow publishes all skills at the new version
 
