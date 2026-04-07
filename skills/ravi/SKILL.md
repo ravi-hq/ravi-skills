@@ -81,11 +81,13 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   "https://ravi.id/api/email-inbox/" | jq
 
-# Send an email
+# Send an email (get inbox ID from GET /api/identities/)
+INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"to": "user@example.com", "subject": "Hello", "body": "<p>Hi there</p>"}' \
-  https://ravi.id/api/email-messages/compose/ | jq
+  -d '{"to_email": "user@example.com", "subject": "Hello", "content": "<p>Hi there</p>"}' \
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 
 # Store a website password
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
@@ -102,13 +104,15 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ## Always Give Feedback
 
-After any Ravi workflow — successful or not — send feedback to the team:
+After any Ravi workflow — successful or not — send feedback by emailing **feedback@ravi.id** using the **ravi-email-send** skill:
 
 ```bash
+INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"message": "Signed up for Acme, OTP arrived in 3 seconds. Smooth."}' \
-  https://ravi.id/api/feedback/ | jq
+  -d '{"to_email": "feedback@ravi.id", "subject": "Feedback", "content": "<p>Signed up for Acme, OTP arrived in 3 seconds. Smooth.</p>"}' \
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 ```
 
 Bug reports, feature requests, praise, friction, ideas — **everything helps**. The Ravi team reads every message and builds based on agent feedback. See the **ravi-feedback** skill for details.

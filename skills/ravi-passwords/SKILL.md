@@ -79,9 +79,13 @@ If `password` is omitted, the server auto-generates a strong password.
 [
   {
     "uuid": "uuid",
+    "identity": 1,
     "domain": "example.com",
     "username": "me@example.com",
-    "created_dt": "2026-02-25T10:30:00Z"
+    "password": "S3cret!",
+    "notes": "",
+    "created_dt": "2026-02-25T10:30:00Z",
+    "updated_dt": "2026-02-25T10:30:00Z"
   }
 ]
 ```
@@ -90,11 +94,13 @@ If `password` is omitted, the server auto-generates a strong password.
 ```json
 {
   "uuid": "uuid",
+  "identity": 1,
   "domain": "example.com",
   "username": "me@example.com",
   "password": "S3cret!",
   "notes": "",
-  "created_dt": "2026-02-25T10:30:00Z"
+  "created_dt": "2026-02-25T10:30:00Z",
+  "updated_dt": "2026-02-25T10:30:00Z"
 }
 ```
 
@@ -134,7 +140,8 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 - **Server-side encryption is transparent** — you always see plaintext values.
 - **Domain cleaning** — pass the bare domain (e.g., `example.com`), not a full URL. The server normalizes it.
-- **Password in list response** — the list endpoint omits `password` for brevity. Use the detail endpoint (`GET /api/passwords/<uuid>/`) to retrieve the password.
+- **Auto-generate password** — if `password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
+- **Domain normalization** — the server strips subdomains (e.g. `app.example.com` becomes `example.com`). Pass the bare domain or a full URL — both work.
 
 
 ## Full API Reference

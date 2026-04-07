@@ -40,9 +40,10 @@ curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
 [{
   "uuid": "...",
   "name": "Sarah Johnson",
-  "email": "sarah.johnson472@ravi.id",
-  "phone_number": "+15551234567",
-  "created_dt": "2026-02-25T10:30:00Z"
+  "inbox": "sarah.johnson472@raviapp.com",
+  "phone": "+15551234567",
+  "created_dt": "2026-02-25T10:30:00Z",
+  "updated_dt": "2026-02-25T10:30:00Z"
 }]
 ```
 
@@ -50,11 +51,11 @@ Extract specific fields:
 ```bash
 # Your email address (use this for signups)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].email'
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox'
 
 # Your phone number (use this for SMS verification)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].phone_number'
+  https://ravi.id/api/identities/ | jq -r '.[0].phone'
 
 # Your identity name (use this for form fields, email signatures)
 curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
@@ -71,7 +72,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
   -d '{}' \
   https://ravi.id/api/identities/ | jq
-# → name: "Sarah Johnson", email: "sarah.johnson472@ravi.id"
+# → name: "Sarah Johnson", inbox: "sarah.johnson472@raviapp.com"
 
 # Custom name, auto-generated email
 curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
@@ -82,7 +83,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
 # Custom email local part
 curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"name": "Work Agent", "email_local": "shopping"}' \
+  -d '{"name": "Work Agent", "email": "shopping"}' \
   https://ravi.id/api/identities/ | jq
 
 # List available domains
@@ -90,7 +91,7 @@ curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   https://ravi.id/api/domains/ | jq
 ```
 
-When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@ravi.id`.
+When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@raviapp.com`.
 
 **Custom email rules:** 3-30 chars, lowercase alphanumeric + dots + hyphens, must start/end with letter or number, no consecutive dots (`..`) or hyphens (`--`). Returns HTTP 409 if the email address is already taken.
 
@@ -105,10 +106,10 @@ Each identity has its own identity key. To list and manage identity keys:
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   https://ravi.id/api/auth/keys/identity/ | jq
 
-# Create a new identity key
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
+# Create a new identity key (requires management key + identity_uuid)
+curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"name": "my-agent-key"}' \
+  -d '{"identity_uuid": "<uuid>", "label": "my-agent-key"}' \
   https://ravi.id/api/auth/keys/identity/ | jq
 ```
 

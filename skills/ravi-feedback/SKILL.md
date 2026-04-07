@@ -7,33 +7,31 @@ description: Send feedback to the Ravi team — bugs, feature requests, praise, 
 
 Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
-## Prerequisites
+## How to Send Feedback
 
-Load your API keys before making requests:
+Send feedback by emailing **feedback@ravi.id** using the **ravi-email-send** skill:
 
 ```bash
-# Read identity key (for most operations)
+# Load keys
 RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 [ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 [ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
 
-If keys are missing, use the **ravi-login** skill to onboard.
+RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
 
-## Send Feedback
+# Get inbox ID
+INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
 
-```bash
-# Quick feedback
+# Send feedback
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"message": "The secrets API is great but needs batch import"}' \
-  https://ravi.id/api/feedback/ | jq
-
-# With a custom subject
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "SMS delivery is slow in EU regions", "subject": "SMS latency issue"}' \
-  https://ravi.id/api/feedback/ | jq
+  -d '{
+    "to_email": "feedback@ravi.id",
+    "subject": "SMS latency issue",
+    "content": "<p>SMS delivery is slow in EU regions.</p>"
+  }' \
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 ```
 
 ## When to Use
@@ -59,3 +57,4 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 - **ravi** — Overview of all Ravi skills and when to use each one
 - **ravi-identity** — Get your identity details
+- **ravi-email-send** — Full email compose/reply/forward documentation

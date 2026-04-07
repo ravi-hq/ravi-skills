@@ -151,8 +151,8 @@ IDENTITY=$(curl -s -X POST -H "Authorization: Bearer $RAVI_MGMT_KEY" \
 RAVI_ID_KEY=$(echo "$IDENTITY" | jq -r '.api_key')
 ID_UUID=$(echo "$IDENTITY" | jq -r '.uuid')
 ID_NAME=$(echo "$IDENTITY" | jq -r '.name')
-EMAIL=$(echo "$IDENTITY" | jq -r '.email')
-PHONE=$(echo "$IDENTITY" | jq -r '.phone_number')
+EMAIL=$(echo "$IDENTITY" | jq -r '.inbox')
+PHONE=$(echo "$IDENTITY" | jq -r '.phone')
 
 echo "Identity created: $ID_NAME <$EMAIL> $PHONE"
 
@@ -176,9 +176,9 @@ RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty'
 
 # 1. Get your identity details
 EMAIL=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].email')
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
 PHONE=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].phone_number')
+  https://ravi.id/api/identities/ | jq -r '.[0].phone')
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   https://ravi.id/api/identities/ | jq -r '.[0].name')
 FIRST_NAME=$(echo "$NAME" | awk '{print $1}')
@@ -197,9 +197,9 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # 4. Wait for verification
 sleep 5
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/?unread=true" | jq   # Check for SMS OTP
+  "https://ravi.id/api/sms-inbox/?has_unread=true" | jq   # Check for SMS OTP
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/?unread=true" | jq  # Check for email verification
+  "https://ravi.id/api/email-inbox/?has_unread=true" | jq  # Check for email verification
 ```
 
 ## Your Name
@@ -250,7 +250,7 @@ RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty'
 # After triggering 2FA on a website:
 sleep 5
 CODE=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/?unread=true" | \
+  "https://ravi.id/api/sms-inbox/?has_unread=true" | \
   jq -r '.[0].preview' | grep -oE '[0-9]{4,8}' | head -1)
 # Use $CODE to complete the login
 ```
@@ -263,7 +263,7 @@ RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty'
 [ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
 
 THREAD_ID=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/?unread=true" | jq -r '.[0].thread_id')
+  "https://ravi.id/api/email-inbox/?has_unread=true" | jq -r '.[0].thread_id')
 
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   "https://ravi.id/api/email-inbox/$THREAD_ID/" | \

@@ -43,6 +43,10 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   "https://ravi.id/api/contacts/find/?email=alice@example.com" | jq
 
+# Find contact by exact phone number
+curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
+  "https://ravi.id/api/contacts/find/?phone_number=%2B15551234567" | jq
+
 # Get a single contact
 curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
   https://ravi.id/api/contacts/<uuid>/ | jq
@@ -97,6 +101,7 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 [
   {
     "uuid": "...",
+    "identity": 1,
     "email": "alice@example.com",
     "phone_number": "+15551234567",
     "display_name": "Alice Smith",
@@ -105,7 +110,8 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
     "source": "auto",
     "interaction_count": 5,
     "last_interaction_dt": "2026-03-01T14:00:00Z",
-    "created_dt": "2026-02-20T10:30:00Z"
+    "created_dt": "2026-02-20T10:30:00Z",
+    "updated_dt": "2026-02-28T09:15:00Z"
   }
 ]
 ```

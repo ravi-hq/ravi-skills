@@ -34,7 +34,7 @@ Good email hygiene improves deliverability, avoids spam filters, and gets respon
 
 ## HTML Body Structure
 
-The `body` field in the compose/reply/forward JSON request body accepts HTML. Always use semantic tags — never pass plain text.
+The `content` field in the compose/reply/forward JSON request body accepts HTML. Always use semantic tags — never pass plain text.
 
 **Note:** `subject` is only used with the compose endpoint. Reply and forward endpoints auto-derive the subject from the original message (prepending `Re:` or `Fwd:`).
 
@@ -78,14 +78,17 @@ Copy-paste starting point for most emails:
 NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
   https://ravi.id/api/identities/ | jq -r '.[0].name')
 
+INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
+
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d "{
-    \"to\": \"recipient@example.com\",
+    \"to_email\": \"recipient@example.com\",
     \"subject\": \"Specific subject under 60 chars\",
-    \"body\": \"<p>Hi Alex,</p><p>I'm reaching out about [specific topic]. [One sentence of context.]</p><p>[Core message — what you need, what you're sharing, or what you're asking.]</p><ul><li>[Key point or action item]</li><li>[Key point or action item]</li></ul><p>[Clear next step — what should the recipient do?]</p><p>Best,<br>$NAME</p>\"
+    \"content\": \"<p>Hi Alex,</p><p>I'm reaching out about [specific topic]. [One sentence of context.]</p><p>[Core message — what you need, what you're sharing, or what you're asking.]</p><ul><li>[Key point or action item]</li><li>[Key point or action item]</li></ul><p>[Clear next step — what should the recipient do?]</p><p>Best,<br>$NAME</p>\"
   }" \
-  https://ravi.id/api/email-messages/compose/ | jq
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 ```
 
 ## Tone and Style
@@ -114,7 +117,7 @@ These rules help your emails land in the inbox, not spam:
 
 | Mistake | Why it's bad | Do this instead |
 |---------|-------------|-----------------|
-| Plain text in `--body` | Renders as one blob, no formatting | Wrap everything in `<p>` tags |
+| Plain text in `content` | Renders as one blob, no formatting | Wrap everything in `<p>` tags |
 | `<br><br>` chains | Looks spammy, inconsistent spacing | Use separate `<p>` tags |
 | "Dear Sir/Madam" | Outdated, signals mass email | Use the recipient's name or "Hi there" |
 | Wall of text | Nobody reads long emails | Break into 2-3 short paragraphs |

@@ -43,34 +43,40 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ## Compose a new email
 
+The compose endpoint requires an `?inbox=ID` query parameter. Get the inbox ID from `GET /api/identities/` — it's returned in the response as `inbox`. Use the identity's inbox ID.
+
 ```bash
+# Get your inbox ID first
+INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
+  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
+
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "to": "recipient@example.com",
+    "to_email": "recipient@example.com",
     "subject": "Subject",
-    "body": "<p>HTML content</p>"
+    "content": "<p>HTML content</p>"
   }' \
-  https://ravi.id/api/email-messages/compose/ | jq
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 ```
 
 **Body fields:**
-- `to` (required): Recipient email address
+- `to_email` (required): Recipient email address
 - `subject` (required): Email subject line
-- `body` (required): Email body (HTML supported — use tags like `<p>`, `<h2>`, `<ul>` for formatting)
-- `cc`: CC recipients (comma-separated string)
-- `bcc`: BCC recipients (comma-separated string)
+- `content` (required): Email body (HTML supported — use tags like `<p>`, `<h2>`, `<ul>` for formatting)
+- `cc`: CC recipients (array of email strings)
+- `bcc`: BCC recipients (array of email strings)
 
 **Example with HTML formatting:**
 ```bash
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "to": "user@example.com",
+    "to_email": "user@example.com",
     "subject": "Monthly Report",
-    "body": "<h2>Monthly Report</h2><p>Key findings:</p><ul><li>Revenue up 15%</li><li>Churn down 3%</li></ul>"
+    "content": "<h2>Monthly Report</h2><p>Key findings:</p><ul><li>Revenue up 15%</li><li>Churn down 3%</li></ul>"
   }' \
-  https://ravi.id/api/email-messages/compose/ | jq
+  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
 ```
 
 ## Reply to an email
@@ -79,25 +85,25 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 # Reply to sender only
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"body": "<p>Reply content</p>"}' \
+  -d '{"content": "<p>Reply content</p>"}' \
   https://ravi.id/api/email-messages/<id>/reply/ | jq
 
 # Reply to all recipients (reply-all)
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"body": "<p>Reply content</p>"}' \
-  https://ravi.id/api/email-messages/<id>/reply/?reply_all=true | jq
+  -d '{"content": "<p>Reply content</p>"}' \
+  https://ravi.id/api/email-messages/<id>/reply-all/ | jq
 ```
 
 **Optional body fields:**
-- `cc`: CC recipients (comma-separated string)
-- `bcc`: BCC recipients (comma-separated string)
+- `cc`: CC recipients (array of email strings)
+- `bcc`: BCC recipients (array of email strings)
 
 **Example with CC:**
 ```bash
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"body": "<p>Adding the team.</p>", "cc": "team@example.com"}' \
+  -d '{"content": "<p>Adding the team.</p>", "cc": ["team@example.com"]}' \
   https://ravi.id/api/email-messages/<id>/reply/ | jq
 ```
 
@@ -107,17 +113,17 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "to": "recipient@example.com",
-    "body": "<p>FYI — see below.</p>"
+    "to_email": "recipient@example.com",
+    "content": "<p>FYI — see below.</p>"
   }' \
   https://ravi.id/api/email-messages/<id>/forward/ | jq
 ```
 
 **Body fields:**
-- `to` (required): Recipient email address
-- `body` (required): Email body (HTML supported)
-- `cc`: CC recipients (comma-separated string)
-- `bcc`: BCC recipients (comma-separated string)
+- `to_email` (required): Recipient email address
+- `content` (required): Email body (HTML supported)
+- `cc`: CC recipients (array of email strings)
+- `bcc`: BCC recipients (array of email strings)
 
 ## Rate Limits
 
@@ -133,7 +139,7 @@ On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` 
 
 ## Important Notes
 
-- **HTML email bodies** — the `body` field accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed. See **ravi-email-writing** for templates and anti-spam rules.
+- **HTML email bodies** — the `content` field accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed. See **ravi-email-writing** for templates and anti-spam rules.
 - **Subject for replies/forwards** — reply and forward endpoints auto-derive the subject from the original message (prepending `Re:` or `Fwd:`). No need to pass `subject`.
 
 

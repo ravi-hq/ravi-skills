@@ -66,6 +66,7 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 [
   {
     "uuid": "...",
+    "identity": 1,
     "key": "OPENAI_API_KEY",
     "value": "sk-abc123...",
     "notes": "",
@@ -79,6 +80,7 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 ```json
 {
   "uuid": "...",
+  "identity": 1,
   "key": "OPENAI_API_KEY",
   "value": "sk-abc123...",
   "notes": "",
@@ -127,6 +129,7 @@ done
 
 - **Server-side encryption is transparent** — you always see plaintext values.
 - **Keys must be unique per identity** — if you need to update an existing key, use PATCH on the UUID. Creating a duplicate key name will return a validation error.
+- **Keys are auto-uppercased** — keys are automatically uppercased by the server (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
 - **Keys are plaintext** — only values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
 
