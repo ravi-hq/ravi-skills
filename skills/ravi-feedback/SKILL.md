@@ -9,29 +9,10 @@ Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
 ## How to Send Feedback
 
-Send feedback by emailing **feedback@ravi.id** using the **ravi-email-send** skill:
+Send feedback by emailing **feedback@ravi.id** using the CLI:
 
 ```bash
-# Load keys
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-
-RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
-
-# Get inbox ID
-INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
-
-# Send feedback
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "to_email": "feedback@ravi.id",
-    "subject": "SMS latency issue",
-    "content": "<p>SMS delivery is slow in EU regions.</p>"
-  }' \
-  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
+ravi email compose --to "feedback@ravi.id" --subject "SMS latency issue" --body "<p>SMS delivery is slow in EU regions.</p>"
 ```
 
 ## When to Use
@@ -50,7 +31,7 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires identity key** — load from `.ravi/config.json` or `~/.ravi/config.json`
+- **Requires authentication** — run `ravi auth login` if not already onboarded
 - **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills

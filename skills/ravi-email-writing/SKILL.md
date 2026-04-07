@@ -7,21 +7,6 @@ description: Best practices for writing high-quality emails that look profession
 
 Write emails that look like they came from a real person — not an AI.
 
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read management key (needed for identity name lookups)
-RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
-# Read identity key (needed for sending)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
-
 Good email hygiene improves deliverability, avoids spam filters, and gets responses.
 
 ## Subject Lines
@@ -34,9 +19,9 @@ Good email hygiene improves deliverability, avoids spam filters, and gets respon
 
 ## HTML Body Structure
 
-The `content` field in the compose/reply/forward JSON request body accepts HTML. Always use semantic tags — never pass plain text.
+The `--body` argument in `ravi email compose` accepts HTML. Always use semantic tags — never pass plain text.
 
-**Note:** `subject` is only used with the compose endpoint. Reply and forward endpoints auto-derive the subject from the original message (prepending `Re:` or `Fwd:`).
+**Note:** `--subject` is only used with the compose command. Reply and forward commands auto-derive the subject from the original message (prepending `Re:` or `Fwd:`).
 
 **Do this:**
 ```html
@@ -68,27 +53,17 @@ Or this:<br><br>Using br chains<br><br>instead of paragraphs
 - Use `<a href="...">descriptive text</a>` for links — never bare URLs
 - No `<html>`, `<head>`, or `<body>` wrapper tags — the email system adds these
 - No `<br>` chains — use separate `<p>` tags instead
-- Get the identity name with: `curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" https://ravi.id/api/identities/ | jq -r '.[0].name'`
+- Get the identity name with: `ravi auth status`
 
 ## Recommended Template
 
 Copy-paste starting point for most emails:
 
 ```bash
-NAME=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].name')
-
-INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
-
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"to_email\": \"recipient@example.com\",
-    \"subject\": \"Specific subject under 60 chars\",
-    \"content\": \"<p>Hi Alex,</p><p>I'm reaching out about [specific topic]. [One sentence of context.]</p><p>[Core message — what you need, what you're sharing, or what you're asking.]</p><ul><li>[Key point or action item]</li><li>[Key point or action item]</li></ul><p>[Clear next step — what should the recipient do?]</p><p>Best,<br>$NAME</p>\"
-  }" \
-  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
+ravi email compose \
+  --to "recipient@example.com" \
+  --subject "Specific subject under 60 chars" \
+  --body "<p>Hi Alex,</p><p>I'm reaching out about [specific topic]. [One sentence of context.]</p><p>[Core message — what you need, what you're sharing, or what you're asking.]</p><ul><li>[Key point or action item]</li><li>[Key point or action item]</li></ul><p>[Clear next step — what should the recipient do?]</p><p>Best,<br>YOUR_NAME</p>"
 ```
 
 ## Tone and Style
@@ -117,7 +92,7 @@ These rules help your emails land in the inbox, not spam:
 
 | Mistake | Why it's bad | Do this instead |
 |---------|-------------|-----------------|
-| Plain text in `content` | Renders as one blob, no formatting | Wrap everything in `<p>` tags |
+| Plain text in `--body` | Renders as one blob, no formatting | Wrap everything in `<p>` tags |
 | `<br><br>` chains | Looks spammy, inconsistent spacing | Use separate `<p>` tags |
 | "Dear Sir/Madam" | Outdated, signals mass email | Use the recipient's name or "Hi there" |
 | Wall of text | Nobody reads long emails | Break into 2-3 short paragraphs |

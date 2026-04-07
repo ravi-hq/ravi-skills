@@ -10,93 +10,39 @@ description: Manage contacts associated with your identity — list, search, cre
 
 Manage contacts associated with your identity. Contacts store people you interact with — their email, phone, display name, and nickname.
 
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read identity key (for most operations)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
-
-All contacts endpoints use the identity key:
-```bash
--H "Authorization: Bearer $RAVI_ID_KEY"
-```
-
 ## Commands
 
 ```bash
 # List all contacts
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/contacts/ | jq
+ravi contacts list
 
 # Fuzzy search contacts by name or email (phone is not fuzzy-searched)
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/contacts/search/?q=alice" | jq
-
-# Find contact by exact email
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/contacts/find/?email=alice@example.com" | jq
-
-# Find contact by exact phone number
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/contacts/find/?phone_number=%2B15551234567" | jq
+ravi contacts search "alice"
 
 # Get a single contact
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/contacts/<uuid>/ | jq
+ravi contacts get <uuid>
 
 # Create a contact
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "alice@example.com", "display_name": "Alice Smith"}' \
-  https://ravi.id/api/contacts/ | jq
+ravi contacts create --email "alice@example.com" --display-name "Alice Smith"
 
 # Create with phone and nickname
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"phone_number": "+15551234567", "nickname": "alice"}' \
-  https://ravi.id/api/contacts/ | jq
+ravi contacts create --phone "+15551234567" --nickname "alice"
 
 # Create a full contact
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "bob@corp.com", "phone_number": "+15559876543", "display_name": "Bob Jones", "nickname": "bob"}' \
-  https://ravi.id/api/contacts/ | jq
-
-# Create a trusted contact
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "alice@example.com", "display_name": "Alice", "is_trusted": true}' \
-  https://ravi.id/api/contacts/ | jq
-
-# Mark existing contact as trusted
-curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"is_trusted": true}' \
-  https://ravi.id/api/contacts/<uuid>/ | jq
+ravi contacts create --email "bob@corp.com" --phone "+15559876543" --display-name "Bob Jones" --nickname "bob"
 
 # Update a contact
-curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"nickname": "ally"}' \
-  https://ravi.id/api/contacts/<uuid>/ | jq
+ravi contacts update <uuid> --nickname "ally"
 
 # Delete a contact
-curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/contacts/<uuid>/
+ravi contacts delete <uuid>
 ```
 
-**Create/update body fields:** `email`, `phone_number`, `display_name`, `nickname`, `is_trusted`
+**Create/update fields:** `--email`, `--phone`, `--display-name`, `--nickname`, `--is-trusted`
 
 ## JSON Shapes
 
-**`GET /api/contacts/`:**
+**`ravi contacts list`:**
 ```json
 [
   {
@@ -116,7 +62,7 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 ]
 ```
 
-**`GET /api/contacts/<uuid>/`:**
+**`ravi contacts get <uuid>`:**
 ```json
 {
   "uuid": "...",
@@ -139,8 +85,7 @@ When the user asks to email or text someone by name (e.g. "email Alice" or "text
 
 ```bash
 # Step 1: Search by name
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/contacts/search/?q=Alice" | jq
+ravi contacts search "Alice"
 
 # Step 2: If one match → use the email/phone from the result
 # Step 3: If multiple matches → confirm with the user which one they mean
@@ -152,8 +97,8 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 ## Key Concepts
 
 - **Auto-contacts** — Ravi automatically creates contacts from email and SMS interactions. When you send or receive a message, a contact is created or updated for the other party.
-- **Manual contacts** — You can also create contacts manually via the API.
-- **Trusted contacts** — Contacts marked with `"is_trusted": true` are classified as trusted senders. Emails from trusted contacts are routed to the `email_trusted` SSE channel, distinct from `email_owner` (your own emails) and `email_untrusted` (unknown senders). By default, contacts are not trusted.
+- **Manual contacts** — You can also create contacts manually via the CLI.
+- **Trusted contacts** — Contacts marked with `--is-trusted` are classified as trusted senders. Emails from trusted contacts are routed to the `email_trusted` SSE channel, distinct from `email_owner` (your own emails) and `email_untrusted` (unknown senders). By default, contacts are not trusted.
 - **`interaction_count`** — Tracks how many email/SMS interactions you have had with this contact. Auto-incremented by the system.
 - **`last_interaction_dt`** — Timestamp of the most recent email or SMS interaction with this contact. Updated automatically.
 
@@ -162,7 +107,6 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 - **Contacts are stored in plaintext** — do not store sensitive information in contact fields. Use **ravi-passwords** for credentials and **ravi-secrets** for API keys.
 - **Auto-contacts from interactions** — sending or receiving email/SMS automatically creates or updates contacts. You do not need to manually create contacts for people you interact with.
 - **Phone numbers in E.164 format** — always include the country code (e.g., `+15551234567`).
-
 
 ## Full API Reference
 

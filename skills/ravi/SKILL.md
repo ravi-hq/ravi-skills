@@ -5,40 +5,11 @@ description: Overview of Ravi and when to use each skill. Ravi gives AI agents r
 
 # Ravi — Identity Provider for AI Agents
 
-Ravi gives you (the agent) your own email address, phone number, and encrypted secret store via its REST API. One identity bundles all three into a coherent persona.
-
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read identity key (for most operations)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-
-# Read management key (for account operations — only needed by ravi-identity)
-RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
+Ravi gives you (the agent) your own email address, phone number, and encrypted secret store. One identity bundles all three into a coherent persona.
 
 ## Authentication
 
-All API requests require an API key header. Two key types:
-
-- **Management key** (`ravi_mgmt_...`): Account-level operations — create identities, list keys, manage account.
-  - Header: `Authorization: Bearer $RAVI_MGMT_KEY`
-
-- **Identity key** (`ravi_id_...`): Identity-scoped operations — read inbox, manage vault, send email.
-  - Header: `Authorization: Bearer $RAVI_ID_KEY`
-
-Both keys are stored in a single config file: `~/.ravi/config.json`
-To use a different identity in a specific project, override with `.ravi/config.json` in that directory.
-
-**Resolution order:**
-  1. `.ravi/config.json` in current working directory (override)
-  2. `~/.ravi/config.json` (global default)
+The CLI handles authentication automatically. Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically.
 
 ## When to Use Each Skill
 
@@ -49,11 +20,10 @@ To use a different identity in a specific project, override with `.ravi/config.j
 | Send an email, reply, or forward | **ravi-email-send** | Compose/reply/reply-all/forward, attachments, rate limits |
 | Write a professional email (content, formatting, anti-spam) | **ravi-email-writing** | Subject lines, HTML templates, tone guide, spam avoidance |
 | Sign up for a service, log in, or complete 2FA | **ravi-login** | End-to-end signup/login workflows with OTP handling, device code onboarding |
-| Store, retrieve, or generate website passwords | **ravi-passwords** | CRUD passwords via API |
-| Store or retrieve API keys and secrets | **ravi-secrets** | CRUD secrets via API |
+| Store, retrieve, or generate website passwords | **ravi-passwords** | CRUD passwords via CLI |
+| Store or retrieve API keys and secrets | **ravi-secrets** | CRUD secrets via CLI |
 | Look up someone's email/phone by name, or manage contacts | **ravi-contacts** | Search/list/get/create/update/delete contacts |
-| List available email domains | **ravi-identity** | `GET /api/domains/` |
-| Send feedback, report bugs, or request features | **ravi-feedback** | POST to feedback endpoint — the team reads every one |
+| Send feedback, report bugs, or request features | **ravi-feedback** | Email to feedback@ravi.id — the team reads every one |
 
 ## Common Workflows
 
@@ -62,44 +32,26 @@ To use a different identity in a specific project, override with `.ravi/config.j
 ## Quick Start
 
 ```bash
-# Load keys from config files first
-RAVI_MGMT_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.management_key // empty')
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
+# Onboard (one-time — human approves via browser)
+ravi auth login
 
 # Get your identity details
-curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq '.[0]'
-
-# List available email domains
-curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/domains/ | jq
+ravi get email
+ravi get phone
+ravi auth status
 
 # Read incoming messages
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/" | jq
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/" | jq
+ravi inbox sms
+ravi inbox email
 
-# Send an email (get inbox ID from GET /api/identities/)
-INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"to_email": "user@example.com", "subject": "Hello", "content": "<p>Hi there</p>"}' \
-  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
+# Send an email
+ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there</p>"
 
 # Store a website password
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"domain": "example.com"}' \
-  https://ravi.id/api/passwords/ | jq
+ravi passwords create example.com
 
 # Store an API key
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"key": "OPENAI_API_KEY", "value": "sk-..."}' \
-  https://ravi.id/api/secrets/ | jq
+ravi secrets set OPENAI_API_KEY "sk-..."
 ```
 
 ## Always Give Feedback
@@ -107,12 +59,7 @@ curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
 After any Ravi workflow — successful or not — send feedback by emailing **feedback@ravi.id** using the **ravi-email-send** skill:
 
 ```bash
-INBOX_ID=$(curl -s -H "Authorization: Bearer $RAVI_MGMT_KEY" \
-  https://ravi.id/api/identities/ | jq -r '.[0].inbox')
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"to_email": "feedback@ravi.id", "subject": "Feedback", "content": "<p>Signed up for Acme, OTP arrived in 3 seconds. Smooth.</p>"}' \
-  "https://ravi.id/api/email-messages/compose/?inbox=$INBOX_ID" | jq
+ravi email compose --to "feedback@ravi.id" --subject "Feedback" --body "<p>Signed up for Acme, OTP arrived in 3 seconds. Smooth.</p>"
 ```
 
 Bug reports, feature requests, praise, friction, ideas — **everything helps**. The Ravi team reads every message and builds based on agent feedback. See the **ravi-feedback** skill for details.
@@ -122,4 +69,3 @@ Bug reports, feature requests, praise, friction, ideas — **everything helps**.
 - **Check HTTP status codes** — 2xx is success, 4xx is a client error, 429 is a rate limit.
 - **Rate limits** — on 429, parse `retry_after_seconds` from the response and wait before retrying.
 - **Encryption** — Passwords and secrets are server-side encrypted. You send and receive plaintext.
-- **Pipe to `jq`** — use `| jq` or `| jq -r '.field'` to parse JSON responses.

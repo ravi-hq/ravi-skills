@@ -7,74 +7,38 @@ description: Store and retrieve website credentials — password manager for dom
 
 Store and retrieve passwords for services you sign up for. All credential fields (username, password, notes) are server-side encrypted — you send and receive plaintext.
 
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read identity key (for most operations)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
-
-All password endpoints use the identity key:
-```bash
--H "Authorization: Bearer $RAVI_ID_KEY"
-```
-
 ## Commands
 
 ```bash
 # Create entry (auto-generates password if password not given)
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"domain": "example.com"}' \
-  https://ravi.id/api/passwords/ | jq
+ravi passwords create example.com
 
 # Create with username and password
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"domain": "example.com", "username": "me@example.com", "password": "S3cret!"}' \
-  https://ravi.id/api/passwords/ | jq
+ravi passwords create example.com --username "me@example.com" --password "S3cret!"
 
 # List all entries
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/passwords/ | jq
+ravi passwords list
 
 # Retrieve a specific entry by UUID
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/passwords/<uuid>/ | jq
+ravi passwords get <uuid>
 
 # Update an entry
-curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"password": "NewPass!"}' \
-  https://ravi.id/api/passwords/<uuid>/ | jq
+ravi passwords update <uuid> --password "NewPass!"
 
 # Delete an entry
-curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/passwords/<uuid>/
+ravi passwords delete <uuid>
 
 # Generate a password without storing it
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/passwords/generate-password/ | jq
-# → {"password": "xK9#mL2..."}
-
-# Generate with options
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/passwords/generate-password/?length=24" | jq
+ravi passwords generate
 ```
 
-**Create body fields:** `domain` (required), `username`, `password`, `notes`
+**Create fields:** `domain` (required), `--username`, `--password`, `--notes`
 
-If `password` is omitted, the server auto-generates a strong password.
+If `--password` is omitted, the server auto-generates a strong password.
 
 ## JSON Shapes
 
-**`GET /api/passwords/`:**
+**`ravi passwords list`:**
 ```json
 [
   {
@@ -90,7 +54,7 @@ If `password` is omitted, the server auto-generates a strong password.
 ]
 ```
 
-**`GET /api/passwords/<uuid>/`:**
+**`ravi passwords get <uuid>`:**
 ```json
 {
   "uuid": "uuid",
@@ -110,11 +74,7 @@ If `password` is omitted, the server auto-generates a strong password.
 
 ```bash
 # Generate and store credentials during signup
-CREDS=$(curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"domain": "example.com", "username": "me@example.com"}' \
-  https://ravi.id/api/passwords/ | jq)
-
+CREDS=$(ravi passwords create example.com --username "me@example.com")
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $PASSWORD in the signup form
 ```
@@ -123,15 +83,11 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 ```bash
 # Find entry by domain
-ENTRY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/passwords/ | jq -r '.[] | select(.domain == "example.com")')
-
+ENTRY=$(ravi passwords list | jq -r '.[] | select(.domain == "example.com")')
 UUID=$(echo "$ENTRY" | jq -r '.uuid')
 
 # Get full credentials including password
-CREDS=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/passwords/$UUID/" | jq)
-
+CREDS=$(ravi passwords get "$UUID")
 USERNAME=$(echo "$CREDS" | jq -r '.username')
 PASSWORD=$(echo "$CREDS" | jq -r '.password')
 ```
@@ -140,9 +96,8 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 - **Server-side encryption is transparent** — you always see plaintext values.
 - **Domain cleaning** — pass the bare domain (e.g., `example.com`), not a full URL. The server normalizes it.
-- **Auto-generate password** — if `password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
+- **Auto-generate password** — if `--password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
 - **Domain normalization** — the server strips subdomains (e.g. `app.example.com` becomes `example.com`). Pass the bare domain or a full URL — both work.
-
 
 ## Full API Reference
 

@@ -7,39 +7,15 @@ description: Read incoming SMS or email messages — OTPs, verification codes, v
 
 Read SMS and email messages received at your Ravi identity. Use this after triggering verifications, 2FA, or when expecting incoming messages.
 
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read identity key (for most operations)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
-
-All inbox endpoints use the identity key:
-```bash
--H "Authorization: Bearer $RAVI_ID_KEY"
-```
-
 ## SMS (OTPs, verification codes)
 
 ```bash
 # List SMS conversations (grouped by sender)
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/sms-inbox/ | jq
-
-# Only conversations with unread messages
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/?has_unread=true" | jq
+ravi inbox sms
 
 # View a specific conversation (all messages)
 # conversation_id format: {phone_id}_{from_number}, e.g. "1_+15559876543"
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/1_+15559876543/" | jq
+ravi inbox sms "1_+15559876543"
 ```
 
 **JSON shape — conversation list:**
@@ -70,16 +46,10 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ```bash
 # List email threads
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/email-inbox/ | jq
-
-# Only threads with unread messages
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/?has_unread=true" | jq
+ravi inbox email
 
 # View a specific thread (all messages with full content)
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/email-inbox/<thread_id>/ | jq
+ravi inbox email <thread_id>
 ```
 
 **JSON shape — thread detail:**
@@ -102,62 +72,26 @@ curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
 }
 ```
 
-## Individual Messages (flat, not grouped)
-
-Use these when you need messages by ID rather than by conversation:
-
-```bash
-# All SMS messages
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/messages/ | jq
-
-# Unread SMS only
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/messages/?is_read=false" | jq
-
-# Specific SMS message
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/messages/<message_id>/ | jq
-
-# All email messages
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/email-messages/ | jq
-
-# Unread email only
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-messages/?is_read=false" | jq
-
-# Specific email message
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/email-messages/<message_id>/ | jq
-```
-
 ## Quick Recipes
 
 ### Extract an OTP code from SMS
 
 ```bash
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/sms-inbox/?has_unread=true" | \
-  jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
+ravi inbox sms | jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
 ```
 
 ### Extract a verification link from email
 
 ```bash
-THREAD_ID=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/?has_unread=true" | jq -r '.[0].thread_id')
+THREAD_ID=$(ravi inbox email | jq -r '.[0].thread_id')
 
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  "https://ravi.id/api/email-inbox/$THREAD_ID/" | \
-  jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
+ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
 ```
 
 ## Important Notes
 
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
-- **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use the contacts search endpoint to look up people you've interacted with.
-
+- **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use `ravi contacts search` to look up people you've interacted with.
 
 ## Full API Reference
 

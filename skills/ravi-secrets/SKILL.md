@@ -7,61 +7,25 @@ description: Store and retrieve key-value secrets — encrypted secret store for
 
 Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are server-side encrypted — you send and receive plaintext. Keys are stored in plaintext for lookup/filtering.
 
-## Prerequisites
-
-Load your API keys before making requests:
-
-```bash
-# Read identity key (for most operations)
-RAVI_ID_KEY=$(cat .ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && RAVI_ID_KEY=$(cat ~/.ravi/config.json 2>/dev/null | jq -r '.identity_key // empty')
-[ -z "$RAVI_ID_KEY" ] && echo "No identity key found. Run the ravi-login skill to onboard."
-```
-
-If keys are missing, use the **ravi-login** skill to onboard.
-
-All secrets endpoints use the identity key:
-```bash
--H "Authorization: Bearer $RAVI_ID_KEY"
-```
-
 ## Commands
 
 ```bash
-# Store a secret (creates new entry)
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
-  https://ravi.id/api/secrets/ | jq
-
-# With optional notes
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"key": "STRIPE_SECRET_KEY", "value": "sk_live_...", "notes": "Production key"}' \
-  https://ravi.id/api/secrets/ | jq
+# Store a secret
+ravi secrets set OPENAI_API_KEY "sk-abc123..."
 
 # List all secrets
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/secrets/ | jq
+ravi secrets list
 
-# Retrieve a secret by UUID
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/secrets/<uuid>/ | jq
-
-# Update a secret
-curl -s -X PATCH -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"value": "sk-new-value..."}' \
-  https://ravi.id/api/secrets/<uuid>/ | jq
+# Retrieve a secret by key name
+ravi secrets get OPENAI_API_KEY
 
 # Delete a secret by UUID
-curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/secrets/<uuid>/
+ravi secrets delete <uuid>
 ```
 
 ## JSON Shapes
 
-**`GET /api/secrets/`:**
+**`ravi secrets list`:**
 ```json
 [
   {
@@ -76,7 +40,7 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 ]
 ```
 
-**`GET /api/secrets/<uuid>/`:**
+**`ravi secrets get OPENAI_API_KEY`:**
 ```json
 {
   "uuid": "...",
@@ -95,43 +59,28 @@ curl -s -X DELETE -H "Authorization: Bearer $RAVI_ID_KEY" \
 
 ```bash
 # Store a key
-curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"key": "OPENAI_API_KEY", "value": "sk-abc123..."}' \
-  https://ravi.id/api/secrets/ | jq
+ravi secrets set OPENAI_API_KEY "sk-abc123..."
 
-# Retrieve the key by searching the list
-API_KEY=$(curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/secrets/ | \
-  jq -r '.[] | select(.key == "OPENAI_API_KEY") | .value')
-
-curl -H "Authorization: Bearer $API_KEY" https://api.openai.com/v1/...
+# Retrieve the key value
+API_KEY=$(ravi secrets get OPENAI_API_KEY | jq -r '.value')
 
 # List all available key names
-curl -s -H "Authorization: Bearer $RAVI_ID_KEY" \
-  https://ravi.id/api/secrets/ | jq -r '.[].key'
+ravi secrets list | jq -r '.[].key'
 ```
 
 ### Store multiple service keys
 
 ```bash
-for item in \
-  '{"key": "ANTHROPIC_API_KEY", "value": "sk-ant-..."}' \
-  '{"key": "GITHUB_TOKEN", "value": "ghp_..."}'; do
-  curl -s -X POST -H "Authorization: Bearer $RAVI_ID_KEY" \
-    -H "Content-Type: application/json" \
-    -d "$item" \
-    https://ravi.id/api/secrets/ | jq -r '.key'
-done
+ravi secrets set ANTHROPIC_API_KEY "sk-ant-..."
+ravi secrets set GITHUB_TOKEN "ghp_..."
 ```
 
 ## Important Notes
 
 - **Server-side encryption is transparent** — you always see plaintext values.
-- **Keys must be unique per identity** — if you need to update an existing key, use PATCH on the UUID. Creating a duplicate key name will return a validation error.
+- **Keys must be unique per identity** — if you need to update an existing key, use `ravi secrets set` again (it will upsert). Creating a duplicate key name will return a validation error.
 - **Keys are auto-uppercased** — keys are automatically uppercased by the server (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
 - **Keys are plaintext** — only values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
-
 
 ## Full API Reference
 
