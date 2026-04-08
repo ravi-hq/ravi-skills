@@ -156,4 +156,5 @@ For complete endpoint details, request/response schemas, and parameters: [Device
 - **ravi-email-writing** — Write professional emails that avoid spam filters
 - **ravi-passwords** — Store and retrieve website credentials after signup
 - **ravi-secrets** — Store API keys obtained during service registration
+- **ravi-sso** — Prove your Ravi identity to third-party services via short-lived tokens
 - **ravi-feedback** — Report login flow issues or suggest workflow improvements

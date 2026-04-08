@@ -1,13 +1,16 @@
 # Ravi — Agent Skills
 
-Teaches AI agents how to use Ravi for identity, email, phone, and encrypted credentials via curl and API keys.
+Teaches AI agents how to use Ravi for identity, email, phone, and encrypted credentials via the Ravi CLI.
 
 ## Prerequisites
 
-Get your API keys by completing the device code onboarding flow (see the `ravi-login` skill for details). You'll need:
+Install the Ravi CLI and authenticate once (see the `ravi-login` skill for details):
 
-- `RAVI_MGMT_KEY` — management API key (`ravi_mgmt_...`) for account operations
-- `RAVI_ID_KEY` — identity API key (`ravi_id_...`) for resource operations
+```bash
+ravi auth login
+```
+
+The CLI stores credentials in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
 
 ## Install
 
@@ -34,7 +37,7 @@ Skills are installed individually on ClawdHub:
 
 ```bash
 # Install all Ravi skills
-for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-secrets ravi-contacts ravi-feedback; do
+for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-secrets ravi-sso ravi-contacts ravi-feedback; do
   clawdhub install "$s"
 done
 ```
@@ -44,15 +47,16 @@ done
 | Skill | Description | Example |
 |-------|-------------|---------|
 | **ravi** | Overview — what Ravi is and when to use each skill | — |
-| **ravi-identity** | Get identity details, create identities, list domains | `curl -H "Authorization: Bearer $RAVI_MGMT_KEY" https://ravi.id/api/identities/` |
-| **ravi-inbox** | Read SMS and email — OTPs, verification links, incoming mail | `curl -H "Authorization: Bearer $RAVI_ID_KEY" https://ravi.id/api/email-inbox/` |
-| **ravi-email-send** | Compose, reply, forward with HTML and attachments | `curl -X POST ... https://ravi.id/api/email-messages/compose/` |
+| **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
+| **ravi-inbox** | Read SMS and email — OTPs, verification links, incoming mail | `ravi inbox email` |
+| **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |
 | **ravi-email-writing** | Email content quality — subject lines, HTML formatting, anti-spam | — |
-| **ravi-login** | Device code onboarding, signup/login workflows, 2FA, credential storage | `curl -X POST https://ravi.id/api/auth/device/` |
-| **ravi-passwords** | Website credentials (domain + username + password) | `curl -H "Authorization: Bearer $RAVI_ID_KEY" https://ravi.id/api/passwords/` |
-| **ravi-secrets** | Key-value secrets (API keys, env vars) | `curl -H "Authorization: Bearer $RAVI_ID_KEY" https://ravi.id/api/secrets/` |
-| **ravi-contacts** | Search and manage contacts | `curl -H "Authorization: Bearer $RAVI_ID_KEY" https://ravi.id/api/contacts/` |
-| **ravi-feedback** | Send feedback, bugs, or feature requests to the Ravi team | `curl -X POST ... https://ravi.id/api/feedback/` |
+| **ravi-login** | Device code onboarding, signup/login workflows, 2FA, credential storage | `ravi auth login` |
+| **ravi-passwords** | Website credentials (domain + username + password) | `ravi passwords list` |
+| **ravi-secrets** | Key-value secrets (API keys, env vars) | `ravi secrets list` |
+| **ravi-sso** | Prove identity to third-party services via short-lived tokens | `ravi sso token` |
+| **ravi-contacts** | Search and manage contacts | `ravi contacts search "alice"` |
+| **ravi-feedback** | Send feedback, bugs, or feature requests to the Ravi team | — |
 
 ## What is Ravi?
 

@@ -22,6 +22,7 @@ The CLI handles authentication automatically. Run `ravi auth login` to onboard â
 | Sign up for a service, log in, or complete 2FA | **ravi-login** | End-to-end signup/login workflows with OTP handling, device code onboarding |
 | Store, retrieve, or generate website passwords | **ravi-passwords** | CRUD passwords via CLI |
 | Store or retrieve API keys and secrets | **ravi-secrets** | CRUD secrets via CLI |
+| Prove my identity to a third-party service | **ravi-sso** | Short-lived rvt_... verification tokens |
 | Look up someone's email/phone by name, or manage contacts | **ravi-contacts** | Search/list/get/create/update/delete contacts |
 | Send feedback, report bugs, or request features | **ravi-feedback** | Email to feedback@ravi.id â€” the team reads every one |
 
