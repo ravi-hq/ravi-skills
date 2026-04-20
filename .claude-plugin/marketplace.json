@@ -7,6 +7,11 @@
       "name": "ravi",
       "source": "./",
       "description": "Ravi — identity, email, phone, and credentials for AI agents"
+    },
+    {
+      "name": "ravi-cc",
+      "source": "./plugins/ravi-cc",
+      "description": "ravi-cc daemon — reply to emails dispatched to Claude"
     }
   ]
 }
