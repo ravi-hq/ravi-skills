@@ -1,11 +1,11 @@
 ---
-name: ravi-cc-reply
-description: Reply to the email you were just dispatched to handle. Use this skill whenever you are running under the ravi-cc daemon (you'll see email headers `From:`, `To:`, `Subject:`, `Message-ID:` in your initial input) and the user has asked you to respond to that email. Do NOT use for composing new outbound emails — this is reply-only.
+name: ravix-reply
+description: Reply to the email you were just dispatched to handle. Use this skill whenever you are running under the ravix daemon (you'll see email headers `From:`, `To:`, `Subject:`, `Message-ID:` in your initial input) and the user has asked you to respond to that email. Do NOT use for composing new outbound emails — this is reply-only.
 ---
 
-# ravi-cc — Reply
+# ravix — Reply
 
-You are running inside the `ravi-cc` daemon. The daemon matched an incoming email and invoked you with the email contents as stdin. Your job is to do what the email asks, then send a reply to the sender summarizing what you did.
+You are running inside the `ravix` daemon. The daemon matched an incoming email and invoked you with the email contents as stdin. Your job is to do what the email asks, then send a reply to the sender summarizing what you did.
 
 ## Input shape
 
@@ -27,10 +27,10 @@ Message-ID: <CABx+y@mail.example.com>
 
 ## Send a reply
 
-Use the `ravi-cc email reply` command. HTML body, sender-only reply, subject auto-derived from the original:
+Use the `ravix email reply` command. HTML body, sender-only reply, subject auto-derived from the original:
 
 ```bash
-ravi-cc email reply '<CABx+y@mail.example.com>' --body '<p>Done — here are the revenue numbers you asked for:</p><ul><li>Q1: $1.2M</li><li>Q2: $1.5M</li></ul>'
+ravix email reply '<CABx+y@mail.example.com>' --body '<p>Done — here are the revenue numbers you asked for:</p><ul><li>Q1: $1.2M</li><li>Q2: $1.5M</li></ul>'
 ```
 
 **Flag reference:**
@@ -43,7 +43,7 @@ ravi-cc email reply '<CABx+y@mail.example.com>' --body '<p>Done — here are the
 
 1. Read the email from stdin. Pay attention to `Message-ID` (you'll need it) and the body (tells you what to do).
 2. Do the work requested — run commands, fetch data, create files in the workspace, whatever it asks.
-3. Send exactly one reply with `ravi-cc email reply` summarizing what you did and including any results the sender needs.
+3. Send exactly one reply with `ravix email reply` summarizing what you did and including any results the sender needs.
 
 ## Writing a good reply
 
@@ -69,19 +69,19 @@ Steps:
 2. Reply with the output:
 
 ```bash
-ravi-cc email reply '<CAJPXh3e_mFs@mail.example.com>' --body '<p>It is currently Mon Apr 20 05:45:00 UTC 2026.</p>'
+ravix email reply '<CAJPXh3e_mFs@mail.example.com>' --body '<p>It is currently Mon Apr 20 05:45:00 UTC 2026.</p>'
 ```
 
 ## When NOT to use this skill
 
-- You are not running under ravi-cc (no email headers in your initial input) → use other tools instead.
+- You are not running under ravix (no email headers in your initial input) → use other tools instead.
 - The user asks you to compose a new email to someone not in the incoming thread → this skill is reply-only; use a different tool.
 - The user asks you to reply to a different email than the one dispatched → stick to the thread you were invoked for.
 
-## Verifying you have `ravi-cc` available
+## Verifying you have `ravix` available
 
 ```bash
-ravi-cc --version
+ravix --version
 ```
 
-If this fails, the ravi-cc binary isn't on your PATH in this Claude session. Report that back in your reply (the daemon's log will also surface the issue).
+If this fails, the ravix binary isn't on your PATH in this Claude session. Report that back in your reply (the daemon's log will also surface the issue).

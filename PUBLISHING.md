@@ -64,25 +64,25 @@ skills/                       # skills for the `ravi` plugin (all of them)
 ├── ravi-email-send/
 ├── ...
 plugins/
-└── ravi-cc/                  # source root for the `ravi-cc` plugin
+└── ravix/                    # source root for the `ravix` plugin
     ├── .claude-plugin/
     │   └── plugin.json
     └── skills/
-        └── ravi-cc-reply/
+        └── ravix-reply/
 ```
 
 ### Why two plugins?
 
 Claude Code's install granularity is **plugin**, not skill. A plugin loads every skill under `<source>/skills/` — there's no way to subset. So if you want users to be able to install a single skill in isolation, it has to live in its own plugin directory with its own `source`.
 
-The `ravi-cc` plugin exists because the [ravi-cc daemon](https://github.com/ravi-hq/ravi-cc) only needs the reply skill. Installing the full `ravi` plugin there would drag in 10 unused skills.
+The `ravix` plugin exists because the [ravix daemon](https://github.com/ravi-hq/ravix) only needs the reply skill. Installing the full `ravi` plugin there would drag in 10 unused skills.
 
 ### Decision guide
 
 | Situation | Where it goes |
 |---|---|
 | New general-purpose skill for the `ravi` CLI (identity, inbox, passwords, etc.) | `skills/<name>/` — it's loaded by the `ravi` plugin automatically. |
-| Skill tightly scoped to a sibling product (like `ravi-cc`) that users install separately | New plugin under `plugins/<product>/`, add to `marketplace.json`. |
+| Skill tightly scoped to a sibling product (like `ravix`) that users install separately | New plugin under `plugins/<product>/`, add to `marketplace.json`. |
 | "Alternate bundle" of existing skills (e.g. a lightweight subset of `ravi`) | New plugin under `plugins/<bundle-name>/` with symlinks or copies of the desired skills. |
 
 ### Adding a new sub-plugin
