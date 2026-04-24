@@ -50,6 +50,27 @@ ravi identity create
 
 When name is omitted, the server generates a realistic human name like "Sarah Johnson". The auto-generated email uses the same name: `sarah.johnson472@raviapp.com`.
 
+### With a phone number
+
+By default, new identities are email-only. Pass `--provision-phone` to also
+provision a phone number in the same call:
+
+```bash
+ravi identity create --name "Project Name" --provision-phone --json
+# → {"uuid": "...", "name": "Project Name", "inbox": "...", "phone": "+15551234567", ...}
+```
+
+Notes:
+
+- Phone provisioning requires an active paid plan. Without one the call returns
+  HTTP 402 Payment Required — tell the user to upgrade.
+- Provisioning takes a few seconds (the server reserves a number from the
+  upstream provider). Don't retry on slow responses.
+- If you skipped `--provision-phone` and later need a phone for the same
+  identity, hit the API directly: `POST /api/identities/<uuid>/provision-phone/`
+  (no CLI subcommand yet). It returns 409 if the identity already has a phone.
+
+
 ## Switching Identities
 
 ```bash
