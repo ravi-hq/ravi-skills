@@ -24,7 +24,7 @@ Users install via `clawdhub install <slug>`. Publishing happens automatically on
 
 **To publish a new version:**
 
-1. Bump the version in `.claude-plugin/plugin.json`
+1. Bump the patch version in `.claude-plugin/plugin.json`
 2. Push to `main`
 3. The workflow publishes all skills at the new version
 
@@ -48,3 +48,53 @@ done
 - `.claude-plugin/plugin.json` is the single source of truth for version
 - Bump version before pushing changes that should be published to ClawdHub
 - skills.sh and Claude Code always serve the latest commit (no versioning needed)
+
+## Repository Layout: When to Add a Skill vs a New Plugin
+
+This repo ships **two Claude Code plugins** from one marketplace:
+
+```
+.claude-plugin/
+├── marketplace.json          # lists both plugins
+└── plugin.json               # plugin manifest for the `ravi` plugin
+skills/                       # skills for the `ravi` plugin (all of them)
+├── ravi/
+├── ravi-identity/
+├── ravi-inbox/
+├── ravi-email-send/
+├── ...
+plugins/
+└── ravix/                    # source root for the `ravix` plugin
+    ├── .claude-plugin/
+    │   └── plugin.json
+    └── skills/
+        └── ravix-reply/
+```
+
+### Why two plugins?
+
+Claude Code's install granularity is **plugin**, not skill. A plugin loads every skill under `<source>/skills/` — there's no way to subset. So if you want users to be able to install a single skill in isolation, it has to live in its own plugin directory with its own `source`.
+
+The `ravix` plugin exists because the [ravix daemon](https://github.com/ravi-hq/ravix) only needs the reply skill. Installing the full `ravi` plugin there would drag in 10 unused skills.
+
+### Decision guide
+
+| Situation | Where it goes |
+|---|---|
+| New general-purpose skill for the `ravi` CLI (identity, inbox, passwords, etc.) | `skills/<name>/` — it's loaded by the `ravi` plugin automatically. |
+| Skill tightly scoped to a sibling product (like `ravix`) that users install separately | New plugin under `plugins/<product>/`, add to `marketplace.json`. |
+| "Alternate bundle" of existing skills (e.g. a lightweight subset of `ravi`) | New plugin under `plugins/<bundle-name>/` with symlinks or copies of the desired skills. |
+
+### Adding a new sub-plugin
+
+1. Create `plugins/<name>/.claude-plugin/plugin.json` with `name`, `description`, `version`, etc.
+2. Create `plugins/<name>/skills/<skill>/SKILL.md` with the standard frontmatter (`name`, `description`).
+3. Add an entry to `.claude-plugin/marketplace.json`:
+   ```json
+   {
+     "name": "<name>",
+     "source": "./plugins/<name>",
+     "description": "..."
+   }
+   ```
+4. Users install with `/plugin install <name>@ravi-hq`. Existing marketplace installs need a refresh: `/plugin marketplace update ravi-hq`.

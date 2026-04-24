@@ -1,6 +1,6 @@
 ---
 name: ravi-inbox
-description: Read incoming SMS or email messages — OTPs, verification codes, verification links, incoming mail. Do NOT use for sending email (use ravi-email-send) or managing credentials (use ravi-passwords or ravi-vault).
+description: Read incoming SMS or email messages — OTPs, verification codes, verification links, incoming mail. Do NOT use for sending email (use ravi-email-send) or managing credentials (use ravi-passwords or ravi-secrets).
 ---
 
 # Ravi Inbox
@@ -11,14 +11,11 @@ Read SMS and email messages received at your Ravi identity. Use this after trigg
 
 ```bash
 # List SMS conversations (grouped by sender)
-ravi inbox sms --json
-
-# Only conversations with unread messages
-ravi inbox sms --unread --json
+ravi inbox sms
 
 # View a specific conversation (all messages)
-ravi inbox sms <conversation_id> --json
 # conversation_id format: {phone_id}_{from_number}, e.g. "1_+15559876543"
+ravi inbox sms "1_+15559876543"
 ```
 
 **JSON shape — conversation list:**
@@ -49,13 +46,10 @@ ravi inbox sms <conversation_id> --json
 
 ```bash
 # List email threads
-ravi inbox email --json
-
-# Only threads with unread messages
-ravi inbox email --unread --json
+ravi inbox email
 
 # View a specific thread (all messages with full content)
-ravi inbox email <thread_id> --json
+ravi inbox email <thread_id>
 ```
 
 **JSON shape — thread detail:**
@@ -67,7 +61,7 @@ ravi inbox email <thread_id> --json
     {
       "id": 10,
       "from_email": "noreply@example.com",
-      "to_email": "janedoe@ravi.app",
+      "to_email": "janedoe@example.com",
       "subject": "Verify your email",
       "text_content": "Click here to verify: https://example.com/verify?token=xyz",
       "direction": "incoming",
@@ -78,36 +72,35 @@ ravi inbox email <thread_id> --json
 }
 ```
 
-## Individual Messages (flat, not grouped)
-
-Use these when you need messages by ID rather than by conversation:
-
-```bash
-ravi message sms --json              # All SMS messages
-ravi message sms --unread --json     # Unread only
-ravi message sms <message_id> --json # Specific message
-
-ravi message email --json              # All email messages
-ravi message email --unread --json     # Unread only
-ravi message email <message_id> --json # Specific message
-```
-
 ## Quick Recipes
 
 ### Extract an OTP code from SMS
 
 ```bash
-ravi inbox sms --unread --json | jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
+ravi inbox sms | jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
 ```
 
 ### Extract a verification link from email
 
 ```bash
-THREAD_ID=$(ravi inbox email --unread --json | jq -r '.[0].thread_id')
-ravi inbox email "$THREAD_ID" --json | jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
+THREAD_ID=$(ravi inbox email | jq -r '.[0].thread_id')
+
+ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'https?://[^ ]+'
 ```
 
 ## Important Notes
 
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
-- **Always use `--json`** — human-readable output is not designed for parsing.
+- **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use `ravi contacts search` to look up people you've interacted with.
+
+## Full API Reference
+
+For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.id/docs/schema/inbox.json) | [Messages](https://ravi.id/docs/schema/messages.json)
+
+## Related Skills
+
+- **ravi-email-send** — Reply or forward emails you've read
+- **ravi-email-writing** — Write professional replies with proper formatting and tone
+- **ravi-contacts** — Look up a sender's name or details from their email/phone
+- **ravi-login** — End-to-end signup/login workflows that use inbox for OTP extraction
+- **ravi-feedback** — Report inbox delivery issues or suggest improvements
