@@ -66,10 +66,28 @@ Notes:
   HTTP 402 Payment Required — tell the user to upgrade.
 - Provisioning takes a few seconds (the server reserves a number from the
   upstream provider). Don't retry on slow responses.
-- If you skipped `--provision-phone` and later need a phone for the same
-  identity, hit the API directly: `POST /api/identities/<uuid>/provision-phone/`
-  (no CLI subcommand yet). It returns 409 if the identity already has a phone.
 
+### Adding a phone to an existing identity
+
+If an identity was created email-only (no `--provision-phone` at create time)
+and later needs a phone, use the `provision-phone` subcommand. Look up the
+identity's UUID with `ravi identity list` first.
+
+```bash
+ravi identity provision-phone <uuid> --json
+# → {"uuid": "...", "name": "...", "inbox": "...", "phone": "+15551234567", ...}
+
+# Non-US number:
+ravi identity provision-phone <uuid> --country-code CA --json
+```
+
+Error cases:
+
+- `already has a phone number` — the identity already has one. Use
+  `ravi identity list` to see the current phone, or create a new identity.
+- `Payment Required` / 402 — no active paid plan. Tell the user to upgrade.
+- `Phone provisioning unavailable` / 503 — upstream provider is down. Retry
+  later; don't loop on this.
 
 ## Switching Identities
 
