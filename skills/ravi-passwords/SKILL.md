@@ -5,7 +5,7 @@ description: Store and retrieve website credentials — password manager for dom
 
 # Ravi Passwords
 
-Store and retrieve passwords for services you sign up for. All credential fields (username, password, notes) are server-side encrypted — you send and receive plaintext.
+Store and retrieve passwords for services you sign up for. All credential fields (username, password, notes) are encrypted.
 
 ## Commands
 
@@ -94,7 +94,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 ## Important Notes
 
-- **Server-side encryption is transparent** — you always see plaintext values.
+- **Encryption** — credential fields are encrypted.
 - **Domain cleaning** — pass the bare domain (e.g., `example.com`), not a full URL. The server normalizes it.
 - **Auto-generate password** — if `--password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
 - **Domain normalization** — the server strips subdomains (e.g. `app.example.com` becomes `example.com`). Pass the bare domain or a full URL — both work.

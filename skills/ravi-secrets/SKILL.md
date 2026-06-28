@@ -5,7 +5,7 @@ description: Store and retrieve key-value secrets — encrypted secret store for
 
 # Ravi Secrets
 
-Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are server-side encrypted — you send and receive plaintext. Keys are stored in plaintext for lookup/filtering.
+Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are encrypted. Use descriptive key names for lookup and filtering.
 
 ## Commands
 
@@ -77,10 +77,10 @@ ravi secrets set GITHUB_TOKEN "ghp_..."
 
 ## Important Notes
 
-- **Server-side encryption is transparent** — you always see plaintext values.
+- **Encryption** — values and notes are encrypted.
 - **Keys must be unique per identity** — if you need to update an existing key, use `ravi secrets set` again (it will upsert). Creating a duplicate key name will return a validation error.
-- **Keys are auto-uppercased** — keys are automatically uppercased by the server (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
-- **Keys are plaintext** — only values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
+- **Keys are auto-uppercased** — keys are automatically uppercased (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
+- **Keys are for lookup** — values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
 ## Full API Reference
 

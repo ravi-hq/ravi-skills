@@ -69,4 +69,4 @@ Bug reports, feature requests, praise, friction, ideas — **everything helps**.
 
 - **Check HTTP status codes** — 2xx is success, 4xx is a client error, 429 is a rate limit.
 - **Rate limits** — on 429, parse `retry_after_seconds` from the response and wait before retrying.
-- **Encryption** — Passwords and secrets are server-side encrypted. You send and receive plaintext.
+- **Encryption** — Passwords and secrets are encrypted.

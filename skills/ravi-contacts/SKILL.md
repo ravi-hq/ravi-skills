@@ -104,7 +104,7 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 
 ## Important Notes
 
-- **Contacts are stored in plaintext** — do not store sensitive information in contact fields. Use **ravi-passwords** for credentials and **ravi-secrets** for API keys.
+- **Contacts are address-book data** — do not store sensitive information in contact fields. Use **ravi-passwords** for credentials and **ravi-secrets** for API keys.
 - **Auto-contacts from interactions** — sending or receiving email/SMS automatically creates or updates contacts. You do not need to manually create contacts for people you interact with.
 - **Phone numbers in E.164 format** — always include the country code (e.g., `+15551234567`).
 
