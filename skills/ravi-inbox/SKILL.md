@@ -1,13 +1,13 @@
 ---
 name: ravi-inbox
-description: Read incoming SMS or email messages — OTPs, verification codes, verification links, incoming mail. Do NOT use for sending email (use ravi-email-send) or managing credentials (use ravi-passwords or ravi-secrets).
+description: Read incoming SMS or email messages — verification codes, verification links, incoming mail. Do NOT use for sending email (use ravi-email-send) or managing credentials (use ravi-passwords or ravi-secrets).
 ---
 
 # Ravi Inbox
 
-Read SMS and email messages received at your Ravi identity. Use this after triggering verifications, 2FA, or when expecting incoming messages.
+Read SMS and email messages received at your Ravi identity. Use this after triggering a verification, or when expecting incoming messages — including the login/verification codes a service sends you.
 
-## SMS (OTPs, verification codes)
+## SMS (verification codes)
 
 ```bash
 # List SMS conversations (grouped by sender)
@@ -19,6 +19,7 @@ ravi inbox sms "1_+15559876543"
 ```
 
 **JSON shape — conversation list:**
+
 ```json
 [{
   "conversation_id": "1_+15559876543",
@@ -32,6 +33,7 @@ ravi inbox sms "1_+15559876543"
 ```
 
 **JSON shape — conversation detail:**
+
 ```json
 {
   "conversation_id": "1_+15559876543",
@@ -53,6 +55,7 @@ ravi inbox email <thread_id>
 ```
 
 **JSON shape — thread detail:**
+
 ```json
 {
   "thread_id": "abc123",
@@ -74,7 +77,7 @@ ravi inbox email <thread_id>
 
 ## Quick Recipes
 
-### Extract an OTP code from SMS
+### Extract a verification code from SMS
 
 ```bash
 ravi inbox sms | jq -r '.[].preview' | grep -oE '[0-9]{4,8}'
@@ -102,5 +105,5 @@ For complete endpoint details, request/response schemas, and parameters: [Inbox]
 - **ravi-email-send** — Reply or forward emails you've read
 - **ravi-email-writing** — Write professional replies with proper formatting and tone
 - **ravi-contacts** — Look up a sender's name or details from their email/phone
-- **ravi-login** — End-to-end signup/login workflows that use inbox for OTP extraction
+- **ravi-login** — End-to-end signup/login workflows that read verification codes from the inbox
 - **ravi-feedback** — Report inbox delivery issues or suggest improvements

@@ -48,10 +48,10 @@ done
 |-------|-------------|---------|
 | **ravi** | Overview — what Ravi is and when to use each skill | — |
 | **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
-| **ravi-inbox** | Read SMS and email — OTPs, verification links, incoming mail | `ravi inbox email` |
+| **ravi-inbox** | Read SMS and email — verification codes, links, incoming mail | `ravi inbox email` |
 | **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |
 | **ravi-email-writing** | Email content quality — subject lines, HTML formatting, anti-spam | — |
-| **ravi-login** | Device code onboarding, signup/login workflows, 2FA, credential storage | `ravi auth login` |
+| **ravi-login** | Device code onboarding, signup/login workflows, verification codes, credential storage | `ravi auth login` |
 | **ravi-passwords** | Website credentials (domain + username + password) | `ravi passwords list` |
 | **ravi-secrets** | Key-value secrets (API keys, env vars) | `ravi secrets list` |
 | **ravi-sso** | Prove identity to third-party services via short-lived tokens | `ravi sso token` |

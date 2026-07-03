@@ -1,11 +1,11 @@
 ---
 name: ravi-login
-description: Sign up for and log into services using your Ravi identity — handles onboarding, forms, 2FA, OTPs, and credential storage. Do NOT use for standalone inbox reading (use ravi-inbox) or email sending (use ravi-email-send).
+description: Sign up for and log into services using your Ravi identity — handles onboarding, forms, verification codes read from SMS/email, and credential storage. Do NOT use for standalone inbox reading (use ravi-inbox) or email sending (use ravi-email-send).
 ---
 
 # Ravi Login
 
-End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification using your Ravi identity.
+End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification by reading the code the service sends to your identity's SMS or email.
 
 ## Step 0: Check Auth Status
 
@@ -28,6 +28,7 @@ ravi auth login
 ```
 
 The CLI will:
+
 1. Initiate a device code flow
 2. Display a URL and code for the human to visit
 3. Poll until the human approves
@@ -88,7 +89,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 # 4. Wait for verification
 sleep 5
-ravi inbox sms    # Check for SMS OTP
+ravi inbox sms    # Check for an SMS verification code
 ravi inbox email  # Check for email verification
 ```
 
@@ -119,10 +120,14 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 # Use $USERNAME and $PASSWORD to log in
 ```
 
-## Complete 2FA / OTP
+## Complete a verification-code challenge
+
+When a service texts or emails you a login/verification code, read it from your
+identity's inbox and submit it. Ravi does not generate codes — it receives the
+one the service sends.
 
 ```bash
-# After triggering 2FA on a website:
+# After the service says it sent a code to your number:
 sleep 5
 CODE=$(ravi inbox sms | jq -r '.[].preview' | grep -oE '[0-9]{4,8}' | head -1)
 # Use $CODE to complete the login
@@ -151,7 +156,7 @@ For complete endpoint details, request/response schemas, and parameters: [Device
 ## Related Skills
 
 - **ravi-identity** — Get your email, phone, and identity name for form fields
-- **ravi-inbox** — Read OTPs, verification codes, and confirmation emails
+- **ravi-inbox** — Read verification codes and confirmation emails
 - **ravi-email-send** — Send emails during workflows (support requests, confirmations)
 - **ravi-email-writing** — Write professional emails that avoid spam filters
 - **ravi-passwords** — Store and retrieve website credentials after signup

@@ -16,15 +16,15 @@ The CLI handles authentication automatically. Run `ravi auth login` to onboard �
 | I need to... | Use skill | What you get |
 |--------------|-----------|--------------|
 | Get my identity details (email, phone, name) | **ravi-identity** | Identity info, create/list identities |
-| Read incoming SMS or email (OTPs, verification links) | **ravi-inbox** | Email threads, SMS conversations, OTP extraction |
+| Read incoming SMS or email (verification codes, links) | **ravi-inbox** | Email threads, SMS conversations, verification-code extraction |
 | Send an email, reply, or forward | **ravi-email-send** | Compose/reply/reply-all/forward, attachments, rate limits |
 | Write a professional email (content, formatting, anti-spam) | **ravi-email-writing** | Subject lines, HTML templates, tone guide, spam avoidance |
-| Sign up for a service, log in, or complete 2FA | **ravi-login** | End-to-end signup/login workflows with OTP handling, device code onboarding |
+| Sign up for a service, log in, or complete a verification-code challenge | **ravi-login** | End-to-end signup/login workflows that read verification codes, device code onboarding |
 | Store, retrieve, or generate website passwords | **ravi-passwords** | CRUD passwords via CLI |
 | Store or retrieve API keys and secrets | **ravi-secrets** | CRUD secrets via CLI |
 | Prove my identity to a third-party service | **ravi-sso** | Short-lived rvt_... verification tokens |
 | Look up someone's email/phone by name, or manage contacts | **ravi-contacts** | Search/list/get/create/update/delete contacts |
-| Send feedback, report bugs, or request features | **ravi-feedback** | Email to feedback@ravi.id — the team reads every one |
+| Send feedback, report bugs, or request features | **ravi-feedback** | Email to <feedback@ravi.id> — the team reads every one |
 
 ## Common Workflows
 
@@ -48,6 +48,12 @@ ravi inbox email
 # Send an email
 ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there</p>"
 
+# Send an SMS from your identity's phone number
+ravi sms send --to "+15551234567" --body "On my way"
+
+# Place a voice call from your identity's number
+ravi call "+15551234567"
+
 # Store a website password
 ravi passwords create example.com
 
@@ -55,12 +61,16 @@ ravi passwords create example.com
 ravi secrets set OPENAI_API_KEY "sk-..."
 ```
 
+Every per-identity command (inbox, email, sms, call, passwords, secrets,
+contacts) targets the identity your key is bound to. With a management key,
+add `--identity <uuid>` to pick which identity to act as.
+
 ## Always Give Feedback
 
-After any Ravi workflow — successful or not — send feedback by emailing **feedback@ravi.id** using the **ravi-email-send** skill:
+After any Ravi workflow — successful or not — send feedback by emailing **<feedback@ravi.id>** using the **ravi-email-send** skill:
 
 ```bash
-ravi email compose --to "feedback@ravi.id" --subject "Feedback" --body "<p>Signed up for Acme, OTP arrived in 3 seconds. Smooth.</p>"
+ravi email compose --to "feedback@ravi.id" --subject "Feedback" --body "<p>Signed up for Acme, the verification code arrived in 3 seconds. Smooth.</p>"
 ```
 
 Bug reports, feature requests, praise, friction, ideas — **everything helps**. The Ravi team reads every message and builds based on agent feedback. See the **ravi-feedback** skill for details.

@@ -27,6 +27,7 @@ ravi identity list
 ```
 
 **Response shape (identity list):**
+
 ```json
 [{
   "uuid": "...",
@@ -70,7 +71,6 @@ Notes:
   identity, hit the API directly: `POST /api/identities/<uuid>/provision-phone/`
   (no CLI subcommand yet). It returns 409 if the identity already has a phone.
 
-
 ## Switching Identities
 
 ```bash
@@ -96,5 +96,5 @@ For complete endpoint details, request/response schemas, and parameters: [Identi
 - **ravi-contacts** — Look up or manage contacts associated with this identity
 - **ravi-passwords** — Store and retrieve website credentials
 - **ravi-secrets** — Store and retrieve key-value secrets
-- **ravi-login** — Device code onboarding, sign up for and log into services, handle 2FA/OTPs
+- **ravi-login** — Device code onboarding, sign up for and log into services, read verification codes
 - **ravi-feedback** — Send feedback, report bugs, request features
