@@ -51,7 +51,7 @@ ravi email compose --to "user@example.com" --subject "Hello" --body "<p>Hi there
 # Send an SMS from your identity's phone number
 ravi sms send --to "+15551234567" --body "On my way"
 
-# Place a voice call from your identity's number
+# Place a voice call from your identity's number (experimental — email + SMS are the supported channels)
 ravi call "+15551234567"
 
 # Store a website password
