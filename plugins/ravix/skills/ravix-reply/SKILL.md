@@ -15,7 +15,7 @@ The prompt you receive starts with instructions followed by the email, formatted
 Read this email, do what it asks, and then reply to the sender with details.
 
 From: sender@example.com
-To: agent@ravi.id
+To: agent@ravi.app
 Subject: Please pull the latest revenue numbers
 Date: Mon, 20 Apr 2026 03:45:03 -0400
 Message-ID: <CABx+y@mail.example.com>
@@ -34,6 +34,7 @@ ravix email reply '<CABx+y@mail.example.com>' --body '<p>Done — here are the r
 ```
 
 **Flag reference:**
+
 - `<message_id>` (positional, required): the exact `Message-ID` header value from the email you received, including `<` and `>`. Quote it so the shell doesn't interpret the angle brackets.
 - `--body` (required): HTML email body. Use `<p>`, `<h2>`, `<ul>`, `<li>`, `<a href="...">` for formatting. No `<html>` or `<body>` wrapper.
 - `--cc` (optional, repeatable): add CC recipients.
@@ -55,8 +56,9 @@ ravix email reply '<CABx+y@mail.example.com>' --body '<p>Done — here are the r
 ## Example: full workflow
 
 Email received:
+
 ```
-From: jake@ravi.id
+From: jake@ravi.app
 To: leonard.elmquist8599@raviapp.com
 Subject: current time?
 Message-ID: <CAJPXh3e_mFs@mail.example.com>
@@ -65,6 +67,7 @@ What time is it?
 ```
 
 Steps:
+
 1. Run `date` to get the current time
 2. Reply with the output:
 

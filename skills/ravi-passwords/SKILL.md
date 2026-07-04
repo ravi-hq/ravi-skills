@@ -39,6 +39,7 @@ If `--password` is omitted, the server auto-generates a strong password.
 ## JSON Shapes
 
 **`ravi passwords list`:**
+
 ```json
 [
   {
@@ -55,6 +56,7 @@ If `--password` is omitted, the server auto-generates a strong password.
 ```
 
 **`ravi passwords get <uuid>`:**
+
 ```json
 {
   "uuid": "uuid",
@@ -101,7 +103,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Passwords](https://ravi.id/docs/schema/passwords.json)
+For complete endpoint details, request/response schemas, and parameters: [Passwords](https://ravi.app/docs/schema/passwords.json)
 
 ## Related Skills
 

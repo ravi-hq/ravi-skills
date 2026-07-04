@@ -37,7 +37,7 @@ The CLI will:
 Present the URL and code clearly to the human:
 
 ```
-Please visit https://ravi.id/device and enter the code: ABCD-1234
+Please visit https://ravi.app/api/auth/device/verify/ and enter the code: ABCD-1234
 ```
 
 The human visits the URL, signs in with Google, and approves the request.
@@ -151,7 +151,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Device Auth](https://ravi.id/docs/schema/device-auth.json) | [Auth & Keys](https://ravi.id/docs/schema/auth.json)
+For complete endpoint details, request/response schemas, and parameters: [Device Auth](https://ravi.app/docs/schema/device-auth.json) | [Auth & Keys](https://ravi.app/docs/schema/auth.json)
 
 ## Related Skills
 

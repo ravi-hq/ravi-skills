@@ -43,6 +43,7 @@ ravi contacts delete <uuid>
 ## JSON Shapes
 
 **`ravi contacts list`:**
+
 ```json
 [
   {
@@ -63,6 +64,7 @@ ravi contacts delete <uuid>
 ```
 
 **`ravi contacts get <uuid>`:**
+
 ```json
 {
   "uuid": "...",
@@ -110,7 +112,7 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Contacts](https://ravi.id/docs/schema/contacts.json)
+For complete endpoint details, request/response schemas, and parameters: [Contacts](https://ravi.app/docs/schema/contacts.json)
 
 ## Related Skills
 

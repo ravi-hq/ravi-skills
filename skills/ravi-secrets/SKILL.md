@@ -26,6 +26,7 @@ ravi secrets delete <uuid>
 ## JSON Shapes
 
 **`ravi secrets list`:**
+
 ```json
 [
   {
@@ -41,6 +42,7 @@ ravi secrets delete <uuid>
 ```
 
 **`ravi secrets get OPENAI_API_KEY`:**
+
 ```json
 {
   "uuid": "...",
@@ -84,7 +86,7 @@ ravi secrets set GITHUB_TOKEN "ghp_..."
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Secrets](https://ravi.id/docs/schema/secrets.json)
+For complete endpoint details, request/response schemas, and parameters: [Secrets](https://ravi.app/docs/schema/secrets.json)
 
 ## Related Skills
 

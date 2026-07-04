@@ -14,6 +14,7 @@ ravi sso token
 ```
 
 **Response shape:**
+
 ```json
 {
   "token": "rvt_eyJhbGciOiJIUzI1NiJ9...",
@@ -25,7 +26,8 @@ Pass the token to the third-party service however it requires (request body, hea
 
 ## How Third Parties Verify It
 
-The third-party backend calls `POST https://ravi.id/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
+The third-party backend calls `POST https://ravi.app/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
+
 ```json
 {
   "identity_uuid": "...",
@@ -47,7 +49,7 @@ The third-party backend calls `POST https://ravi.id/api/sso/verify/` with `{ "to
 
 ## Full API Reference
 
-For complete endpoint details: [SSO Token](https://ravi.id/docs/schema/sso.json)
+For complete endpoint details: [SSO Token](https://ravi.app/docs/schema/sso.json)
 
 ## Related Skills
 

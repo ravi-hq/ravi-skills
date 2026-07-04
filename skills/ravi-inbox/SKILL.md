@@ -98,7 +98,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.id/docs/schema/inbox.json) | [Messages](https://ravi.id/docs/schema/messages.json)
+For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.app/docs/schema/inbox.json) | [Messages](https://ravi.app/docs/schema/messages.json)
 
 ## Related Skills
 

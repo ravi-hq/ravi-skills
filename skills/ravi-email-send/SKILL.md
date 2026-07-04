@@ -89,7 +89,7 @@ On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` 
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Messages](https://ravi.id/docs/schema/messages.json) | [Attachments](https://ravi.id/docs/schema/attachments.json)
+For complete endpoint details, request/response schemas, and parameters: [Messages](https://ravi.app/docs/schema/messages.json) | [Attachments](https://ravi.app/docs/schema/attachments.json)
 
 ## Related Skills
 

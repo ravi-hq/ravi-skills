@@ -86,7 +86,7 @@ ravi identity use <uuid>
 
 ## Full API Reference
 
-For complete endpoint details, request/response schemas, and parameters: [Identities](https://ravi.id/docs/schema/identities.json)
+For complete endpoint details, request/response schemas, and parameters: [Identities](https://ravi.app/docs/schema/identities.json)
 
 ## Related Skills
 
