@@ -29,11 +29,13 @@ ravi email compose --to "recipient@example.com" --subject "Subject" --body "<p>H
 ```
 
 **Arguments:**
+
 - `--to` (required): Recipient email address
 - `--subject` (required): Email subject line
 - `--body` (required): Email body (HTML supported — use tags like `<p>`, `<h2>`, `<ul>` for formatting)
 
 **Example with HTML formatting:**
+
 ```bash
 ravi email compose \
   --to "user@example.com" \
@@ -58,17 +60,24 @@ ravi email forward <message_id> --to "recipient@example.com" --body "<p>FYI — 
 ```
 
 **Arguments:**
+
 - `--to` (required): Recipient email address
 - `--body` (required): Email body (HTML supported)
 
 ## Rate Limits
 
-Email sending is rate-limited per user account:
-- **60 emails/hour** and **500 emails/day**
+Email sending is rate-limited **per inbox** (each identity's inbox has its own
+daily budget), by plan:
+
+- **Free:** 100 emails/day per inbox
+- **Paid:** 500 emails/day per inbox
+
+There is no hourly cap — the daily budget is the only send limit.
 
 On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` value. Wait that many seconds before retrying.
 
 **Best practices for agents:**
+
 - Avoid tight loops of email sends — batch work where possible
 - On 429: parse `retry_after_seconds` from the response body, wait, then retry
 - For bulk operations, add a 1-2 second delay between sends

@@ -146,7 +146,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
 - **Store credentials immediately** — create a passwords entry during signup so you don't lose the password.
 - **Identity name for forms** — always use the identity name, not the owner name.
-- **Rate limits apply to sending** — 60 emails/hour, 500/day. See `ravi-email-send` skill for details.
+- **Rate limits apply to sending** — per inbox, per day: 100/day (free) or 500/day (paid); no hourly cap. See `ravi-email-send` skill for details.
 - **Email quality matters** — if you need to send an email during a workflow, see **ravi-email-writing** for formatting and anti-spam tips.
 
 ## Full API Reference
