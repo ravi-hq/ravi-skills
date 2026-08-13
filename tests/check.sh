@@ -133,9 +133,9 @@ done
 
 if grep -q 'HTTP API' skills/ravi/SKILL.md skills/ravi-identity/SKILL.md skills/ravi-login/SKILL.md README.md \
    && grep -q 'ravi_id_' skills/ravi/SKILL.md skills/ravi-identity/SKILL.md skills/ravi-login/SKILL.md README.md; then
-  ok "multi-agent path is HTTP API with per-identity ravi_id_ keys (or Connect)"
+  ok "multi-agent path is HTTP API with per-identity ravi_id_ keys"
 else
-  bad "overview, identity, login, and README must point multi-agent at HTTP API ravi_id_ keys or Connect"
+  bad "overview, identity, login, and README must point multi-agent at HTTP API ravi_id_ keys"
 fi
 
 # Do not instruct identity switching via shared CLI config (prohibition lines are allowed).
@@ -162,7 +162,7 @@ for skill in skills/ravi/SKILL.md skills/ravi-login/SKILL.md skills/ravi-identit
   if grep -qiE 'mcp' "$skill"; then
     ok "$skill mentions MCP"
   else
-    bad "$skill must mention MCP as the Cursor path"
+    bad "$skill must mention MCP (shipping / not live)"
   fi
   if grep -q 'Connect' "$skill"; then
     ok "$skill mentions Connect"
