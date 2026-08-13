@@ -1,0 +1,22 @@
+{
+  "name": "ravi-hq",
+  "owner": {
+    "name": "Ravi"
+  },
+  "metadata": {
+    "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.",
+    "version": "2.3.0"
+  },
+  "plugins": [
+    {
+      "name": "ravi",
+      "source": "./",
+      "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk."
+    },
+    {
+      "name": "ravix",
+      "source": "./plugins/ravix",
+      "description": "ravix daemon — reply to emails dispatched to Claude"
+    }
+  ]
+}

@@ -7,6 +7,8 @@ description: Store and retrieve website credentials — password manager for dom
 
 Store and retrieve passwords for services you sign up for. All credential fields (username, password, notes) are encrypted.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## Commands
 
 ```bash
@@ -101,9 +103,9 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 - **Auto-generate password** — if `--password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
 - **Domain normalization** — the server strips subdomains (e.g. `app.example.com` becomes `example.com`). Pass the bare domain or a full URL — both work.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Passwords](https://ravi.app/docs/schema/passwords.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

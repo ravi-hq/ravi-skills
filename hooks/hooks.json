@@ -1,0 +1,15 @@
+{
+  "description": "Install the Ravi CLI on session start and put ~/.ravi/bin on PATH",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/ensure-cli.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

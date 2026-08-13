@@ -7,6 +7,8 @@ description: Get short-lived identity verification tokens to prove your Ravi ide
 
 Get a short-lived token to prove your Ravi identity to a third-party service that supports "Login with Ravi".
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## Get an SSO Token
 
 ```bash
@@ -26,7 +28,7 @@ Pass the token to the third-party service however it requires (request body, hea
 
 ## How Third Parties Verify It
 
-The third-party backend calls `POST https://ravi.app/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
+The third-party backend calls `POST https://api.ravi.app/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
 
 ```json
 {
@@ -47,9 +49,9 @@ The third-party backend calls `POST https://ravi.app/api/sso/verify/` with `{ "t
 - **Requires active subscription** — returns 402 if on the free plan.
 - **`/api/sso/verify/` is not for you** — that endpoint is for third-party backends. Calling it yourself serves no purpose.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details: [SSO Token](https://ravi.app/docs/schema/sso.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

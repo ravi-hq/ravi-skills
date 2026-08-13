@@ -1,0 +1,9 @@
+{
+  "name": "ravix",
+  "displayName": "ravix",
+  "description": "Skills for agents running under the ravix daemon — reply to emails the daemon just dispatched you to handle.",
+  "version": "0.2.1",
+  "author": { "name": "Ravi" },
+  "repository": "https://github.com/ravi-hq/ravi-skills",
+  "license": "MIT"
+}

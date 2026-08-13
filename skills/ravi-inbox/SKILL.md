@@ -7,6 +7,8 @@ description: Read incoming SMS or email messages — verification codes, verific
 
 Read SMS and email messages received at your Ravi identity. Use this after triggering a verification, or when expecting incoming messages — including the login/verification codes a service sends you.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## SMS (verification codes)
 
 ```bash
@@ -96,9 +98,9 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
 - **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use `ravi contacts search` to look up people you've interacted with.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.app/docs/schema/inbox.json) | [Messages](https://ravi.app/docs/schema/messages.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

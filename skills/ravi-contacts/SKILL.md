@@ -10,6 +10,8 @@ description: Manage contacts associated with your identity — list, search, cre
 
 Manage contacts associated with your identity. Contacts store people you interact with — their email, phone, display name, and nickname.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## Commands
 
 ```bash
@@ -110,9 +112,9 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 - **Auto-contacts from interactions** — sending or receiving email/SMS automatically creates or updates contacts. You do not need to manually create contacts for people you interact with.
 - **Phone numbers in E.164 format** — always include the country code (e.g., `+15551234567`).
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Contacts](https://ravi.app/docs/schema/contacts.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

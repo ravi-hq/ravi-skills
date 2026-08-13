@@ -7,9 +7,30 @@ description: Sign up for and log into services using your Ravi identity — hand
 
 End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification by reading the code the service sends to your identity's SMS or email.
 
-## Step 0: Check Auth Status
+## Step 0: Install the CLI (working auth)
 
-Before doing anything, check whether you're already authenticated:
+Skills are the live surface on Cursor. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live.
+
+Working auth is the CLI (one identity per machine). Install it before `ravi auth login`:
+
+```bash
+if ! command -v ravi >/dev/null 2>&1; then
+  if [ -f scripts/install-cli.sh ]; then
+    bash scripts/install-cli.sh
+  else
+    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+  fi
+  export PATH="$HOME/.ravi/bin:$PATH"
+fi
+```
+
+The bundled copy lives next to this skill at `scripts/install-cli.sh`. Homebrew users can instead run `brew install ravi-hq/tap/ravi`.
+
+---
+
+## Step 1: Check Auth Status
+
+Before doing anything else, check whether you're already authenticated:
 
 ```bash
 ravi auth status
@@ -19,7 +40,7 @@ If authenticated, skip to [Sign up for a service](#sign-up-for-a-service).
 
 ---
 
-## Step 1: Onboard to Ravi
+## Step 2: Onboard to Ravi
 
 If you're not authenticated, run the login flow. This is a one-time setup — the CLI handles the device code flow, polls for authorization, and stores keys automatically.
 
@@ -27,38 +48,43 @@ If you're not authenticated, run the login flow. This is a one-time setup — th
 ravi auth login
 ```
 
+Auth commands are **`login`**, **`logout`**, and **`status` only**. There is no `ravi auth refresh`.
+
 The CLI will:
 
-1. Initiate a device code flow
+1. Initiate a device code flow against `https://api.ravi.app`
 2. Display a URL and code for the human to visit
 3. Poll until the human approves
-4. Store all keys in `~/.ravi/config.json`
+4. Store long-lived `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json`
 
-Present the URL and code clearly to the human:
+Present the **public front door** and code clearly to the human (use this even if the CLI prints a different URL):
 
 ```
-Please visit https://ravi.app/api/auth/device/verify/ and enter the code: ABCD-1234
+Please visit https://ravi.id/device and enter the code: ABCD-1234
 ```
 
-The human visits the URL, signs in with Google, and approves the request.
+The CLI may print `https://api.ravi.app/api/auth/device/verify/` — that is the shipped API verify URL. Still send the human to **https://ravi.id/device**. Never `https://ravi.app/api/auth/device/verify/` (wrong host).
+
+The human visits https://ravi.id/device, signs in with Google, and approves the request.
+
+Do **not** look for JWTs, `~/.ravi/auth.json`, `RAVI_ACCESS_TOKEN`, or an `X-Ravi-Identity` header. The CLI reads `~/.ravi/config.json` automatically.
 
 ---
 
-## Step 2: Select Identity (Returning Users)
+## Step 3: One identity per machine
 
-If you have multiple identities, list and switch between them:
+The CLI is **one identity per machine**. Shared `~/.ravi/config.json` is not a multi-agent runtime. Do **not** run `ravi identity use`, pass `--identity`, or edit that file so agents can run side by side.
 
 ```bash
-# List all identities
 ravi identity list
-
-# Switch to a specific identity
-ravi identity use <uuid>
+ravi auth status
 ```
+
+If you need another agent on this host, use the HTTP API with a per-identity `ravi_id_` key (`Authorization: Bearer ravi_id_...`).
 
 ---
 
-## Step 3: Create an Identity (if needed)
+## Step 4: Create an Identity (if needed)
 
 If you have no identities, create one:
 
@@ -149,9 +175,9 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 - **Rate limits apply to sending** — per inbox, per day: 100/day (free) or 500/day (paid); no hourly cap. See `ravi-email-send` skill for details.
 - **Email quality matters** — if you need to send an email during a workflow, see **ravi-email-writing** for formatting and anti-spam tips.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Device Auth](https://ravi.app/docs/schema/device-auth.json) | [Auth & Keys](https://ravi.app/docs/schema/auth.json)
+CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys. Docs: https://docs.ravi.app
 
 ## Related Skills
 

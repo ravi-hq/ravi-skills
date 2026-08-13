@@ -7,9 +7,32 @@ description: Overview of Ravi and when to use each skill. Ravi gives AI agents r
 
 Ravi gives you (the agent) your own email address, phone number, and encrypted secret store. One identity bundles all three into a coherent persona.
 
+## Cursor: skills are live; Connect is not
+
+Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates, and do not treat `https://api.ravi.app/mcp` as a working connector.
+
+Working auth is the CLI. Install it before any `ravi` command:
+
+```bash
+if ! command -v ravi >/dev/null 2>&1; then
+  if [ -f scripts/install-cli.sh ]; then
+    bash scripts/install-cli.sh
+  else
+    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+  fi
+  export PATH="$HOME/.ravi/bin:$PATH"
+fi
+```
+
+The bundled copy lives next to this skill at `scripts/install-cli.sh`.
+
 ## Authentication
 
-The CLI handles authentication automatically. Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically.
+**Working auth (CLI):** Run `ravi auth login` (`logout` / `status` are the only other auth commands) — this is a one-time setup for a **single agent or CI job** on this machine. The CLI stores `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints `https://api.ravi.app/api/auth/device/verify/`). Never `https://ravi.app/api/...`.
+
+A Connect card is shipping and is **not live**. Do not tap Connect as if it authenticates.
+
+The CLI is **one identity per machine**. Shared `~/.ravi/config.json` is not a multi-agent runtime. Do **not** flip that file, run `ravi identity use`, or pass `--identity` so agents can run side by side. Multiple agents on one host must use the HTTP API with per-identity `ravi_id_...` keys (`Authorization: Bearer ravi_id_...`).
 
 ## When to Use Each Skill
 
@@ -62,8 +85,10 @@ ravi secrets set OPENAI_API_KEY "sk-..."
 ```
 
 Every per-identity command (inbox, email, sms, call, passwords, secrets,
-contacts) targets the identity your key is bound to. With a management key,
-add `--identity <uuid>` to pick which identity to act as.
+contacts) targets the identity the CLI is bound to on this machine. The CLI is
+one identity per machine — do not multiplex with `--identity` or by editing
+`~/.ravi/config.json`. Extra agents use the HTTP API with per-identity
+`ravi_id_` keys.
 
 ## Always Give Feedback
 

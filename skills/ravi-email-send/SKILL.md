@@ -7,6 +7,8 @@ description: Send, compose, reply, reply-all, or forward emails with HTML format
 
 Compose new emails, reply to existing ones, or forward them from your Ravi email address.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 > **Writing quality matters.** Before drafting email content, see the **ravi-email-writing** skill for subject lines, HTML formatting, tone, and anti-spam best practices.
 
 ## Resolving Recipients by Name
@@ -87,9 +89,9 @@ On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` 
 - **HTML email bodies** — the `--body` argument accepts HTML. Use tags for formatting: `<p>`, `<h2>`, `<ul>`, `<a href="...">`. No `<html>` or `<body>` wrapper needed. See **ravi-email-writing** for templates and anti-spam rules.
 - **Subject for replies/forwards** — reply and forward commands auto-derive the subject from the original message (prepending `Re:` or `Fwd:`). No need to pass `--subject`.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Messages](https://ravi.app/docs/schema/messages.json) | [Attachments](https://ravi.app/docs/schema/attachments.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

@@ -7,6 +7,8 @@ description: Store and retrieve key-value secrets — encrypted secret store for
 
 Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are encrypted. Use descriptive key names for lookup and filtering.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## Commands
 
 ```bash
@@ -84,9 +86,9 @@ ravi secrets set GITHUB_TOKEN "ghp_..."
 - **Keys are auto-uppercased** — keys are automatically uppercased (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
 - **Keys are for lookup** — values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Secrets](https://ravi.app/docs/schema/secrets.json)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

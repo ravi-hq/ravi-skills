@@ -1,6 +1,6 @@
 # Publishing
 
-This repo distributes skills to three channels. Two are automatic, one requires a version bump.
+This repo distributes skills to skills.sh, Claude Code, the Cursor Marketplace, and ClawdHub. Two skill channels are automatic, ClawdHub requires a version bump, and the public Cursor Marketplace listing is a manual submit.
 
 ## Distribution Channels
 
@@ -12,7 +12,15 @@ Users install via `npx skills add ravi-hq/ravi-skills`. No publishing step — s
 
 Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing step — Claude Code reads `.claude-plugin/plugin.json` and `skills/` directly from the repo.
 
-### 3. ClawdHub / OpenClaw (requires version bump)
+### 3. Cursor Marketplace (manual review)
+
+This repo is a **Cursor Plugin** (`.cursor-plugin/plugin.json` at repo root). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is `scripts/install-cli.sh` + `ravi auth login` (human at https://ravi.id/device). `mcp.json` points at `https://api.ravi.app/mcp` (shipping, not live — that URL 404s today).
+
+Submit this public GitHub repo at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Cursor reviews submissions manually. After merge to `main`, submit (or re-submit) that URL — this file does not publish the listing by itself.
+
+skills.sh and Claude Code stay as they are (channels 1 and 2). They do not go through Cursor Marketplace review.
+
+### 4. ClawdHub / OpenClaw (requires version bump)
 
 Users install via `clawdhub install <slug>`. Publishing happens automatically on push to `main` via GitHub Actions (`.github/workflows/publish.yml`).
 
@@ -57,8 +65,21 @@ This repo ships **two Claude Code plugins** from one marketplace:
 .claude-plugin/
 ├── marketplace.json          # lists both plugins
 └── plugin.json               # plugin manifest for the `ravi` plugin
+.cursor-plugin/
+├── marketplace.json          # Cursor marketplace index
+└── plugin.json               # Cursor plugin manifest (skills plugin + hooks + logo)
+mcp.json                      # shipping MCP URL (not the live listing path; endpoint is not live)
+bin/
+└── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
+hooks/
+├── hooks.json                # Claude Code SessionStart → install CLI
+└── cursor.json               # Cursor sessionStart → skills live surface (Connect not live)
+scripts/
+├── install-cli.sh            # downloads official ravi-hq/cli release into ~/.ravi/bin
+├── ensure-cli.sh             # SessionStart helper (install + CLAUDE_ENV_FILE PATH)
+└── cursor-session-start.sh   # Cursor hook helper
 skills/                       # skills for the `ravi` plugin (all of them)
-├── ravi/
+├── ravi/                     # includes scripts/install-cli.sh for skills.sh installs
 ├── ravi-identity/
 ├── ravi-inbox/
 ├── ravi-email-send/
@@ -97,4 +118,4 @@ The `ravix` plugin exists because the [ravix daemon](https://github.com/ravi-hq/
      "description": "..."
    }
    ```
-4. Users install with `/plugin install <name>@ravi-hq`. Existing marketplace installs need a refresh: `/plugin marketplace update ravi-hq`.
+**CLI installer:** edit `scripts/install-cli.sh`, then copy it to `skills/ravi/scripts/install-cli.sh` and `skills/ravi-login/scripts/install-cli.sh` so skills.sh / ClawdHub installs include it. `tests/check.sh` fails if those copies drift.

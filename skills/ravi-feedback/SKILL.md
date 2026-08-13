@@ -7,6 +7,8 @@ description: Send feedback to the Ravi team — bugs, feature requests, praise, 
 
 Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+
 ## How to Send Feedback
 
 Send feedback by emailing **feedback@ravi.id** using the CLI:
@@ -31,7 +33,7 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires authentication** — run `ravi auth login` if not already onboarded
+- **Requires authentication** — Install the CLI if needed, then run `ravi auth login`. Send the human to https://ravi.id/device. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates.
 - **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills
