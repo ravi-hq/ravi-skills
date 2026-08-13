@@ -73,7 +73,7 @@ bin/
 └── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
 hooks/
 ├── hooks.json                # Claude Code SessionStart → install CLI
-└── cursor.json               # Cursor sessionStart → MCP-first context (no CLI)
+└── cursor.json               # Cursor sessionStart → skills live surface (Connect not live)
 scripts/
 ├── install-cli.sh            # downloads official ravi-hq/cli release into ~/.ravi/bin
 ├── ensure-cli.sh             # SessionStart helper (install + CLAUDE_ENV_FILE PATH)
