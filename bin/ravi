@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Claude Code plugin bin/: added to the Bash tool PATH while the plugin is enabled.
+# Skills/plugins do not vendor the Go CLI; this wrapper installs it on first use.
+set -euo pipefail
+
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
+SELF="${SELF_DIR}/$(basename "$0")"
+REAL="${HOME}/.ravi/bin/ravi"
+
+find_other_ravi() {
+  local dir cand
+  local IFS=':'
+  for dir in ${PATH}; do
+    [ -n "$dir" ] || continue
+    cand="${dir}/ravi"
+    [ -x "$cand" ] || continue
+    [ "$cand" = "$SELF" ] && continue
+    [ "$cand" = "$REAL" ] && continue
+    # Skip other copies of this wrapper (shell script), keep compiled binaries.
+    if head -c 2 "$cand" 2>/dev/null | grep -q '^#!'; then
+      continue
+    fi
+    printf '%s\n' "$cand"
+    return 0
+  done
+  return 1
+}
+
+if other="$(find_other_ravi)"; then
+  exec "$other" "$@"
+fi
+
+if [ -x "$REAL" ] && ! head -c 2 "$REAL" 2>/dev/null | grep -q '^#!'; then
+  exec "$REAL" "$@"
+fi
+
+INSTALL="${SELF_DIR}/../scripts/install-cli.sh"
+if [ ! -f "$INSTALL" ]; then
+  echo "ravi: CLI is not installed. Run:" >&2
+  echo "  curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash" >&2
+  echo "  export PATH=\"\$HOME/.ravi/bin:\$PATH\"" >&2
+  exit 127
+fi
+
+export RAVI_SKIP_BREW="${RAVI_SKIP_BREW:-}"
+bash "$INSTALL"
+if [ ! -x "$REAL" ]; then
+  echo "ravi: install finished but ${REAL} is missing" >&2
+  exit 127
+fi
+exec "$REAL" "$@"

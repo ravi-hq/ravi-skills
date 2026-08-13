@@ -2,15 +2,7 @@
 
 Teaches AI agents how to use Ravi for identity, email, phone, and encrypted credentials via the Ravi CLI.
 
-## Prerequisites
-
-Install the Ravi CLI and authenticate once (see the `ravi-login` skill for details):
-
-```bash
-ravi auth login
-```
-
-The CLI stores credentials in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
+Skills and marketplace plugins ship **docs plus an installer**, not the `ravi` binary. The install path below installs the CLI as a required step so `ravi auth login` works afterward.
 
 ## Install
 
@@ -22,7 +14,18 @@ npx skills add ravi-hq/ravi-skills
 
 # Individual skill
 npx skills add ravi-hq/ravi-skills --skill ravi-identity
+
+# Required: install the Ravi CLI (skills do not include the binary)
+curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+export PATH="$HOME/.ravi/bin:$PATH"
+
+# Authenticate once (human approves at https://ravi.id/device)
+ravi auth login
 ```
+
+If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install) instead of curl.
+
+The CLI stores credentials in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
 
 ### Claude Code
 
@@ -30,6 +33,16 @@ npx skills add ravi-hq/ravi-skills --skill ravi-identity
 /plugin marketplace add ravi-hq/ravi-skills
 /plugin install ravi
 ```
+
+The plugin puts a `ravi` wrapper on PATH (`bin/ravi`) and installs the real CLI on first use (or at session start). Then run:
+
+```bash
+ravi auth login
+```
+
+### Cursor
+
+Install from the Cursor plugin marketplace, or add this repo as a marketplace (`.cursor-plugin/marketplace.json`). A session-start hook installs the CLI and prepends `~/.ravi/bin` to PATH. Then run `ravi auth login`.
 
 ### OpenClaw (ClawdHub)
 
@@ -40,6 +53,11 @@ Skills are installed individually on ClawdHub:
 for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-login ravi-passwords ravi-secrets ravi-sso ravi-contacts ravi-feedback; do
   clawdhub install "$s"
 done
+
+# Required: install the Ravi CLI
+curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+export PATH="$HOME/.ravi/bin:$PATH"
+ravi auth login
 ```
 
 ## Skills

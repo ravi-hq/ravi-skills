@@ -7,6 +7,8 @@ description: Store and retrieve key-value secrets — encrypted secret store for
 
 Store and retrieve key-value secrets (API keys, environment variables, tokens). All values are encrypted. Use descriptive key names for lookup and filtering.
 
+> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+
 ## Commands
 
 ```bash

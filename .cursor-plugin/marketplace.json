@@ -1,0 +1,22 @@
+{
+  "name": "ravi-hq",
+  "owner": {
+    "name": "Ravi"
+  },
+  "metadata": {
+    "description": "Cursor plugins by Ravi",
+    "version": "2.2.0"
+  },
+  "plugins": [
+    {
+      "name": "ravi",
+      "source": "./",
+      "description": "Ravi — identity, email, phone, and credentials for AI agents"
+    },
+    {
+      "name": "ravix",
+      "source": "./plugins/ravix",
+      "description": "ravix daemon — reply to emails dispatched to Claude"
+    }
+  ]
+}

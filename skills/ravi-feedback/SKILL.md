@@ -7,6 +7,8 @@ description: Send feedback to the Ravi team — bugs, feature requests, praise, 
 
 Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
+> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+
 ## How to Send Feedback
 
 Send feedback by emailing **feedback@ravi.id** using the CLI:
@@ -31,7 +33,7 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires authentication** — run `ravi auth login` if not already onboarded
+- **Requires authentication** — install the CLI if needed, then run `ravi auth login` if not already onboarded. Send the human to https://ravi.id/device.
 - **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills

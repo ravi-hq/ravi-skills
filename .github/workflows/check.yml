@@ -1,0 +1,19 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  install-path:
+    name: Install path and CLI installer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docs and packaging checks
+        run: bash tests/check.sh
+
+      - name: Install CLI from bundled script
+        run: bash tests/install-cli.test.sh

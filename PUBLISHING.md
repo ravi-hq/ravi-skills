@@ -57,8 +57,20 @@ This repo ships **two Claude Code plugins** from one marketplace:
 .claude-plugin/
 ├── marketplace.json          # lists both plugins
 └── plugin.json               # plugin manifest for the `ravi` plugin
+.cursor-plugin/
+├── marketplace.json          # Cursor marketplace index (same plugins)
+└── plugin.json               # Cursor plugin manifest (hooks → CLI install)
+bin/
+└── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
+hooks/
+├── hooks.json                # Claude Code SessionStart → install CLI
+└── cursor.json               # Cursor sessionStart → install CLI + PATH
+scripts/
+├── install-cli.sh            # downloads official ravi-hq/cli release into ~/.ravi/bin
+├── ensure-cli.sh             # SessionStart helper (install + CLAUDE_ENV_FILE PATH)
+└── cursor-session-start.sh   # Cursor hook helper
 skills/                       # skills for the `ravi` plugin (all of them)
-├── ravi/
+├── ravi/                     # includes scripts/install-cli.sh for skills.sh installs
 ├── ravi-identity/
 ├── ravi-inbox/
 ├── ravi-email-send/
@@ -97,4 +109,4 @@ The `ravix` plugin exists because the [ravix daemon](https://github.com/ravi-hq/
      "description": "..."
    }
    ```
-4. Users install with `/plugin install <name>@ravi-hq`. Existing marketplace installs need a refresh: `/plugin marketplace update ravi-hq`.
+**CLI installer:** edit `scripts/install-cli.sh`, then copy it to `skills/ravi/scripts/install-cli.sh` and `skills/ravi-login/scripts/install-cli.sh` so skills.sh / ClawdHub installs include it. `tests/check.sh` fails if those copies drift.

@@ -7,6 +7,8 @@ description: Get your agent identity (email, phone, owner name) and manage ident
 
 You have access to Ravi, an identity provider that gives you your own phone number, email address, and secret store.
 
+> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+
 ## Your Identity
 
 ```bash
@@ -82,7 +84,7 @@ ravi identity use <uuid>
 
 - **Identity name for forms** — use the identity name for signup forms, not the account owner's name.
 - **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
-- **Not authenticated?** — run `ravi auth login` to onboard.
+- **Not authenticated?** — install the CLI if needed (see the **ravi** skill), then run `ravi auth login` to onboard. Send the human to https://ravi.id/device.
 
 ## Full API Reference
 

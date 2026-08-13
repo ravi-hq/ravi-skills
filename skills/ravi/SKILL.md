@@ -7,9 +7,26 @@ description: Overview of Ravi and when to use each skill. Ravi gives AI agents r
 
 Ravi gives you (the agent) your own email address, phone number, and encrypted secret store. One identity bundles all three into a coherent persona.
 
+## Ensure the CLI is installed
+
+Skills and marketplace plugins do **not** include the `ravi` binary. Before any `ravi` command, install it if it is missing:
+
+```bash
+if ! command -v ravi >/dev/null 2>&1; then
+  if [ -f scripts/install-cli.sh ]; then
+    bash scripts/install-cli.sh
+  else
+    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+  fi
+  export PATH="$HOME/.ravi/bin:$PATH"
+fi
+```
+
+The bundled copy lives next to this skill at `scripts/install-cli.sh`.
+
 ## Authentication
 
-The CLI handles authentication automatically. Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically.
+The CLI handles authentication automatically. Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints a different URL).
 
 ## When to Use Each Skill
 

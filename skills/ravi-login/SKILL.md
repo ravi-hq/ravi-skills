@@ -7,9 +7,28 @@ description: Sign up for and log into services using your Ravi identity — hand
 
 End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification by reading the code the service sends to your identity's SMS or email.
 
-## Step 0: Check Auth Status
+## Step 0: Ensure the CLI is installed
 
-Before doing anything, check whether you're already authenticated:
+Skills and marketplace plugins do **not** include the `ravi` binary. Install it before `ravi auth login`:
+
+```bash
+if ! command -v ravi >/dev/null 2>&1; then
+  if [ -f scripts/install-cli.sh ]; then
+    bash scripts/install-cli.sh
+  else
+    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+  fi
+  export PATH="$HOME/.ravi/bin:$PATH"
+fi
+```
+
+The bundled copy lives next to this skill at `scripts/install-cli.sh`. Homebrew users can instead run `brew install ravi-hq/tap/ravi`.
+
+---
+
+## Step 1: Check Auth Status
+
+Before doing anything else, check whether you're already authenticated:
 
 ```bash
 ravi auth status
@@ -19,7 +38,7 @@ If authenticated, skip to [Sign up for a service](#sign-up-for-a-service).
 
 ---
 
-## Step 1: Onboard to Ravi
+## Step 2: Onboard to Ravi
 
 If you're not authenticated, run the login flow. This is a one-time setup — the CLI handles the device code flow, polls for authorization, and stores keys automatically.
 
@@ -34,17 +53,17 @@ The CLI will:
 3. Poll until the human approves
 4. Store all keys in `~/.ravi/config.json`
 
-Present the URL and code clearly to the human:
+Present the **canonical** URL and code clearly to the human (use this URL even if the CLI prints a different one):
 
 ```
-Please visit https://ravi.app/api/auth/device/verify/ and enter the code: ABCD-1234
+Please visit https://ravi.id/device and enter the code: ABCD-1234
 ```
 
-The human visits the URL, signs in with Google, and approves the request.
+The human visits https://ravi.id/device, signs in with Google, and approves the request.
 
 ---
 
-## Step 2: Select Identity (Returning Users)
+## Step 3: Select Identity (Returning Users)
 
 If you have multiple identities, list and switch between them:
 
@@ -58,7 +77,7 @@ ravi identity use <uuid>
 
 ---
 
-## Step 3: Create an Identity (if needed)
+## Step 4: Create an Identity (if needed)
 
 If you have no identities, create one:
 

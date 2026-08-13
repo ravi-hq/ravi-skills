@@ -10,6 +10,8 @@ description: Manage contacts associated with your identity — list, search, cre
 
 Manage contacts associated with your identity. Contacts store people you interact with — their email, phone, display name, and nickname.
 
+> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+
 ## Commands
 
 ```bash
