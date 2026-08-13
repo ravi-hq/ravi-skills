@@ -1,7 +1,7 @@
 {
   "name": "ravi",
   "displayName": "Ravi",
-  "description": "Ravi identity for agents — remote MCP for auth, identity, inbox, send email, and send SMS. No CLI required.",
+  "description": "Ravi identity for agents — tap Connect for auth (identity, inbox, vault). Remote MCP, no CLI.",
   "version": "2.3.0",
   "author": { "name": "Ravi" },
   "homepage": "https://ravi.id",

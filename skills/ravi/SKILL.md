@@ -7,11 +7,11 @@ description: Overview of Ravi and when to use each skill. Ravi gives AI agents r
 
 Ravi gives you (the agent) your own email address, phone number, and encrypted secret store. One identity bundles all three into a coherent persona.
 
-## Cursor: use remote MCP (no CLI)
+## Cursor: tap Connect (no CLI)
 
-If Ravi MCP tools are connected (Cursor plugin → `https://api.ravi.app/mcp`), use those tools for auth, identity, inbox, send email, and send SMS. Do **not** install a `ravi` binary on that path.
+If Ravi MCP tools are connected (Cursor plugin → `https://api.ravi.app/mcp`), use those tools for identity, inbox, vault, send email, and send SMS. Auth is the plugin **Connect** card (same as GitHub/Linear) — it binds a fenced `ravi_id_` to this agent. Do **not** install a `ravi` binary, run `ravi auth login`, or write `~/.ravi/config.json` on that path. If tools are missing, ask the human to tap **Connect**.
 
-## CLI fallback (Claude Code / skills.sh / non-Cursor)
+## CLI fallback (Claude Code / skills.sh / CI / non-Cursor)
 
 If MCP tools are **not** available, install the CLI before any `ravi` command:
 
@@ -30,7 +30,7 @@ The bundled copy lives next to this skill at `scripts/install-cli.sh`.
 
 ## Authentication
 
-**Cursor MCP:** connect the plugin; Cursor authenticates against the remote server. If a device code is shown, send the human to **https://ravi.id/device**.
+**Cursor:** tap **Connect** on the Ravi plugin. That is auth. Use the MCP tools (identity, inbox, vault). Do not run `ravi auth login` or write `~/.ravi/config.json`.
 
 **CLI fallback:** Run `ravi auth login` (`logout` / `status` are the only other auth commands) — this is a one-time setup. The CLI stores `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints `https://api.ravi.app/api/auth/device/verify/`). Never `https://ravi.app/api/...`.
 

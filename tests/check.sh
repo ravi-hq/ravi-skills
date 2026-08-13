@@ -73,10 +73,16 @@ else
   bad "ravi-login must link https://docs.ravi.app/getting-started/authentication/"
 fi
 
-if grep -q 'https://ravi.id/device' skills/ravi-login/SKILL.md README.md; then
-  ok "device login docs use https://ravi.id/device"
+if grep -q 'https://ravi.id/device' skills/ravi-login/SKILL.md; then
+  ok "ravi-login (CLI path) uses https://ravi.id/device"
 else
-  bad "ravi-login skill and README must mention https://ravi.id/device"
+  bad "ravi-login skill must mention https://ravi.id/device"
+fi
+
+if awk '/^## Other agents/,/^## Skills/' README.md | grep -q 'https://ravi.id/device'; then
+  ok "README CLI fallback uses https://ravi.id/device"
+else
+  bad "README other-agents section must mention https://ravi.id/device"
 fi
 
 # Shipped auth is login/logout/status + ravi_mgmt_/ravi_id_ keys.
@@ -122,6 +128,11 @@ for skill in skills/ravi/SKILL.md skills/ravi-login/SKILL.md skills/ravi-identit
   else
     bad "$skill must mention MCP as the Cursor path"
   fi
+  if grep -q 'Connect' "$skill"; then
+    ok "$skill mentions Connect"
+  else
+    bad "$skill must mention Connect as Cursor auth"
+  fi
 done
 
 if grep -q 'ensure-cli.sh' hooks/hooks.json; then
@@ -166,6 +177,9 @@ ok = True
 if "command" in ravi or "args" in ravi:
     print("mcp.json must be remote URL, not stdio/command")
     ok = False
+if "headers" in ravi:
+    print("mcp.json must not use static headers; Connect is auth")
+    ok = False
 if ravi.get("url") != "https://api.ravi.app/mcp":
     print("mcp.json ravi.url must be https://api.ravi.app/mcp")
     ok = False
@@ -186,10 +200,40 @@ else
   ok "README Cursor section does not require a CLI install"
 fi
 
-if grep -q 'remote MCP' README.md; then
-  ok "README documents Cursor remote MCP"
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qi 'Connect'; then
+  ok "README Cursor section uses Connect as auth"
 else
-  bad "README must document Cursor remote MCP as the primary Cursor path"
+  bad "README Cursor section must tell users to tap Connect (same as GitHub/Linear)"
+fi
+
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'ravi.id/device'; then
+  bad "README Cursor section must not use device-code auth (Connect is auth)"
+else
+  ok "README Cursor section does not send users to ravi.id/device"
+fi
+
+cursor_login_instr=$(awk '/^## Cursor/,/^## Other agents/' README.md \
+  | grep 'ravi auth login' | grep -viE 'do \*\*not\*\*|do not|not run' || true)
+if [ -n "$cursor_login_instr" ]; then
+  echo "$cursor_login_instr"
+  bad "README Cursor section must not instruct ravi auth login"
+else
+  ok "README Cursor section does not instruct ravi auth login"
+fi
+
+if grep -q 'Connect' scripts/cursor-session-start.sh \
+   && ! grep -q 'ravi auth login' scripts/cursor-session-start.sh \
+   && ! grep -q 'ravi.id/device' scripts/cursor-session-start.sh \
+   && ! grep -q 'config.json' scripts/cursor-session-start.sh; then
+  ok "Cursor sessionStart uses Connect; no CLI login"
+else
+  bad "cursor-session-start.sh must use Connect and must not mention CLI login, config.json, or ravi.id/device"
+fi
+
+if grep -qiE 'remote MCP|Connect' README.md && grep -q 'https://api.ravi.app/mcp' README.md; then
+  ok "README documents Cursor remote MCP + Connect"
+else
+  bad "README must document Cursor remote MCP and Connect as the primary Cursor path"
 fi
 
 

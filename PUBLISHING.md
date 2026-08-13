@@ -14,7 +14,7 @@ Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing s
 
 ### 3. Cursor plugin + remote MCP (automatic)
 
-Cursor loads `.cursor-plugin/` and `mcp.json`. The MCP entry is a **remote URL** (`https://api.ravi.app/mcp`), not stdio and not `npx`. Cursor users connect the plugin; they do not install the CLI.
+Cursor loads `.cursor-plugin/` and `mcp.json`. The MCP entry is a **remote URL** (`https://api.ravi.app/mcp`), not stdio and not `npx`. Auth is the plugin **Connect** card (same as GitHub/Linear); it binds a fenced `ravi_id_` to the agent. Cursor users do not run `ravi auth login` or write `~/.ravi/config.json`.
 
 ### 4. ClawdHub / OpenClaw (requires version bump)
 

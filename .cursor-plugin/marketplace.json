@@ -11,7 +11,7 @@
     {
       "name": "ravi",
       "source": "./",
-      "description": "Ravi — remote MCP for identity, inbox, email, and SMS"
+      "description": "Ravi — Connect for auth; identity, inbox, and vault MCP tools"
     },
     {
       "name": "ravix",

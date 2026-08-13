@@ -2,25 +2,27 @@
 
 Ravi gives agents a real email inbox, phone number, and encrypted credentials.
 
-**On Cursor, install the plugin and connect.** That attaches a remote MCP server (identity, inbox, send email, send SMS). No CLI binary is required for that path.
+**On Cursor, install the plugin and tap Connect.** That is auth (same as GitHub or Linear). The agent gets identity, inbox, and vault tools with schemas. No CLI.
 
-## Cursor (plugin + remote MCP)
+## Cursor (plugin + Connect)
 
 1. Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
-2. Connect / authenticate when Cursor prompts. If a device code is shown, the human should open **https://ravi.id/device**.
-3. Use the connected MCP tools — identity, inbox, send email, send SMS.
+2. Tap **Connect** when Cursor shows the Ravi card. That binds a fenced `ravi_id_` key to this agent.
+3. Use the connected MCP tools — identity, inbox, vault, send email, send SMS.
 
-The plugin points at the hosted server:
+Do **not** run `ravi auth login`. Do **not** write `~/.ravi/config.json`. Do **not** install a `ravi` binary on this path.
+
+The plugin points at a remote MCP server:
 
 ```text
 https://api.ravi.app/mcp
 ```
 
-That is a remote HTTP/SSE MCP URL. It is not `npx`, not stdio, and not the `ravi` CLI.
+That is a remote HTTP/SSE MCP URL. It is not `npx`, not stdio, and not the `ravi` CLI. Auth is the Connect card, not a device-code flow.
 
 ## Other agents (skills + CLI fallback)
 
-Claude Code, skills.sh, OpenClaw, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI.
+Claude Code, skills.sh, OpenClaw, CI, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI.
 
 ### Any agent (skills.sh)
 
@@ -41,7 +43,7 @@ ravi auth login
 
 If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install) instead of curl.
 
-The CLI stores credentials in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
+The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
 
 ### Claude Code
 
@@ -74,16 +76,16 @@ ravi auth login
 
 ## Skills
 
-Skills teach CLI fallback workflows. On Cursor, prefer the connected MCP tools instead.
+Skills teach CLI fallback workflows. On Cursor, prefer the connected MCP tools instead — do not follow CLI login steps while MCP is connected.
 
 | Skill | Description | Example |
 |-------|-------------|---------|
-| **ravi** | Overview — MCP-first on Cursor; CLI fallback elsewhere | — |
+| **ravi** | Overview — Connect on Cursor; CLI fallback elsewhere | — |
 | **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
 | **ravi-inbox** | Read SMS and email — verification codes, links, incoming mail | `ravi inbox email` |
 | **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |
 | **ravi-email-writing** | Email content quality — subject lines, HTML formatting, anti-spam | — |
-| **ravi-login** | Device code onboarding, signup/login workflows, verification codes, credential storage | `ravi auth login` |
+| **ravi-login** | Device code onboarding (CLI), signup/login workflows, verification codes, credential storage | `ravi auth login` |
 | **ravi-passwords** | Website credentials (domain + username + password) | `ravi passwords list` |
 | **ravi-secrets** | Key-value secrets (API keys, env vars) | `ravi secrets list` |
 | **ravi-sso** | Prove identity to third-party services via short-lived tokens | `ravi sso token` |

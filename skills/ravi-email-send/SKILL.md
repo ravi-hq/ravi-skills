@@ -7,7 +7,7 @@ description: Send, compose, reply, reply-all, or forward emails with HTML format
 
 Compose new emails, reply to existing ones, or forward them from your Ravi email address.
 
-> **Cursor / MCP:** If Ravi MCP tools are connected, use them (identity, inbox, send email, send SMS) — no CLI. **CLI fallback:** if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor:** If Ravi MCP tools are connected, use them (identity, inbox, vault, send email, send SMS). Auth is the plugin **Connect** card — same as GitHub/Linear. Do **not** run `ravi auth login` or write `~/.ravi/config.json`. **CLI fallback** (non-Cursor / CI): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
 
 > **Writing quality matters.** Before drafting email content, see the **ravi-email-writing** skill for subject lines, HTML formatting, tone, and anti-spam best practices.
 
