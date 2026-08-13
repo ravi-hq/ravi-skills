@@ -7,7 +7,7 @@ description: Read incoming SMS or email messages — verification codes, verific
 
 Read SMS and email messages received at your Ravi identity. Use this after triggering a verification, or when expecting incoming messages — including the login/verification codes a service sends you.
 
-> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor / MCP:** If Ravi MCP tools are connected, use them (identity, inbox, send email, send SMS) — no CLI. **CLI fallback:** if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
 
 ## SMS (verification codes)
 

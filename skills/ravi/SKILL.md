@@ -7,9 +7,13 @@ description: Overview of Ravi and when to use each skill. Ravi gives AI agents r
 
 Ravi gives you (the agent) your own email address, phone number, and encrypted secret store. One identity bundles all three into a coherent persona.
 
-## Ensure the CLI is installed
+## Cursor: use remote MCP (no CLI)
 
-Skills and marketplace plugins do **not** include the `ravi` binary. Before any `ravi` command, install it if it is missing:
+If Ravi MCP tools are connected (Cursor plugin → `https://api.ravi.app/mcp`), use those tools for auth, identity, inbox, send email, and send SMS. Do **not** install a `ravi` binary on that path.
+
+## CLI fallback (Claude Code / skills.sh / non-Cursor)
+
+If MCP tools are **not** available, install the CLI before any `ravi` command:
 
 ```bash
 if ! command -v ravi >/dev/null 2>&1; then
@@ -26,7 +30,9 @@ The bundled copy lives next to this skill at `scripts/install-cli.sh`.
 
 ## Authentication
 
-The CLI handles authentication automatically. Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints a different URL).
+**Cursor MCP:** connect the plugin; Cursor authenticates against the remote server. If a device code is shown, send the human to **https://ravi.id/device**.
+
+**CLI fallback:** Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints a different URL).
 
 ## When to Use Each Skill
 

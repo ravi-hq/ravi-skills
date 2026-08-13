@@ -7,7 +7,7 @@ description: Get short-lived identity verification tokens to prove your Ravi ide
 
 Get a short-lived token to prove your Ravi identity to a third-party service that supports "Login with Ravi".
 
-> **CLI:** If `ravi` is missing, install it first: `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor / MCP:** If Ravi MCP tools are connected, use them (identity, inbox, send email, send SMS) — no CLI. **CLI fallback:** if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Authenticate with `ravi auth login` (human visits https://ravi.id/device).
 
 ## Get an SSO Token
 

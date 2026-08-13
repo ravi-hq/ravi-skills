@@ -1,10 +1,26 @@
-# Ravi — Agent Skills
+# Ravi — identity, email, and phone for AI agents
 
-Teaches AI agents how to use Ravi for identity, email, phone, and encrypted credentials via the Ravi CLI.
+Ravi gives agents a real email inbox, phone number, and encrypted credentials.
 
-Skills and marketplace plugins ship **docs plus an installer**, not the `ravi` binary. The install path below installs the CLI as a required step so `ravi auth login` works afterward.
+**On Cursor, install the plugin and connect.** That attaches a remote MCP server (identity, inbox, send email, send SMS). No CLI binary is required for that path.
 
-## Install
+## Cursor (plugin + remote MCP)
+
+1. Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
+2. Connect / authenticate when Cursor prompts. If a device code is shown, the human should open **https://ravi.id/device**.
+3. Use the connected MCP tools — identity, inbox, send email, send SMS.
+
+The plugin points at the hosted server:
+
+```text
+https://api.ravi.app/mcp
+```
+
+That is a remote HTTP/SSE MCP URL. It is not `npx`, not stdio, and not the `ravi` CLI.
+
+## Other agents (skills + CLI fallback)
+
+Claude Code, skills.sh, OpenClaw, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI.
 
 ### Any agent (skills.sh)
 
@@ -15,7 +31,7 @@ npx skills add ravi-hq/ravi-skills
 # Individual skill
 npx skills add ravi-hq/ravi-skills --skill ravi-identity
 
-# Required: install the Ravi CLI (skills do not include the binary)
+# Required on this path: install the Ravi CLI (skills do not include the binary)
 curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
 export PATH="$HOME/.ravi/bin:$PATH"
 
@@ -40,10 +56,6 @@ The plugin puts a `ravi` wrapper on PATH (`bin/ravi`) and installs the real CLI 
 ravi auth login
 ```
 
-### Cursor
-
-Install from the Cursor plugin marketplace, or add this repo as a marketplace (`.cursor-plugin/marketplace.json`). A session-start hook installs the CLI and prepends `~/.ravi/bin` to PATH. Then run `ravi auth login`.
-
 ### OpenClaw (ClawdHub)
 
 Skills are installed individually on ClawdHub:
@@ -62,9 +74,11 @@ ravi auth login
 
 ## Skills
 
+Skills teach CLI fallback workflows. On Cursor, prefer the connected MCP tools instead.
+
 | Skill | Description | Example |
 |-------|-------------|---------|
-| **ravi** | Overview — what Ravi is and when to use each skill | — |
+| **ravi** | Overview — MCP-first on Cursor; CLI fallback elsewhere | — |
 | **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
 | **ravi-inbox** | Read SMS and email — verification codes, links, incoming mail | `ravi inbox email` |
 | **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |

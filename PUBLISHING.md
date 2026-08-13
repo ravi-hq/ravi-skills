@@ -1,6 +1,6 @@
 # Publishing
 
-This repo distributes skills to three channels. Two are automatic, one requires a version bump.
+This repo distributes skills to three channels and a Cursor plugin with remote MCP. Two skill channels are automatic, one requires a version bump.
 
 ## Distribution Channels
 
@@ -12,7 +12,11 @@ Users install via `npx skills add ravi-hq/ravi-skills`. No publishing step — s
 
 Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing step — Claude Code reads `.claude-plugin/plugin.json` and `skills/` directly from the repo.
 
-### 3. ClawdHub / OpenClaw (requires version bump)
+### 3. Cursor plugin + remote MCP (automatic)
+
+Cursor loads `.cursor-plugin/` and `mcp.json`. The MCP entry is a **remote URL** (`https://api.ravi.app/mcp`), not stdio and not `npx`. Cursor users connect the plugin; they do not install the CLI.
+
+### 4. ClawdHub / OpenClaw (requires version bump)
 
 Users install via `clawdhub install <slug>`. Publishing happens automatically on push to `main` via GitHub Actions (`.github/workflows/publish.yml`).
 
@@ -59,12 +63,13 @@ This repo ships **two Claude Code plugins** from one marketplace:
 └── plugin.json               # plugin manifest for the `ravi` plugin
 .cursor-plugin/
 ├── marketplace.json          # Cursor marketplace index (same plugins)
-└── plugin.json               # Cursor plugin manifest (hooks → CLI install)
+└── plugin.json               # Cursor plugin manifest (remote MCP + hooks)
+mcp.json                      # Cursor remote MCP: https://api.ravi.app/mcp
 bin/
 └── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
 hooks/
 ├── hooks.json                # Claude Code SessionStart → install CLI
-└── cursor.json               # Cursor sessionStart → install CLI + PATH
+└── cursor.json               # Cursor sessionStart → MCP-first context (no CLI)
 scripts/
 ├── install-cli.sh            # downloads official ravi-hq/cli release into ~/.ravi/bin
 ├── ensure-cli.sh             # SessionStart helper (install + CLAUDE_ENV_FILE PATH)

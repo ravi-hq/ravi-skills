@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "ravi": {
+      "url": "https://api.ravi.app/mcp"
+    }
+  }
+}

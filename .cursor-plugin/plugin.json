@@ -1,11 +1,12 @@
 {
   "name": "ravi",
   "displayName": "Ravi",
-  "description": "Ravi — identity, email, phone, and credentials for AI agents",
-  "version": "2.2.0",
+  "description": "Ravi identity for agents — remote MCP for auth, identity, inbox, send email, and send SMS. No CLI required.",
+  "version": "2.3.0",
   "author": { "name": "Ravi" },
+  "homepage": "https://ravi.id",
   "repository": "https://github.com/ravi-hq/ravi-skills",
   "license": "MIT",
-  "keywords": ["ravi", "identity", "email", "sms", "credentials", "cli"],
+  "keywords": ["ravi", "identity", "email", "sms", "inbox", "mcp", "credentials"],
   "hooks": "./hooks/cursor.json"
 }

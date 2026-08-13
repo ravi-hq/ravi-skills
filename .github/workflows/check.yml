@@ -7,7 +7,7 @@ on:
 
 jobs:
   install-path:
-    name: Install path and CLI installer
+    name: MCP config, docs, and CLI installer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

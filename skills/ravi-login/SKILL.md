@@ -7,9 +7,11 @@ description: Sign up for and log into services using your Ravi identity — hand
 
 End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification by reading the code the service sends to your identity's SMS or email.
 
-## Step 0: Ensure the CLI is installed
+## Step 0: Prefer MCP, else install the CLI
 
-Skills and marketplace plugins do **not** include the `ravi` binary. Install it before `ravi auth login`:
+On Cursor, if Ravi MCP tools are connected, use them for auth/identity/inbox/send — do **not** install a CLI. Device approval URL: **https://ravi.id/device**.
+
+If MCP is not available, install the CLI before `ravi auth login`:
 
 ```bash
 if ! command -v ravi >/dev/null 2>&1; then

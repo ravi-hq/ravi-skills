@@ -4,14 +4,14 @@
     "name": "Ravi"
   },
   "metadata": {
-    "description": "Cursor plugins by Ravi",
-    "version": "2.2.0"
+    "description": "Cursor plugins by Ravi — remote MCP plus agent skills",
+    "version": "2.3.0"
   },
   "plugins": [
     {
       "name": "ravi",
       "source": "./",
-      "description": "Ravi — identity, email, phone, and credentials for AI agents"
+      "description": "Ravi — remote MCP for identity, inbox, email, and SMS"
     },
     {
       "name": "ravix",
