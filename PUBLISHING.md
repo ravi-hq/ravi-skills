@@ -14,7 +14,7 @@ Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing s
 
 ### 3. Cursor Marketplace (manual review)
 
-This repo is a **Cursor Plugin** (`.cursor-plugin/plugin.json` at repo root). The public listing is a **skills plugin**. A Connect card is shipping; it is not live yet. Do not treat remote MCP or the Connect card as the live auth path.
+This repo is a **Cursor Plugin** (`.cursor-plugin/plugin.json` at repo root). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is `scripts/install-cli.sh` + `ravi auth login` (human at https://ravi.id/device). `mcp.json` points at `https://api.ravi.app/mcp` (shipping, not live — that URL 404s today).
 
 Submit this public GitHub repo at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Cursor reviews submissions manually. After merge to `main`, submit (or re-submit) that URL — this file does not publish the listing by itself.
 

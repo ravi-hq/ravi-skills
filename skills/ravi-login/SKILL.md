@@ -7,11 +7,11 @@ description: Sign up for and log into services using your Ravi identity — hand
 
 End-to-end workflows for onboarding to Ravi, signing up for services, logging in, and completing verification by reading the code the service sends to your identity's SMS or email.
 
-## Step 0: Cursor Connect, else install the CLI
+## Step 0: Install the CLI (working auth)
 
-On Cursor, tap **Connect** on the Ravi plugin (same as GitHub/Linear). That is auth — per-agent credentials, a fenced `ravi_id_` bound to this agent. Use MCP tools for identity, inbox, and vault. Do **not** install a CLI, run `ravi auth login`, or write `~/.ravi/config.json`.
+Skills are the live surface on Cursor. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live.
 
-If MCP is not available (single agent / CI on Claude Code, skills.sh, or similar), install the CLI before `ravi auth login`:
+Working auth is the CLI (one identity per machine). Install it before `ravi auth login`:
 
 ```bash
 if ! command -v ravi >/dev/null 2>&1; then
@@ -80,7 +80,7 @@ ravi identity list
 ravi auth status
 ```
 
-If you need another agent on this host, use the HTTP API with a per-identity `ravi_id_` key (`Authorization: Bearer ravi_id_...`), or the Cursor Connect plugin (per-agent credentials).
+If you need another agent on this host, use the HTTP API with a per-identity `ravi_id_` key (`Authorization: Bearer ravi_id_...`).
 
 ---
 
@@ -177,7 +177,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Docs
 
-CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys, or Cursor Connect. Docs: https://docs.ravi.app
+CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys. Docs: https://docs.ravi.app
 
 ## Related Skills
 

@@ -4,19 +4,27 @@ Ravi gives AI agents their own identity (email inbox, real phone, encrypted vaul
 
 Docs: https://docs.ravi.app
 
-The CLI is for terminals and CI — not the Cursor front door.
-
 ## Cursor (plugin)
 
-Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
+Install the **Ravi** plugin from the Cursor marketplace (not live as a public listing yet), or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`). **Skills are the live surface.**
 
-**Skills are the live surface** — identity, inbox, vault, send email, send SMS. A Connect card is shipping with this plugin; it is **not live yet**. Do not treat remote MCP or the Connect card as the live auth path.
+A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.app/mcp` as a working connector (`mcp.json` is shipping / not live).
 
-The CLI is for terminals and CI, not this front door. Do **not** run `ravi auth login` or write `~/.ravi/config.json` as the Cursor listing path.
+Working auth today is the CLI (one identity per machine):
+
+```bash
+if ! command -v ravi >/dev/null 2>&1; then
+  bash scripts/install-cli.sh
+  export PATH="$HOME/.ravi/bin:$PATH"
+fi
+ravi auth login
+```
+
+The human approves at **https://ravi.id/device**.
 
 ## Other agents (skills + CLI — terminals / CI)
 
-Claude Code, skills.sh, OpenClaw, CI, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI. The CLI is **one identity per machine** — a fallback for a single agent or CI job, not a shared config for agents running side by side.
+The CLI is the working auth path today for terminals, CI, Claude Code, skills.sh, OpenClaw, and Cursor (Connect is not live). The CLI is **one identity per machine** — not a shared config for agents running side by side.
 
 ### Any agent (skills.sh)
 
@@ -70,11 +78,11 @@ ravi auth login
 
 ## Skills
 
-Skills teach CLI workflows for terminals and CI. The CLI is not the Cursor plugin listing path.
+Skills teach CLI workflows. Working auth is the CLI (terminals, CI, and Cursor until Connect is live).
 
 | Skill | Description | Example |
 |-------|-------------|---------|
-| **ravi** | Overview — Cursor plugin listing; CLI for terminals/CI | — |
+| **ravi** | Overview — skills on Cursor; CLI for working auth | — |
 | **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
 | **ravi-inbox** | Read SMS and email — verification codes, links, incoming mail | `ravi inbox email` |
 | **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |

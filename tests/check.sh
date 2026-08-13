@@ -167,9 +167,19 @@ for skill in skills/ravi/SKILL.md skills/ravi-login/SKILL.md skills/ravi-identit
   if grep -q 'Connect' "$skill"; then
     ok "$skill mentions Connect"
   else
-    bad "$skill must mention Connect as Cursor auth"
+    bad "$skill must mention Connect (as shipping / not live)"
   fi
 done
+
+# No skill may instruct tap-Connect as live auth.
+live_tap=$(grep -RIn --include='SKILL.md' -E 'tap \*\*Connect\*\*|tap Connect|Auth is the plugin \*\*Connect\*\*|That is auth' skills \
+  | grep -viE 'do not tap|not live|shipping' || true)
+if [ -n "$live_tap" ]; then
+  echo "$live_tap"
+  bad "no skill may tell an agent to tap Connect as live auth"
+else
+  ok "no skill tells an agent to tap Connect as live auth"
+fi
 
 if grep -q 'ensure-cli.sh' hooks/hooks.json; then
   ok "Claude SessionStart hook runs ensure-cli.sh"
@@ -189,10 +199,14 @@ else
   bad ".cursor-plugin/plugin.json must set hooks to ./hooks/cursor.json"
 fi
 
-if grep -q 'install-cli.sh' scripts/cursor-session-start.sh; then
-  bad "Cursor sessionStart must not install the CLI (MCP is the Cursor path)"
+if grep -q 'install-cli.sh' scripts/cursor-session-start.sh \
+   && grep -q 'ravi auth login' scripts/cursor-session-start.sh \
+   && grep -q 'https://ravi.id/device' scripts/cursor-session-start.sh \
+   && grep -qiE 'not live' scripts/cursor-session-start.sh \
+   && grep -q 'do not tap Connect' scripts/cursor-session-start.sh; then
+  ok "Cursor sessionStart: skills live; CLI working auth; Connect not live"
 else
-  ok "Cursor sessionStart does not install the CLI"
+  bad "cursor-session-start.sh must use CLI auth and must not treat Connect as live"
 fi
 
 [ -f mcp.json ] || bad "mcp.json missing"
@@ -249,7 +263,7 @@ if "command" in ravi or "args" in ravi:
     print("mcp.json must be remote URL, not stdio/command")
     ok = False
 if "headers" in ravi:
-    print("mcp.json must not use static headers; Connect is auth")
+    print("mcp.json must not use static headers")
     ok = False
 if ravi.get("url") != "https://api.ravi.app/mcp":
     print("mcp.json ravi.url must be https://api.ravi.app/mcp")
@@ -265,10 +279,10 @@ else
   bad "mcp.json is not a remote-only MCP config"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qE 'brew install|install-cli.sh'; then
-  bad "README Cursor section must not tell users to install the CLI first"
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'install-cli.sh'; then
+  ok "README Cursor section documents working CLI auth"
 else
-  ok "README Cursor section does not require a CLI install"
+  bad "README Cursor section must document install-cli.sh as working auth"
 fi
 
 listing_desc='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.'
@@ -332,10 +346,11 @@ else
   bad "README Cursor section must say skills are the live surface"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://api.ravi.app/mcp'; then
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://api.ravi.app/mcp' \
+   && awk '/^## Cursor/,/^## Other agents/' README.md | grep 'https://api.ravi.app/mcp' | grep -viE 'not live|not a working|404' >/dev/null; then
   bad "README Cursor section must not lead with https://api.ravi.app/mcp as a working connector"
 else
-  ok "README Cursor section does not lead with the 404 MCP URL"
+  ok "README Cursor section does not lead with the MCP URL as working"
 fi
 
 if grep -qE 'integrations/|production-patterns' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
@@ -350,38 +365,17 @@ else
   bad "README and plugin listing must link https://docs.ravi.app (no page names)"
 fi
 
-if grep -q 'terminals and CI' README.md; then
+if grep -q 'terminals and CI\|terminals, CI' README.md; then
   ok "README says CLI is for terminals and CI"
 else
-  bad "README must say the CLI is for terminals and CI, not the Cursor front door"
+  bad "README must say the CLI is for terminals and CI"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'ravi.id/device'; then
-  bad "README Cursor section must not use device-code auth (Connect is auth)"
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://ravi.id/device' \
+   && awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'ravi auth login'; then
+  ok "README Cursor section documents CLI auth (ravi.id/device)"
 else
-  ok "README Cursor section does not send users to ravi.id/device"
-fi
-
-cursor_login_instr=$(awk '/^## Cursor/,/^## Other agents/' README.md \
-  | grep 'ravi auth login' | grep -viE 'do \*\*not\*\*|do not|not run' || true)
-if [ -n "$cursor_login_instr" ]; then
-  echo "$cursor_login_instr"
-  bad "README Cursor section must not instruct ravi auth login"
-else
-  ok "README Cursor section does not instruct ravi auth login"
-fi
-
-if grep -q 'Connect' scripts/cursor-session-start.sh \
-   && grep -q 'live surface' scripts/cursor-session-start.sh \
-   && grep -q 'one identity per machine' scripts/cursor-session-start.sh \
-   && grep -qiE 'not live yet' scripts/cursor-session-start.sh \
-   && ! grep -q 'ravi auth login' scripts/cursor-session-start.sh \
-   && ! grep -q 'ravi.id/device' scripts/cursor-session-start.sh \
-   && ! grep -q 'config.json' scripts/cursor-session-start.sh \
-   && ! grep -q 'https://api.ravi.app/mcp' scripts/cursor-session-start.sh; then
-  ok "Cursor sessionStart: skills live surface; Connect not live; no CLI login"
-else
-  bad "cursor-session-start.sh must treat skills as live and must not mention CLI login, config.json, ravi.id/device, or the 404 MCP URL"
+  bad "README Cursor section must document working CLI auth at https://ravi.id/device"
 fi
 
 if grep -q 'https://cursor.com/marketplace/publish' PUBLISHING.md; then
