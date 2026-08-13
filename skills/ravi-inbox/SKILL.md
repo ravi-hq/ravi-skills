@@ -100,7 +100,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Docs
 
-[Email](https://docs.ravi.app/core-concepts/email/) · [Phone & SMS](https://docs.ravi.app/core-concepts/phone-and-sms/) · [CLI commands](https://docs.ravi.app/cli/commands/)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

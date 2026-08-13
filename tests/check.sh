@@ -67,10 +67,20 @@ else
   ok "no ravi.app/docs/ URLs"
 fi
 
-if grep -q 'https://docs.ravi.app/getting-started/authentication/' skills/ravi-login/SKILL.md; then
-  ok "ravi-login links getting-started authentication docs"
+if grep -q 'https://docs.ravi.app' skills/ravi-login/SKILL.md; then
+  ok "ravi-login links https://docs.ravi.app"
 else
-  bad "ravi-login must link https://docs.ravi.app/getting-started/authentication/"
+  bad "ravi-login must link https://docs.ravi.app (no page path)"
+fi
+
+page_paths=$(grep -RInE --exclude-dir=.git --include='*.md' --include='*.json' \
+     'docs\.ravi\.app/(getting-started|core-concepts)' \
+     README.md skills .cursor-plugin 2>/dev/null || true)
+if [ -n "$page_paths" ]; then
+  echo "$page_paths"
+  bad "docs links must be https://docs.ravi.app with no getting-started / core-concepts page names"
+else
+  ok "no getting-started / core-concepts docs page names"
 fi
 
 if grep -q 'https://ravi.id/device' skills/ravi-login/SKILL.md; then
@@ -253,6 +263,12 @@ if [ -n "$live_claim" ]; then
   bad "listing copy must not claim the Connect card already authenticates"
 else
   ok "listing copy does not claim Connect already authenticates"
+fi
+
+if grep -q 'https://docs.ravi.app' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  ok "listing copy links https://docs.ravi.app"
+else
+  bad "README and plugin listing must link https://docs.ravi.app (no page names)"
 fi
 
 if grep -q 'terminals and CI' README.md; then

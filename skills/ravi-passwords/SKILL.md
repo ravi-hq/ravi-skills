@@ -105,7 +105,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 ## Docs
 
-[Credential vault](https://docs.ravi.app/core-concepts/credential-vault/) · [CLI commands](https://docs.ravi.app/cli/commands/)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

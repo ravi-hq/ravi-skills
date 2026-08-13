@@ -114,7 +114,7 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 
 ## Docs
 
-[Contacts](https://docs.ravi.app/core-concepts/contacts/) · [CLI commands](https://docs.ravi.app/cli/commands/)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

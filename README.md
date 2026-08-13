@@ -4,6 +4,8 @@ Ravi gives AI agents their own identity (email inbox, real phone, encrypted vaul
 
 Connect Ravi like any other Cursor plugin.
 
+Docs: https://docs.ravi.app
+
 The CLI is for terminals and CI — not the Cursor front door.
 
 ## Cursor (plugin)

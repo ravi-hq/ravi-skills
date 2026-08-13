@@ -51,7 +51,7 @@ The third-party backend calls `POST https://api.ravi.app/api/sso/verify/` with `
 
 ## Docs
 
-[API endpoints](https://docs.ravi.app/api/endpoints/) · [CLI commands](https://docs.ravi.app/cli/commands/)
+[Docs](https://docs.ravi.app)
 
 ## Related Skills
 

@@ -177,7 +177,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Docs
 
-CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys, or Cursor Connect. See [Authentication](https://docs.ravi.app/getting-started/authentication/) and the [CLI command reference](https://docs.ravi.app/cli/commands/).
+CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys, or Cursor Connect. Docs: https://docs.ravi.app
 
 ## Related Skills
 
