@@ -271,20 +271,43 @@ else
   ok "README Cursor section does not require a CLI install"
 fi
 
-if grep -q 'Connect Ravi like any other Cursor plugin' README.md \
-   .cursor-plugin/plugin.json; then
-  ok "listing copy says Connect Ravi like any other Cursor plugin"
+listing_desc='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.'
+if grep -qF "$listing_desc" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  ok "listing copy uses the Growth description exactly"
 else
-  bad "README and plugin.json must say: Connect Ravi like any other Cursor plugin"
+  bad "README, plugin.json, and marketplace.json must use the Growth listing description"
 fi
 
-homepage='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.'
-web_line='For teams whose agents have to act on the web, not just talk.'
-if grep -qF "$homepage" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json \
-   && grep -qF "$web_line" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
-  ok "listing copy uses the Growth homepage lines"
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+want = "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk."
+plugin = json.loads(Path(".cursor-plugin/plugin.json").read_text())
+market = json.loads(Path(".cursor-plugin/marketplace.json").read_text())
+ok = True
+if plugin.get("displayName") != "Ravi — identity for AI agents":
+    print("plugin.json displayName must be: Ravi — identity for AI agents")
+    ok = False
+if plugin.get("description") != want:
+    print("plugin.json description must match Growth copy exactly")
+    ok = False
+ravi = next((p for p in market.get("plugins") or [] if p.get("name") == "ravi"), None)
+if not ravi or ravi.get("description") != want:
+    print("marketplace.json ravi plugin description must match Growth copy exactly")
+    ok = False
+sys.exit(0 if ok else 1)
+PY
+then
+  ok "plugin.json and marketplace.json ravi descriptions match Growth copy exactly"
 else
-  bad "README, plugin.json, and marketplace.json must use the Growth homepage copy"
+  bad "plugin.json / marketplace.json listing copy is not exact"
+fi
+
+if grep -nE 'like any other plugin|like any other Cursor plugin' \
+     README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  bad "listing copy must not say like any other plugin"
+else
+  ok "listing copy does not say like any other plugin"
 fi
 
 if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qiE 'not live yet'; then

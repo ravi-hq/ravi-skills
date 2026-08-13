@@ -1,7 +1,7 @@
 {
   "name": "ravi",
-  "displayName": "Ravi",
-  "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk. Connect Ravi like any other Cursor plugin.",
+  "displayName": "Ravi — identity for AI agents",
+  "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.",
   "version": "2.3.0",
   "author": { "name": "Ravi" },
   "homepage": "https://ravi.id",

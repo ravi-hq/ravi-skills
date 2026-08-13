@@ -1,6 +1,6 @@
-# Ravi
+# Ravi — identity for AI agents
 
-Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk. Connect Ravi like any other Cursor plugin.
+Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.
 
 Docs: https://docs.ravi.app
 
@@ -8,7 +8,7 @@ The CLI is for terminals and CI — not the Cursor front door.
 
 ## Cursor (plugin)
 
-Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`). Connect Ravi like any other Cursor plugin.
+Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
 
 **Skills are the live surface** — identity, inbox, vault, send email, send SMS. A Connect card is shipping with this plugin; it is **not live yet**. Do not treat remote MCP or the Connect card as the live auth path.
 
