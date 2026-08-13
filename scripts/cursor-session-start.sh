@@ -5,7 +5,7 @@ set -euo pipefail
 # Consume hook stdin (JSON event payload).
 cat >/dev/null || true
 
-context="Ravi on Cursor is a remote MCP connector at https://api.ravi.app/mcp. Auth is the plugin Connect card (same as GitHub/Linear): per-agent credentials, a fenced ravi_id_ bound to this agent. Use MCP tools for identity, inbox, vault, send email, and send SMS. Do not install a ravi binary or use CLI login on this path. If tools are missing, ask the human to tap Connect on the Ravi plugin. CLI is one identity per machine and only for a single agent or CI — not a shared file for side-by-side agents. Extra agents use Connect or the HTTP API with per-identity ravi_id_ keys."
+context="Ravi on Cursor is a skills plugin. Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is not live yet — do not treat remote MCP or Connect as the live auth path. Do not install a ravi binary on the Cursor listing path. CLI is for terminals and CI: one identity per machine. Extra agents use the HTTP API with per-identity ravi_id_ keys."
 
 if command -v python3 >/dev/null 2>&1; then
   CONTEXT_VALUE="$context" python3 - <<'PY'

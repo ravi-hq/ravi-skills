@@ -1,8 +1,6 @@
 # Ravi
 
-Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.
-
-Connect Ravi like any other Cursor plugin.
+Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk. Connect Ravi like any other Cursor plugin.
 
 Docs: https://docs.ravi.app
 
@@ -10,16 +8,9 @@ The CLI is for terminals and CI — not the Cursor front door.
 
 ## Cursor (plugin)
 
-1. Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
-2. Connect Ravi like any other Cursor plugin.
+Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`). Connect Ravi like any other Cursor plugin.
 
-The plugin ships a remote MCP URL (not `npx`, not stdio, not the `ravi` CLI):
-
-```text
-https://api.ravi.app/mcp
-```
-
-A Connect card is shipping with this plugin; it is **not live yet**. Do not treat Connect as already authenticating.
+**Skills are the live surface** — identity, inbox, vault, send email, send SMS. A Connect card is shipping with this plugin; it is **not live yet**. Do not treat remote MCP or the Connect card as the live auth path.
 
 The CLI is for terminals and CI, not this front door. Do **not** run `ravi auth login` or write `~/.ravi/config.json` as the Cursor listing path.
 
@@ -46,7 +37,7 @@ ravi auth login
 
 If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install) instead of curl.
 
-The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed. Do **not** flip that file to multiplex agents. Extra agents on the same host use the HTTP API with per-identity `ravi_id_` keys, or the Cursor Connect plugin.
+The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed. Do **not** flip that file to multiplex agents. Extra agents on the same host use the HTTP API with per-identity `ravi_id_` keys.
 
 ### Claude Code
 

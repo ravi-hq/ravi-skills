@@ -1,6 +1,6 @@
 # Publishing
 
-This repo distributes skills to three channels and a Cursor plugin with remote MCP. Two skill channels are automatic, one requires a version bump.
+This repo distributes skills to skills.sh, Claude Code, the Cursor Marketplace, and ClawdHub. Two skill channels are automatic, ClawdHub requires a version bump, and the public Cursor Marketplace listing is a manual submit.
 
 ## Distribution Channels
 
@@ -12,9 +12,13 @@ Users install via `npx skills add ravi-hq/ravi-skills`. No publishing step — s
 
 Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing step — Claude Code reads `.claude-plugin/plugin.json` and `skills/` directly from the repo.
 
-### 3. Cursor plugin + remote MCP (automatic)
+### 3. Cursor Marketplace (manual review)
 
-Cursor loads `.cursor-plugin/` and `mcp.json`. The MCP entry is a **remote URL** (`https://api.ravi.app/mcp`), not stdio and not `npx`. Auth is the plugin **Connect** card (same as GitHub/Linear); that is per-agent credentials (a fenced `ravi_id_`). Cursor users do not run `ravi auth login` or write `~/.ravi/config.json`. The CLI is one identity per machine and is only the fallback for a single agent / CI.
+This repo is a **Cursor Plugin** (`.cursor-plugin/plugin.json` at repo root). The public listing is a **skills plugin**. A Connect card is shipping; it is not live yet. Do not treat remote MCP or the Connect card as the live auth path.
+
+Submit this public GitHub repo at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Cursor reviews submissions manually. After merge to `main`, submit (or re-submit) that URL — this file does not publish the listing by itself.
+
+skills.sh and Claude Code stay as they are (channels 1 and 2). They do not go through Cursor Marketplace review.
 
 ### 4. ClawdHub / OpenClaw (requires version bump)
 
@@ -62,9 +66,9 @@ This repo ships **two Claude Code plugins** from one marketplace:
 ├── marketplace.json          # lists both plugins
 └── plugin.json               # plugin manifest for the `ravi` plugin
 .cursor-plugin/
-├── marketplace.json          # Cursor marketplace index (same plugins)
-└── plugin.json               # Cursor plugin manifest (remote MCP + hooks)
-mcp.json                      # Cursor remote MCP: https://api.ravi.app/mcp
+├── marketplace.json          # Cursor marketplace index
+└── plugin.json               # Cursor plugin manifest (skills plugin + hooks + logo)
+mcp.json                      # shipping MCP URL (not the live listing path; endpoint is not live)
 bin/
 └── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
 hooks/

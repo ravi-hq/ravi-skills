@@ -1,12 +1,14 @@
 {
   "name": "ravi",
   "displayName": "Ravi",
-  "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. Connect Ravi like any other Cursor plugin. https://docs.ravi.app",
+  "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk. Connect Ravi like any other Cursor plugin.",
   "version": "2.3.0",
   "author": { "name": "Ravi" },
   "homepage": "https://ravi.id",
   "repository": "https://github.com/ravi-hq/ravi-skills",
   "license": "MIT",
   "keywords": ["ravi", "identity", "email", "sms", "inbox", "mcp", "credentials"],
+  "logo": "assets/logo.svg",
+  "skills": "skills",
   "hooks": "./hooks/cursor.json"
 }

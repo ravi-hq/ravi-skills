@@ -196,11 +196,46 @@ else
 fi
 
 [ -f mcp.json ] || bad "mcp.json missing"
+[ -f assets/logo.svg ] || [ -f assets/logo.png ] || bad "assets/logo.svg or assets/logo.png missing"
 
-if grep -q 'https://api.ravi.app/mcp' mcp.json README.md; then
-  ok "Cursor MCP URL is https://api.ravi.app/mcp"
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+p = json.loads(Path(".cursor-plugin/plugin.json").read_text())
+ok = True
+def need(key, pred):
+    global ok
+    if not pred(p.get(key)):
+        print(f"plugin.json missing or invalid: {key}")
+        ok = False
+need("name", lambda v: v == "ravi")
+need("description", lambda v: isinstance(v, str) and "Ravi gives AI agents their own identity" in v)
+need("version", lambda v: isinstance(v, str) and len(v) > 0)
+need("author", lambda v: isinstance(v, dict) and v.get("name"))
+need("homepage", lambda v: v == "https://ravi.id")
+need("repository", lambda v: v == "https://github.com/ravi-hq/ravi-skills")
+need("license", lambda v: v == "MIT")
+need("keywords", lambda v: isinstance(v, list) and len(v) > 0)
+need("logo", lambda v: isinstance(v, str) and v.startswith("assets/logo."))
+logo = p.get("logo")
+if isinstance(logo, str) and not Path(logo).is_file():
+    print(f"plugin.json logo file missing: {logo}")
+    ok = False
+if "ravix" in (p.get("description") or "").lower():
+    print("plugin.json description must not mention ravix")
+    ok = False
+sys.exit(0 if ok else 1)
+PY
+then
+  ok "plugin.json is marketplace-submittable (name ravi, logo, listing fields)"
 else
-  bad "mcp.json and README must use https://api.ravi.app/mcp"
+  bad "plugin.json is not ready for cursor.com/marketplace/publish"
+fi
+
+if grep -q 'https://api.ravi.app/mcp' mcp.json; then
+  ok "mcp.json keeps shipping URL https://api.ravi.app/mcp"
+else
+  bad "mcp.json must keep https://api.ravi.app/mcp (shipping, not the listing lead)"
 fi
 
 if python3 - <<'PY'
@@ -244,10 +279,12 @@ else
 fi
 
 homepage='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.'
-if grep -qF "$homepage" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
-  ok "listing copy uses the Growth homepage line"
+web_line='For teams whose agents have to act on the web, not just talk.'
+if grep -qF "$homepage" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json \
+   && grep -qF "$web_line" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  ok "listing copy uses the Growth homepage lines"
 else
-  bad "README, plugin.json, and marketplace.json must use the Growth homepage line"
+  bad "README, plugin.json, and marketplace.json must use the Growth homepage copy"
 fi
 
 if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qiE 'not live yet'; then
@@ -256,13 +293,32 @@ else
   bad "README Cursor section must say the Connect card is shipping / not live yet"
 fi
 
-live_claim=$(grep -nE 'That is auth|tap Connect for auth|Auth is the Connect card' \
-  README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json || true)
+live_claim=$(grep -nE 'That is auth|tap Connect for auth|Auth is the Connect card|live auth path' \
+  README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json 2>/dev/null \
+  | grep -v 'not the live auth path' | grep -v 'Do not treat' || true)
 if [ -n "$live_claim" ]; then
   echo "$live_claim"
   bad "listing copy must not claim the Connect card already authenticates"
 else
   ok "listing copy does not claim Connect already authenticates"
+fi
+
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'Skills are the live surface'; then
+  ok "README Cursor section leads with skills as the live surface"
+else
+  bad "README Cursor section must say skills are the live surface"
+fi
+
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://api.ravi.app/mcp'; then
+  bad "README Cursor section must not lead with https://api.ravi.app/mcp as a working connector"
+else
+  ok "README Cursor section does not lead with the 404 MCP URL"
+fi
+
+if grep -qE 'integrations/|production-patterns' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  bad "listing copy must not add integrations/ or production-patterns pages"
+else
+  ok "listing copy has no integrations/ or production-patterns pages"
 fi
 
 if grep -q 'https://docs.ravi.app' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
@@ -293,20 +349,22 @@ else
 fi
 
 if grep -q 'Connect' scripts/cursor-session-start.sh \
-   && grep -q 'per-agent' scripts/cursor-session-start.sh \
+   && grep -q 'live surface' scripts/cursor-session-start.sh \
    && grep -q 'one identity per machine' scripts/cursor-session-start.sh \
+   && grep -qiE 'not live yet' scripts/cursor-session-start.sh \
    && ! grep -q 'ravi auth login' scripts/cursor-session-start.sh \
    && ! grep -q 'ravi.id/device' scripts/cursor-session-start.sh \
-   && ! grep -q 'config.json' scripts/cursor-session-start.sh; then
-  ok "Cursor sessionStart uses Connect; no CLI login; one identity per machine"
+   && ! grep -q 'config.json' scripts/cursor-session-start.sh \
+   && ! grep -q 'https://api.ravi.app/mcp' scripts/cursor-session-start.sh; then
+  ok "Cursor sessionStart: skills live surface; Connect not live; no CLI login"
 else
-  bad "cursor-session-start.sh must use Connect (per-agent) and must not mention CLI login, config.json, or ravi.id/device"
+  bad "cursor-session-start.sh must treat skills as live and must not mention CLI login, config.json, ravi.id/device, or the 404 MCP URL"
 fi
 
-if grep -qiE 'remote MCP|Connect' README.md && grep -q 'https://api.ravi.app/mcp' README.md; then
-  ok "README documents Cursor remote MCP + Connect"
+if grep -q 'https://cursor.com/marketplace/publish' PUBLISHING.md; then
+  ok "PUBLISHING.md documents Cursor Marketplace submit"
 else
-  bad "README must document Cursor remote MCP and Connect as the primary Cursor path"
+  bad "PUBLISHING.md must add Cursor Marketplace submit at https://cursor.com/marketplace/publish"
 fi
 
 
