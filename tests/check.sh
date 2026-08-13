@@ -50,17 +50,61 @@ else
   bad "docs should mention bin/ravi"
 fi
 
-if grep -R -nE 'api\.ravi\.app/api/auth/device|ravi\.app/api/auth/device' \
-    --exclude-dir=.git --include='*.md' --include='*.sh' --include='*.json' .; then
-  bad "stale device-login URL found (use https://ravi.id/device)"
+# Presenting the apex API host is wrong. Lines that only forbid that host are allowed.
+stale_api_host=$(grep -RInE --exclude-dir=.git --exclude-dir=tests --include='*.md' --include='*.sh' --include='*.json' \
+     'https://ravi\.app/api/' . 2>/dev/null | grep -viE 'never |wrong host' || true)
+if [ -n "$stale_api_host" ]; then
+  echo "$stale_api_host"
+  bad "wrong API host (apex /api) — use api.ravi.app or https://ravi.id/device"
 else
-  ok "no stale device-login API URLs"
+  ok "no apex /api hosts presented as canonical"
+fi
+
+if grep -R -nE 'ravi\.app/docs/' \
+    --exclude-dir=.git --exclude-dir=tests --include='*.md' --include='*.sh' --include='*.json' .; then
+  bad "dead docs host (use https://docs.ravi.app/...)"
+else
+  ok "no ravi.app/docs/ URLs"
+fi
+
+if grep -q 'https://docs.ravi.app/getting-started/authentication/' skills/ravi-login/SKILL.md; then
+  ok "ravi-login links getting-started authentication docs"
+else
+  bad "ravi-login must link https://docs.ravi.app/getting-started/authentication/"
 fi
 
 if grep -q 'https://ravi.id/device' skills/ravi-login/SKILL.md README.md; then
   ok "device login docs use https://ravi.id/device"
 else
   bad "ravi-login skill and README must mention https://ravi.id/device"
+fi
+
+# Shipped auth is login/logout/status + ravi_mgmt_/ravi_id_ keys.
+# Lines that only forbid JWT / auth.json / refresh / etc. are allowed.
+stale_auth=$(grep -RInE --exclude-dir=.git --include='*.md' \
+     'auth\.json|RAVI_ACCESS_TOKEN|X-Ravi-Identity|ravi auth refresh|\bJWT\b' \
+     skills plugins README.md 2>/dev/null \
+     | grep -viE 'do not|do \*\*not\*\*|never |there is no|not look' || true)
+if [ -n "$stale_auth" ]; then
+  echo "$stale_auth"
+  bad "stale auth model (no JWT, auth.json, RAVI_ACCESS_TOKEN, ravi auth refresh, X-Ravi-Identity)"
+else
+  ok "skills do not document JWT/auth.json/RAVI_ACCESS_TOKEN/refresh/X-Ravi-Identity as shipped auth"
+fi
+
+if grep -q 'ravi_mgmt_' skills/ravi-login/SKILL.md && grep -q 'ravi_id_' skills/ravi-login/SKILL.md \
+   && grep -q '~/.ravi/config.json' skills/ravi-login/SKILL.md; then
+  ok "ravi-login documents ravi_mgmt_ / ravi_id_ keys in config.json"
+else
+  bad "ravi-login must document ravi_mgmt_ / ravi_id_ keys in ~/.ravi/config.json"
+fi
+
+if grep -q 'ravi auth login' skills/ravi-login/SKILL.md \
+   && grep -q 'logout' skills/ravi-login/SKILL.md \
+   && grep -q 'status' skills/ravi-login/SKILL.md; then
+  ok "ravi-login documents login / logout / status"
+else
+  bad "ravi-login must document ravi auth login / logout / status only"
 fi
 
 # Skills that invoke the CLI must tell agents how to install it.

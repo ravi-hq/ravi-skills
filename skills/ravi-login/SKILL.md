@@ -48,20 +48,26 @@ If you're not authenticated, run the login flow. This is a one-time setup — th
 ravi auth login
 ```
 
+Auth commands are **`login`**, **`logout`**, and **`status` only**. There is no `ravi auth refresh`.
+
 The CLI will:
 
-1. Initiate a device code flow
+1. Initiate a device code flow against `https://api.ravi.app`
 2. Display a URL and code for the human to visit
 3. Poll until the human approves
-4. Store all keys in `~/.ravi/config.json`
+4. Store long-lived `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json`
 
-Present the **canonical** URL and code clearly to the human (use this URL even if the CLI prints a different one):
+Present the **public front door** and code clearly to the human (use this even if the CLI prints a different URL):
 
 ```
 Please visit https://ravi.id/device and enter the code: ABCD-1234
 ```
 
+The CLI may print `https://api.ravi.app/api/auth/device/verify/` — that is the shipped API verify URL. Still send the human to **https://ravi.id/device**. Never `https://ravi.app/api/auth/device/verify/` (wrong host).
+
 The human visits https://ravi.id/device, signs in with Google, and approves the request.
+
+Do **not** look for JWTs, `~/.ravi/auth.json`, `RAVI_ACCESS_TOKEN`, or an `X-Ravi-Identity` header. The CLI reads `~/.ravi/config.json` automatically.
 
 ---
 
@@ -170,9 +176,9 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 - **Rate limits apply to sending** — per inbox, per day: 100/day (free) or 500/day (paid); no hourly cap. See `ravi-email-send` skill for details.
 - **Email quality matters** — if you need to send an email during a workflow, see **ravi-email-writing** for formatting and anti-spam tips.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Device Auth](https://ravi.app/docs/schema/device-auth.json) | [Auth & Keys](https://ravi.app/docs/schema/auth.json)
+CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. See [Authentication](https://docs.ravi.app/getting-started/authentication/) and the [CLI command reference](https://docs.ravi.app/cli/commands/).
 
 ## Related Skills
 

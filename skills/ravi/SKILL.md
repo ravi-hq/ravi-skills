@@ -32,7 +32,7 @@ The bundled copy lives next to this skill at `scripts/install-cli.sh`.
 
 **Cursor MCP:** connect the plugin; Cursor authenticates against the remote server. If a device code is shown, send the human to **https://ravi.id/device**.
 
-**CLI fallback:** Run `ravi auth login` to onboard — this is a one-time setup. The CLI stores keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints a different URL).
+**CLI fallback:** Run `ravi auth login` (`logout` / `status` are the only other auth commands) — this is a one-time setup. The CLI stores `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints `https://api.ravi.app/api/auth/device/verify/`). Never `https://ravi.app/api/...`.
 
 ## When to Use Each Skill
 

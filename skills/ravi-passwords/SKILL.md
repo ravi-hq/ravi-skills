@@ -103,9 +103,9 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 - **Auto-generate password** — if `--password` is omitted when creating an entry, the server auto-generates a strong password. The generated password is returned in the response.
 - **Domain normalization** — the server strips subdomains (e.g. `app.example.com` becomes `example.com`). Pass the bare domain or a full URL — both work.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Passwords](https://ravi.app/docs/schema/passwords.json)
+[Credential vault](https://docs.ravi.app/core-concepts/credential-vault/) · [CLI commands](https://docs.ravi.app/cli/commands/)
 
 ## Related Skills
 

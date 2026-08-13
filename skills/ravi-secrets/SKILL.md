@@ -86,9 +86,9 @@ ravi secrets set GITHUB_TOKEN "ghp_..."
 - **Keys are auto-uppercased** — keys are automatically uppercased (e.g. `test_key` becomes `TEST_KEY`). Keys must match `^[A-Z][A-Z0-9_]*$` after uppercasing.
 - **Keys are for lookup** — values and notes are encrypted. Use descriptive key names like `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Secrets](https://ravi.app/docs/schema/secrets.json)
+[Credential vault](https://docs.ravi.app/core-concepts/credential-vault/) · [CLI commands](https://docs.ravi.app/cli/commands/)
 
 ## Related Skills
 

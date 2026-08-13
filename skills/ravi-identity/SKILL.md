@@ -86,9 +86,9 @@ ravi identity use <uuid>
 - **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
 - **Not authenticated?** — install the CLI if needed (see the **ravi** skill), then run `ravi auth login` to onboard. Send the human to https://ravi.id/device.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Identities](https://ravi.app/docs/schema/identities.json)
+[Identities](https://docs.ravi.app/core-concepts/identities/) · [CLI commands](https://docs.ravi.app/cli/commands/)
 
 ## Related Skills
 

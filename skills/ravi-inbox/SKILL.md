@@ -98,9 +98,9 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 - **Poll, don't rush** — SMS/email delivery takes 2-10 seconds. Use `sleep 5` before checking.
 - **Auto-contacts** — Ravi automatically creates or updates contacts when you send or receive email/SMS. Use `ravi contacts search` to look up people you've interacted with.
 
-## Full API Reference
+## Docs
 
-For complete endpoint details, request/response schemas, and parameters: [Inbox](https://ravi.app/docs/schema/inbox.json) | [Messages](https://ravi.app/docs/schema/messages.json)
+[Email](https://docs.ravi.app/core-concepts/email/) · [Phone & SMS](https://docs.ravi.app/core-concepts/phone-and-sms/) · [CLI commands](https://docs.ravi.app/cli/commands/)
 
 ## Related Skills
 
