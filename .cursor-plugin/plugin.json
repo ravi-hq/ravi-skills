@@ -1,7 +1,7 @@
 {
   "name": "ravi",
   "displayName": "Ravi",
-  "description": "Ravi identity for agents — tap Connect for auth (identity, inbox, vault). Remote MCP, no CLI.",
+  "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. Connect Ravi like any other Cursor plugin.",
   "version": "2.3.0",
   "author": { "name": "Ravi" },
   "homepage": "https://ravi.id",

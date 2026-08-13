@@ -1,26 +1,27 @@
-# Ravi — identity, email, and phone for AI agents
+# Ravi
 
-Ravi gives agents a real email inbox, phone number, and encrypted credentials.
+Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.
 
-**On Cursor, install the plugin and tap Connect.** That is auth (same as GitHub or Linear). The agent gets identity, inbox, and vault tools with schemas. No CLI.
+Connect Ravi like any other Cursor plugin.
 
-## Cursor (plugin + Connect)
+The CLI is for terminals and CI — not the Cursor front door.
+
+## Cursor (plugin)
 
 1. Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
-2. Tap **Connect** when Cursor shows the Ravi card. That is per-agent credentials — a fenced `ravi_id_` key bound to this agent.
-3. Use the connected MCP tools — identity, inbox, vault, send email, send SMS.
+2. Connect Ravi like any other Cursor plugin.
 
-Do **not** run `ravi auth login`. Do **not** write `~/.ravi/config.json`. Do **not** install a `ravi` binary on this path.
-
-The plugin points at a remote MCP server:
+The plugin ships a remote MCP URL (not `npx`, not stdio, not the `ravi` CLI):
 
 ```text
 https://api.ravi.app/mcp
 ```
 
-That is a remote HTTP/SSE MCP URL. It is not `npx`, not stdio, and not the `ravi` CLI. Auth is the Connect card, not a device-code flow.
+A Connect card is shipping with this plugin; it is **not live yet**. Do not treat Connect as already authenticating.
 
-## Other agents (skills + CLI fallback)
+The CLI is for terminals and CI, not this front door. Do **not** run `ravi auth login` or write `~/.ravi/config.json` as the Cursor listing path.
+
+## Other agents (skills + CLI — terminals / CI)
 
 Claude Code, skills.sh, OpenClaw, CI, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI. The CLI is **one identity per machine** — a fallback for a single agent or CI job, not a shared config for agents running side by side.
 
@@ -76,11 +77,11 @@ ravi auth login
 
 ## Skills
 
-Skills teach CLI fallback workflows. On Cursor, prefer the connected MCP tools instead — do not follow CLI login steps while MCP is connected.
+Skills teach CLI workflows for terminals and CI. The CLI is not the Cursor plugin listing path.
 
 | Skill | Description | Example |
 |-------|-------------|---------|
-| **ravi** | Overview — Connect on Cursor; CLI fallback elsewhere | — |
+| **ravi** | Overview — Cursor plugin listing; CLI for terminals/CI | — |
 | **ravi-identity** | Get identity details, create identities, list domains | `ravi identity list` |
 | **ravi-inbox** | Read SMS and email — verification codes, links, incoming mail | `ravi inbox email` |
 | **ravi-email-send** | Compose, reply, forward with HTML and attachments | `ravi email compose --to "..." --subject "..." --body "..."` |

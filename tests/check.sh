@@ -226,10 +226,39 @@ else
   ok "README Cursor section does not require a CLI install"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qi 'Connect'; then
-  ok "README Cursor section uses Connect as auth"
+if grep -q 'Connect Ravi like any other Cursor plugin' README.md \
+   .cursor-plugin/plugin.json; then
+  ok "listing copy says Connect Ravi like any other Cursor plugin"
 else
-  bad "README Cursor section must tell users to tap Connect (same as GitHub/Linear)"
+  bad "README and plugin.json must say: Connect Ravi like any other Cursor plugin"
+fi
+
+homepage='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.'
+if grep -qF "$homepage" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  ok "listing copy uses the Growth homepage line"
+else
+  bad "README, plugin.json, and marketplace.json must use the Growth homepage line"
+fi
+
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -qiE 'not live yet'; then
+  ok "README Cursor section does not claim Connect is live"
+else
+  bad "README Cursor section must say the Connect card is shipping / not live yet"
+fi
+
+live_claim=$(grep -nE 'That is auth|tap Connect for auth|Auth is the Connect card' \
+  README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json || true)
+if [ -n "$live_claim" ]; then
+  echo "$live_claim"
+  bad "listing copy must not claim the Connect card already authenticates"
+else
+  ok "listing copy does not claim Connect already authenticates"
+fi
+
+if grep -q 'terminals and CI' README.md; then
+  ok "README says CLI is for terminals and CI"
+else
+  bad "README must say the CLI is for terminals and CI, not the Cursor front door"
 fi
 
 if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'ravi.id/device'; then

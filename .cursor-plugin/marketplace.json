@@ -4,14 +4,14 @@
     "name": "Ravi"
   },
   "metadata": {
-    "description": "Cursor plugins by Ravi — remote MCP plus agent skills",
+    "description": "Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create.",
     "version": "2.3.0"
   },
   "plugins": [
     {
       "name": "ravi",
       "source": "./",
-      "description": "Ravi — Connect for auth; identity, inbox, and vault MCP tools"
+      "description": "Connect Ravi like any other Cursor plugin. Identity, inbox, and vault for AI agents."
     },
     {
       "name": "ravix",
