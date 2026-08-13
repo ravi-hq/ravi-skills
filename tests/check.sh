@@ -113,6 +113,32 @@ else
   bad "ravi-login must document ravi auth login / logout / status only"
 fi
 
+for f in skills/ravi/SKILL.md skills/ravi-identity/SKILL.md skills/ravi-login/SKILL.md README.md; do
+  if grep -qi 'one identity per machine' "$f"; then
+    ok "$f states CLI is one identity per machine"
+  else
+    bad "$f must state the CLI is one identity per machine"
+  fi
+done
+
+if grep -q 'HTTP API' skills/ravi/SKILL.md skills/ravi-identity/SKILL.md skills/ravi-login/SKILL.md README.md \
+   && grep -q 'ravi_id_' skills/ravi/SKILL.md skills/ravi-identity/SKILL.md skills/ravi-login/SKILL.md README.md; then
+  ok "multi-agent path is HTTP API with per-identity ravi_id_ keys (or Connect)"
+else
+  bad "overview, identity, login, and README must point multi-agent at HTTP API ravi_id_ keys or Connect"
+fi
+
+# Do not instruct identity switching via shared CLI config (prohibition lines are allowed).
+switch_instr=$(grep -RInE --exclude-dir=.git --include='*.md' \
+     'ravi identity use|--identity' skills README.md PUBLISHING.md 2>/dev/null \
+     | grep -viE 'do not|do \*\*not\*\*|never |not flip|not multiplex|not a multi-agent' || true)
+if [ -n "$switch_instr" ]; then
+  echo "$switch_instr"
+  bad "skills must not tell agents to flip CLI identity / --identity to run side by side"
+else
+  ok "skills do not instruct ravi identity use / --identity as a multi-agent switch"
+fi
+
 # Skills that invoke the CLI must tell agents how to install it.
 for skill in skills/ravi/SKILL.md skills/ravi-login/SKILL.md skills/ravi-identity/SKILL.md \
              skills/ravi-inbox/SKILL.md skills/ravi-email-send/SKILL.md skills/ravi-passwords/SKILL.md \
@@ -222,12 +248,14 @@ else
 fi
 
 if grep -q 'Connect' scripts/cursor-session-start.sh \
+   && grep -q 'per-agent' scripts/cursor-session-start.sh \
+   && grep -q 'one identity per machine' scripts/cursor-session-start.sh \
    && ! grep -q 'ravi auth login' scripts/cursor-session-start.sh \
    && ! grep -q 'ravi.id/device' scripts/cursor-session-start.sh \
    && ! grep -q 'config.json' scripts/cursor-session-start.sh; then
-  ok "Cursor sessionStart uses Connect; no CLI login"
+  ok "Cursor sessionStart uses Connect; no CLI login; one identity per machine"
 else
-  bad "cursor-session-start.sh must use Connect and must not mention CLI login, config.json, or ravi.id/device"
+  bad "cursor-session-start.sh must use Connect (per-agent) and must not mention CLI login, config.json, or ravi.id/device"
 fi
 
 if grep -qiE 'remote MCP|Connect' README.md && grep -q 'https://api.ravi.app/mcp' README.md; then

@@ -7,7 +7,7 @@ description: Get your agent identity (email, phone, owner name) and manage ident
 
 You have access to Ravi, an identity provider that gives you your own phone number, email address, and secret store.
 
-> **Cursor:** If Ravi MCP tools are connected, use them (identity, inbox, vault, send email, send SMS). Auth is the plugin **Connect** card — same as GitHub/Linear. Do **not** run `ravi auth login` or write `~/.ravi/config.json`. **CLI fallback** (non-Cursor / CI): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor:** If Ravi MCP tools are connected, use them (identity, inbox, vault, send email, send SMS). Auth is the plugin **Connect** card — per-agent credentials, same as GitHub/Linear. Do **not** run `ravi auth login` or write `~/.ravi/config.json`. **CLI fallback** (one identity per machine — single agent / CI): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
 
 ## Your Identity
 
@@ -73,18 +73,21 @@ Notes:
   identity, hit the API directly: `POST /api/identities/<uuid>/provision-phone/`
   (no CLI subcommand yet). It returns 409 if the identity already has a phone.
 
-## Switching Identities
+## One identity per machine
+
+The CLI binds to **one identity per machine**. Shared `~/.ravi/config.json` is not a multi-agent runtime. Do **not** run `ravi identity use` or pass `--identity` to flip that file so agents can run side by side.
 
 ```bash
-# Switch to a different identity
-ravi identity use <uuid>
+ravi identity list
 ```
+
+Another agent on this host must use the HTTP API with a per-identity `ravi_id_` key (`Authorization: Bearer ravi_id_...`), or the Cursor Connect plugin (per-agent credentials).
 
 ## Important Notes
 
 - **Identity name for forms** — use the identity name for signup forms, not the account owner's name.
 - **Identities are permanent** — each identity has its own email, phone, and secrets. Don't create new identities unless the user asks.
-- **Not authenticated?** — On Cursor, ask the human to tap **Connect** on the Ravi plugin (do not run `ravi auth login`). On CLI, install if needed (see the **ravi** skill), then run `ravi auth login`. Send the human to https://ravi.id/device.
+- **Not authenticated?** — On Cursor, ask the human to tap **Connect** on the Ravi plugin (do not run `ravi auth login`). On CLI (single agent / CI), install if needed (see the **ravi** skill), then run `ravi auth login`. Send the human to https://ravi.id/device.
 
 ## Docs
 

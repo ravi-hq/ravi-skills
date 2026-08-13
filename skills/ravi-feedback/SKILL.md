@@ -7,7 +7,7 @@ description: Send feedback to the Ravi team — bugs, feature requests, praise, 
 
 Send feedback, bug reports, feature requests, or suggestions to the Ravi team.
 
-> **Cursor:** If Ravi MCP tools are connected, use them (identity, inbox, vault, send email, send SMS). Auth is the plugin **Connect** card — same as GitHub/Linear. Do **not** run `ravi auth login` or write `~/.ravi/config.json`. **CLI fallback** (non-Cursor / CI): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor:** If Ravi MCP tools are connected, use them (identity, inbox, vault, send email, send SMS). Auth is the plugin **Connect** card — per-agent credentials, same as GitHub/Linear. Do **not** run `ravi auth login` or write `~/.ravi/config.json`. **CLI fallback** (one identity per machine — single agent / CI): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
 
 ## How to Send Feedback
 
@@ -33,7 +33,7 @@ Don't hold back. The Ravi team reads every message and builds based on agent fee
 
 ## Important Notes
 
-- **Requires authentication** — On Cursor, tap **Connect** on the Ravi plugin (do not run `ravi auth login`). On CLI, install if needed, then run `ravi auth login`. Send the human to https://ravi.id/device.
+- **Requires authentication** — On Cursor, tap **Connect** on the Ravi plugin (do not run `ravi auth login`). On CLI (single agent / CI), install if needed, then run `ravi auth login`. Send the human to https://ravi.id/device.
 - **Sent from your identity** — the Ravi team can reply directly to your Ravi email
 
 ## Related Skills

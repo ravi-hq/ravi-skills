@@ -7,7 +7,7 @@ Ravi gives agents a real email inbox, phone number, and encrypted credentials.
 ## Cursor (plugin + Connect)
 
 1. Install the **Ravi** plugin from the Cursor marketplace, or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`).
-2. Tap **Connect** when Cursor shows the Ravi card. That binds a fenced `ravi_id_` key to this agent.
+2. Tap **Connect** when Cursor shows the Ravi card. That is per-agent credentials — a fenced `ravi_id_` key bound to this agent.
 3. Use the connected MCP tools — identity, inbox, vault, send email, send SMS.
 
 Do **not** run `ravi auth login`. Do **not** write `~/.ravi/config.json`. Do **not** install a `ravi` binary on this path.
@@ -22,7 +22,7 @@ That is a remote HTTP/SSE MCP URL. It is not `npx`, not stdio, and not the `ravi
 
 ## Other agents (skills + CLI fallback)
 
-Claude Code, skills.sh, OpenClaw, CI, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI.
+Claude Code, skills.sh, OpenClaw, CI, and other runtimes that are **not** on Cursor MCP still use skills plus the Ravi CLI. The CLI is **one identity per machine** — a fallback for a single agent or CI job, not a shared config for agents running side by side.
 
 ### Any agent (skills.sh)
 
@@ -43,7 +43,7 @@ ravi auth login
 
 If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install) instead of curl.
 
-The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed.
+The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed. Do **not** flip that file to multiplex agents. Extra agents on the same host use the HTTP API with per-identity `ravi_id_` keys, or the Cursor Connect plugin.
 
 ### Claude Code
 
