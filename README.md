@@ -8,7 +8,7 @@ Docs: https://docs.ravi.app
 
 Install the **Ravi** plugin from the Cursor marketplace (not live as a public listing yet), or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`). **Skills are the live surface.**
 
-A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.app/mcp` as a working connector (`mcp.json` is shipping / not live).
+A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.app/mcp` as a working connector (`shipping/mcp.json` is shipping / not live).
 
 Working auth today is the CLI (one identity per machine):
 

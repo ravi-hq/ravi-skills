@@ -14,9 +14,9 @@ Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing s
 
 ### 3. Cursor Marketplace (manual review)
 
-This repo is a **Cursor Plugin** (`.cursor-plugin/plugin.json` at repo root). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is `scripts/install-cli.sh` + `ravi auth login` (human at https://ravi.id/device). `mcp.json` points at `https://api.ravi.app/mcp` (shipping, not live — that URL 404s today).
+This repo is fetchable as an **Agent Plugin** (`plugin.json` at repo root, agent-plugins.org schema, skills only — no `mcpServers`) and as a **Cursor Plugin** (`.cursor-plugin/plugin.json`). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. First hop remains `npx skills add ravi-hq/ravi-skills`. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is `scripts/install-cli.sh` + `ravi auth login` (human at https://ravi.id/device). The MCP product lives at `shipping/mcp.json` (not at the plugin root, so a crawler does not auto-discover a 404). First-class MCP does not go in the listing until the endpoint answers.
 
-Submit this public GitHub repo at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Cursor reviews submissions manually. After merge to `main`, submit (or re-submit) that URL — this file does not publish the listing by itself.
+The listing is already filed. Submit URL for humans: [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). This file does not publish or re-submit the listing.
 
 skills.sh and Claude Code stay as they are (channels 1 and 2). They do not go through Cursor Marketplace review.
 
@@ -62,13 +62,17 @@ done
 This repo ships **two Claude Code plugins** from one marketplace:
 
 ```
+plugin.json                   # Agent Plugins manifest (skills only; no mcpServers)
 .claude-plugin/
-├── marketplace.json          # lists both plugins
+├── marketplace.json          # lists both Claude Code plugins (ravi + ravix)
 └── plugin.json               # plugin manifest for the `ravi` plugin
 .cursor-plugin/
-├── marketplace.json          # Cursor marketplace index
-└── plugin.json               # Cursor plugin manifest (skills plugin + hooks + logo)
-mcp.json                      # shipping MCP URL (not the live listing path; endpoint is not live)
+├── marketplace.json          # Cursor marketplace index (ravi only)
+├── plugin.json               # Cursor plugin manifest (skills plugin + hooks + logo)
+└── assets/
+    └── logo.svg              # copy of repo-root assets/logo.svg (crawler 200 from either base)
+shipping/
+└── mcp.json                  # MCP product (kept off the plugin-root crawl path; endpoint is not live)
 bin/
 └── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
 hooks/
@@ -103,7 +107,7 @@ The `ravix` plugin exists because the [ravix daemon](https://github.com/ravi-hq/
 | Situation | Where it goes |
 |---|---|
 | New general-purpose skill for the `ravi` CLI (identity, inbox, passwords, etc.) | `skills/<name>/` — it's loaded by the `ravi` plugin automatically. |
-| Skill tightly scoped to a sibling product (like `ravix`) that users install separately | New plugin under `plugins/<product>/`, add to `marketplace.json`. |
+| Skill tightly scoped to a sibling product (like `ravix`) that users install separately | New plugin under `plugins/<product>/`, add to `.claude-plugin/marketplace.json` only. Do not add it to the Cursor marketplace index. |
 | "Alternate bundle" of existing skills (e.g. a lightweight subset of `ravi`) | New plugin under `plugins/<bundle-name>/` with symlinks or copies of the desired skills. |
 
 ### Adding a new sub-plugin

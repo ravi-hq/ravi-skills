@@ -17,6 +17,7 @@ bad() { printf 'FAIL %s\n' "$1" >&2; fail=1; }
 [ -f hooks/cursor.json ] || bad "hooks/cursor.json missing"
 [ -f .cursor-plugin/plugin.json ] || bad ".cursor-plugin/plugin.json missing"
 [ -f .cursor-plugin/marketplace.json ] || bad ".cursor-plugin/marketplace.json missing"
+[ -f plugin.json ] || bad "root plugin.json (Agent Plugins manifest) missing"
 
 if [ -x scripts/install-cli.sh ]; then
   ok "scripts/install-cli.sh is executable"
@@ -209,8 +210,14 @@ else
   bad "cursor-session-start.sh must use CLI auth and must not treat Connect as live"
 fi
 
-[ -f mcp.json ] || bad "mcp.json missing"
+if [ -f mcp.json ]; then
+  bad "mcp.json must not sit at the plugin root (crawler auto-discovers a 404 MCP)"
+else
+  ok "plugin root has no mcp.json"
+fi
+[ -f shipping/mcp.json ] || bad "shipping/mcp.json missing (MCP product moved off the crawl path)"
 [ -f assets/logo.svg ] || [ -f assets/logo.png ] || bad "assets/logo.svg or assets/logo.png missing"
+[ -f .cursor-plugin/assets/logo.svg ] || [ -f .cursor-plugin/assets/logo.png ] || bad ".cursor-plugin/assets/logo.svg missing (crawler resolving from .cursor-plugin/)"
 
 if python3 - <<'PY'
 import json, sys
@@ -246,37 +253,103 @@ else
   bad "plugin.json is not ready for cursor.com/marketplace/publish"
 fi
 
-if grep -q 'https://api.ravi.app/mcp' mcp.json; then
-  ok "mcp.json keeps shipping URL https://api.ravi.app/mcp"
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+p = json.loads(Path("plugin.json").read_text())
+cursor = json.loads(Path(".cursor-plugin/plugin.json").read_text())
+ok = True
+if p.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
+    print("root plugin.json $schema must be the Agent Plugins 1.0.0 schema")
+    ok = False
+if p.get("name") != "ravi":
+    print("root plugin.json name must be ravi")
+    ok = False
+if p.get("description") != cursor.get("description"):
+    print("root plugin.json description must match .cursor-plugin/plugin.json")
+    ok = False
+if p.get("version") != cursor.get("version"):
+    print("root plugin.json version must match .cursor-plugin/plugin.json")
+    ok = False
+if not isinstance(p.get("author"), dict) or p["author"].get("name") != "Ravi":
+    print("root plugin.json author.name must be Ravi")
+    ok = False
+if "mcpServers" in p:
+    print("root plugin.json must not include mcpServers")
+    ok = False
+if "mcp" in json.dumps(p).lower() and "mcpServers" in p:
+    print("root plugin.json must not mention MCP servers")
+    ok = False
+extra = set(p) - {"$schema", "name", "description", "version", "author"}
+# Agent Plugins schema is closed; extra keys fail crawler validation.
+if extra:
+    print(f"root plugin.json has disallowed keys: {sorted(extra)}")
+    ok = False
+sys.exit(0 if ok else 1)
+PY
+then
+  ok "root plugin.json is a skills-only Agent Plugins manifest"
 else
-  bad "mcp.json must keep https://api.ravi.app/mcp (shipping, not the listing lead)"
+  bad "root plugin.json is not a valid skills-only Agent Plugins manifest"
+fi
+
+if grep -q 'https://api.ravi.app/mcp' shipping/mcp.json; then
+  ok "shipping/mcp.json keeps shipping URL https://api.ravi.app/mcp"
+else
+  bad "shipping/mcp.json must keep https://api.ravi.app/mcp (shipping, not the listing lead)"
 fi
 
 if python3 - <<'PY'
 import json, sys
 from pathlib import Path
-data = json.loads(Path("mcp.json").read_text())
+data = json.loads(Path("shipping/mcp.json").read_text())
 servers = data.get("mcpServers") or {}
 ravi = servers.get("ravi") or {}
 ok = True
 if "command" in ravi or "args" in ravi:
-    print("mcp.json must be remote URL, not stdio/command")
+    print("shipping/mcp.json must be remote URL, not stdio/command")
     ok = False
 if "headers" in ravi:
-    print("mcp.json must not use static headers")
+    print("shipping/mcp.json must not use static headers")
     ok = False
 if ravi.get("url") != "https://api.ravi.app/mcp":
-    print("mcp.json ravi.url must be https://api.ravi.app/mcp")
+    print("shipping/mcp.json ravi.url must be https://api.ravi.app/mcp")
     ok = False
 if "npx" in json.dumps(data):
-    print("mcp.json must not use npx")
+    print("shipping/mcp.json must not use npx")
     ok = False
 sys.exit(0 if ok else 1)
 PY
 then
-  ok "mcp.json is a remote URL (no stdio, no npx)"
+  ok "shipping/mcp.json is a remote URL (no stdio, no npx)"
 else
-  bad "mcp.json is not a remote-only MCP config"
+  bad "shipping/mcp.json is not a remote-only MCP config"
+fi
+
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+market = json.loads(Path(".cursor-plugin/marketplace.json").read_text())
+names = [p.get("name") for p in (market.get("plugins") or [])]
+ok = True
+if names != ["ravi"]:
+    print(f".cursor-plugin/marketplace.json plugins must be ravi only, got {names}")
+    ok = False
+if "ravix" in json.dumps(market):
+    print(".cursor-plugin/marketplace.json must not list ravix")
+    ok = False
+sys.exit(0 if ok else 1)
+PY
+then
+  ok "Cursor marketplace index lists ravi only"
+else
+  bad "Cursor marketplace index must list ravi only (no ravix)"
+fi
+
+if cmp -s assets/logo.svg .cursor-plugin/assets/logo.svg; then
+  ok "logo.svg is identical at repo-root and .cursor-plugin/assets/"
+else
+  bad "assets/logo.svg and .cursor-plugin/assets/logo.svg must match"
 fi
 
 if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'install-cli.sh'; then
@@ -286,7 +359,7 @@ else
 fi
 
 listing_desc='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.'
-if grep -qF "$listing_desc" README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+if grep -qF "$listing_desc" README.md plugin.json .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
   ok "listing copy uses the Growth description exactly"
 else
   bad "README, plugin.json, and marketplace.json must use the Growth listing description"
@@ -382,6 +455,33 @@ if grep -q 'https://cursor.com/marketplace/publish' PUBLISHING.md; then
   ok "PUBLISHING.md documents Cursor Marketplace submit"
 else
   bad "PUBLISHING.md must add Cursor Marketplace submit at https://cursor.com/marketplace/publish"
+fi
+
+if grep -q 'plugin.json' PUBLISHING.md && grep -q 'agent-plugins.org' PUBLISHING.md \
+   && grep -q 'shipping/mcp.json' PUBLISHING.md \
+   && grep -q 'npx skills add ravi-hq/ravi-skills' PUBLISHING.md \
+   && grep -qiE 'not live' PUBLISHING.md; then
+  ok "PUBLISHING.md notes root Agent Plugin manifest, shipping MCP path, and listing not live"
+else
+  bad "PUBLISHING.md must note the root Agent Plugin manifest, shipping/mcp.json, first hop, and that the listing is not live"
+fi
+
+if grep -q 'https://api.ravi.app/mcp' plugin.json .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  bad "crawler manifests must not include https://api.ravi.app/mcp while that URL 404s"
+else
+  ok "crawler manifests do not include the 404 MCP URL"
+fi
+
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+p = json.loads(Path(".cursor-plugin/plugin.json").read_text())
+sys.exit(1 if "mcpServers" in p else 0)
+PY
+then
+  ok ".cursor-plugin/plugin.json has no mcpServers (listing is skills-only)"
+else
+  bad ".cursor-plugin/plugin.json must not declare mcpServers until the endpoint answers"
 fi
 
 
