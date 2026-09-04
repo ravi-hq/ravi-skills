@@ -211,11 +211,18 @@ else
 fi
 
 if [ -f mcp.json ]; then
-  bad "mcp.json must not sit at the plugin root (crawler auto-discovers a 404 MCP)"
+  ok "plugin root has mcp.json"
 else
-  ok "plugin root has no mcp.json"
+  bad "mcp.json must sit at the plugin root (https://api.ravi.app/mcp answers)"
 fi
-[ -f shipping/mcp.json ] || bad "shipping/mcp.json missing (MCP product moved off the crawl path)"
+[ -f shipping/mcp.json ] || bad "shipping/mcp.json missing (keep a duplicate of root mcp.json)"
+if [ -f mcp.json ] && [ -f shipping/mcp.json ]; then
+  if cmp -s mcp.json shipping/mcp.json; then
+    ok "shipping/mcp.json matches root mcp.json"
+  else
+    bad "shipping/mcp.json must match root mcp.json"
+  fi
+fi
 [ -f assets/logo.svg ] || [ -f assets/logo.png ] || bad "assets/logo.svg or assets/logo.png missing"
 [ -f .cursor-plugin/assets/logo.svg ] || [ -f .cursor-plugin/assets/logo.png ] || bad ".cursor-plugin/assets/logo.svg missing (crawler resolving from .cursor-plugin/)"
 
@@ -293,10 +300,10 @@ else
   bad "root plugin.json is not a valid skills-only Agent Plugins manifest"
 fi
 
-if grep -q 'https://api.ravi.app/mcp' shipping/mcp.json; then
-  ok "shipping/mcp.json keeps shipping URL https://api.ravi.app/mcp"
+if grep -q 'https://api.ravi.app/mcp' mcp.json shipping/mcp.json; then
+  ok "mcp.json and shipping/mcp.json keep URL https://api.ravi.app/mcp"
 else
-  bad "shipping/mcp.json must keep https://api.ravi.app/mcp (shipping, not the listing lead)"
+  bad "mcp.json and shipping/mcp.json must keep https://api.ravi.app/mcp"
 fi
 
 if python3 - <<'PY'
@@ -467,9 +474,9 @@ else
 fi
 
 if grep -q 'https://api.ravi.app/mcp' plugin.json .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
-  bad "crawler manifests must not include https://api.ravi.app/mcp while that URL 404s"
+  bad "crawler manifests must stay skills-only; MCP URL belongs in mcp.json"
 else
-  ok "crawler manifests do not include the 404 MCP URL"
+  ok "crawler manifests do not include the MCP URL"
 fi
 
 if python3 - <<'PY'
@@ -481,7 +488,7 @@ PY
 then
   ok ".cursor-plugin/plugin.json has no mcpServers (listing is skills-only)"
 else
-  bad ".cursor-plugin/plugin.json must not declare mcpServers until the endpoint answers"
+  bad ".cursor-plugin/plugin.json must not declare mcpServers (skills-only; MCP is in mcp.json)"
 fi
 
 
