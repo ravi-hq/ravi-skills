@@ -353,6 +353,38 @@ else
   bad "Cursor marketplace index must list ravi only (no ravix)"
 fi
 
+if [ -e plugins/ravix ]; then
+  bad "plugins/ravix must not exist (retired email-daemon plugin)"
+else
+  ok "retired email-daemon ravix plugin directory is gone"
+fi
+
+if python3 - <<'PY'
+import json, sys
+from pathlib import Path
+market = json.loads(Path(".claude-plugin/marketplace.json").read_text())
+names = [p.get("name") for p in (market.get("plugins") or [])]
+ok = True
+if names != ["ravi"]:
+    print(f".claude-plugin/marketplace.json plugins must be ravi only, got {names}")
+    ok = False
+if "ravix" in json.dumps(market).lower():
+    print(".claude-plugin/marketplace.json must not list ravix")
+    ok = False
+sys.exit(0 if ok else 1)
+PY
+then
+  ok "Claude marketplace index lists ravi only"
+else
+  bad "Claude marketplace index must list ravi only (no ravix)"
+fi
+
+if grep -q 'ravix' PUBLISHING.md README.md; then
+  bad "PUBLISHING.md and README must not document the retired ravix plugin"
+else
+  ok "docs do not document the retired ravix plugin"
+fi
+
 if cmp -s assets/logo.svg .cursor-plugin/assets/logo.svg; then
   ok "logo.svg is identical at repo-root and .cursor-plugin/assets/"
 else
