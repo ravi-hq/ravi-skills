@@ -1,0 +1,49 @@
+{
+  "name": "@ravi-hq/mcp",
+  "version": "0.1.0",
+  "description": "Config helper for the Ravi HTTP MCP server at https://api.ravi.app/mcp.",
+  "license": "MIT",
+  "author": "Ravi",
+  "homepage": "https://github.com/ravi-hq/ravi-skills/tree/main/packages/mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravi-hq/ravi-skills.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/ravi-hq/ravi-skills/issues"
+  },
+  "keywords": [
+    "ravi",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "mcp.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "prepublishOnly": "npm test"
+  },
+  "sideEffects": false
+}

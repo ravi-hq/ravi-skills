@@ -307,10 +307,22 @@ else
   bad "root plugin.json is not a valid skills-only Agent Plugins manifest"
 fi
 
-if grep -q 'https://api.ravi.app/mcp' mcp.json shipping/mcp.json; then
-  ok "mcp.json and shipping/mcp.json keep URL https://api.ravi.app/mcp"
+if grep -q 'https://api.ravi.app/mcp' mcp.json shipping/mcp.json packages/mcp/mcp.json; then
+  ok "mcp.json, shipping/mcp.json, and packages/mcp/mcp.json keep URL https://api.ravi.app/mcp"
 else
-  bad "mcp.json and shipping/mcp.json must keep https://api.ravi.app/mcp"
+  bad "mcp.json, shipping/mcp.json, and packages/mcp/mcp.json must keep https://api.ravi.app/mcp"
+fi
+
+if [ -f packages/mcp/package.json ] && grep -q '"name": "@ravi-hq/mcp"' packages/mcp/package.json \
+   && grep -q '"license": "MIT"' packages/mcp/package.json; then
+  ok "packages/mcp is @ravi-hq/mcp (MIT)"
+else
+  bad "packages/mcp/package.json must name @ravi-hq/mcp and use MIT"
+fi
+if cmp -s mcp.json packages/mcp/mcp.json; then
+  ok "packages/mcp/mcp.json matches root mcp.json"
+else
+  bad "packages/mcp/mcp.json must match root mcp.json"
 fi
 
 if python3 - <<'PY'

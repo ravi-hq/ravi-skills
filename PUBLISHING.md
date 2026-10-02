@@ -51,6 +51,19 @@ done
 
 **Rate limits:** ClawdHub allows 5 new skill publishes per hour. If you have more than 5 skills, the workflow spaces them out with `sleep 2` between publishes.
 
+## npm: `@ravi-hq/mcp`
+
+`packages/mcp` is a thin package that documents the remote HTTP MCP endpoint and exports the default URL plus a sample `mcpServers` object. It does not publish from GitHub Actions, and it does not enable a Connect card.
+
+Publish (npm account with `@ravi-hq` publish rights, not CI):
+
+```bash
+cd packages/mcp
+npm publish --access public
+```
+
+Default URL: `https://api.ravi.app/mcp`. Alternate host: `https://api.ravi.id/mcp`.
+
 ## Version Strategy
 
 - `.claude-plugin/plugin.json` is the single source of truth for version
@@ -74,7 +87,9 @@ plugin.json                   # Agent Plugins manifest (skills only; no mcpServe
 └── assets/
     └── logo.svg              # copy of repo-root assets/logo.svg (crawler 200 from either base)
 shipping/
-└── mcp.json                  # MCP product (kept off the plugin-root crawl path; endpoint is not live)
+└── mcp.json                  # duplicate of root mcp.json (Connect card is not live)
+packages/
+└── mcp/                      # npm package @ravi-hq/mcp (manual publish; no Connect card)
 bin/
 └── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
 hooks/
