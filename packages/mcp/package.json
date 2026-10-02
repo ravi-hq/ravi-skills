@@ -1,7 +1,7 @@
 {
   "name": "@ravi-hq/mcp",
   "version": "0.1.0",
-  "description": "Config helper for the Ravi HTTP MCP server at https://api.ravi.app/mcp.",
+  "description": "Config helper for the Ravi HTTP MCP server at https://api.ravi.id/mcp.",
   "license": "MIT",
   "author": "Ravi",
   "homepage": "https://github.com/ravi-hq/ravi-skills/tree/main/packages/mcp#readme",

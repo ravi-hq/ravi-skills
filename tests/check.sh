@@ -57,30 +57,30 @@ stale_api_host=$(grep -RInE --exclude-dir=.git --exclude-dir=tests --include='*.
      'https://ravi\.app/api/' . 2>/dev/null | grep -viE 'never |wrong host' || true)
 if [ -n "$stale_api_host" ]; then
   echo "$stale_api_host"
-  bad "wrong API host (apex /api) — use api.ravi.app or https://ravi.id/device"
+  bad "wrong API host (apex /api) — use api.ravi.id or https://ravi.id/device"
 else
   ok "no apex /api hosts presented as canonical"
 fi
 
 if grep -R -nE 'ravi\.app/docs/' \
     --exclude-dir=.git --exclude-dir=tests --include='*.md' --include='*.sh' --include='*.json' .; then
-  bad "dead docs host (use https://docs.ravi.app/...)"
+  bad "dead docs host (use https://docs.ravi.id/...)"
 else
   ok "no ravi.app/docs/ URLs"
 fi
 
-if grep -q 'https://docs.ravi.app' skills/ravi-login/SKILL.md; then
-  ok "ravi-login links https://docs.ravi.app"
+if grep -q 'https://docs.ravi.id' skills/ravi-login/SKILL.md; then
+  ok "ravi-login links https://docs.ravi.id"
 else
-  bad "ravi-login must link https://docs.ravi.app (no page path)"
+  bad "ravi-login must link https://docs.ravi.id (no page path)"
 fi
 
 page_paths=$(grep -RInE --exclude-dir=.git --include='*.md' --include='*.json' \
-     'docs\.ravi\.app/(getting-started|core-concepts)' \
+     'docs\.ravi\.id/(getting-started|core-concepts)' \
      README.md skills .cursor-plugin 2>/dev/null || true)
 if [ -n "$page_paths" ]; then
   echo "$page_paths"
-  bad "docs links must be https://docs.ravi.app with no getting-started / core-concepts page names"
+  bad "docs links must be https://docs.ravi.id with no getting-started / core-concepts page names"
 else
   ok "no getting-started / core-concepts docs page names"
 fi
@@ -220,7 +220,7 @@ fi
 if [ -f mcp.json ]; then
   ok "plugin root has mcp.json"
 else
-  bad "mcp.json must sit at the plugin root (https://api.ravi.app/mcp answers)"
+  bad "mcp.json must sit at the plugin root (https://api.ravi.id/mcp answers)"
 fi
 [ -f shipping/mcp.json ] || bad "shipping/mcp.json missing (keep a duplicate of root mcp.json)"
 if [ -f mcp.json ] && [ -f shipping/mcp.json ]; then
@@ -229,6 +229,15 @@ if [ -f mcp.json ] && [ -f shipping/mcp.json ]; then
   else
     bad "shipping/mcp.json must match root mcp.json"
   fi
+fi
+if [ -f mcp.json ] && [ -f .mcp.json ]; then
+  if cmp -s mcp.json .mcp.json; then
+    ok ".mcp.json matches root mcp.json"
+  else
+    bad ".mcp.json must match root mcp.json"
+  fi
+else
+  bad ".mcp.json missing (keep a duplicate of root mcp.json)"
 fi
 [ -f assets/logo.svg ] || [ -f assets/logo.png ] || bad "assets/logo.svg or assets/logo.png missing"
 [ -f .cursor-plugin/assets/logo.svg ] || [ -f .cursor-plugin/assets/logo.png ] || bad ".cursor-plugin/assets/logo.svg missing (crawler resolving from .cursor-plugin/)"
@@ -307,10 +316,11 @@ else
   bad "root plugin.json is not a valid skills-only Agent Plugins manifest"
 fi
 
-if grep -q 'https://api.ravi.app/mcp' mcp.json shipping/mcp.json packages/mcp/mcp.json; then
-  ok "mcp.json, shipping/mcp.json, and packages/mcp/mcp.json keep URL https://api.ravi.app/mcp"
+if grep -q 'https://api.ravi.id/mcp' mcp.json .mcp.json shipping/mcp.json packages/mcp/mcp.json \
+   && ! grep -q 'https://api.ravi.app/mcp' mcp.json .mcp.json shipping/mcp.json packages/mcp/mcp.json; then
+  ok "mcp.json twins use https://api.ravi.id/mcp"
 else
-  bad "mcp.json, shipping/mcp.json, and packages/mcp/mcp.json must keep https://api.ravi.app/mcp"
+  bad "mcp.json, .mcp.json, shipping/mcp.json, and packages/mcp/mcp.json must use https://api.ravi.id/mcp"
 fi
 
 if [ -f packages/mcp/package.json ] && grep -q '"name": "@ravi-hq/mcp"' packages/mcp/package.json \
@@ -338,8 +348,8 @@ if "command" in ravi or "args" in ravi:
 if "headers" in ravi:
     print("shipping/mcp.json must not use static headers")
     ok = False
-if ravi.get("url") != "https://api.ravi.app/mcp":
-    print("shipping/mcp.json ravi.url must be https://api.ravi.app/mcp")
+if ravi.get("url") != "https://api.ravi.id/mcp":
+    print("shipping/mcp.json ravi.url must be https://api.ravi.id/mcp")
     ok = False
 if "npx" in json.dumps(data):
     print("shipping/mcp.json must not use npx")
@@ -477,9 +487,9 @@ else
   bad "README Cursor section must say skills are the live surface"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://api.ravi.app/mcp' \
-   && awk '/^## Cursor/,/^## Other agents/' README.md | grep 'https://api.ravi.app/mcp' | grep -viE 'not live|not a working|404' >/dev/null; then
-  bad "README Cursor section must not lead with https://api.ravi.app/mcp as a working connector"
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'https://api.ravi.id/mcp' \
+   && awk '/^## Cursor/,/^## Other agents/' README.md | grep 'https://api.ravi.id/mcp' | grep -viE 'not live|not a working|404' >/dev/null; then
+  bad "README Cursor section must not lead with https://api.ravi.id/mcp as a working connector"
 else
   ok "README Cursor section does not lead with the MCP URL as working"
 fi
@@ -490,10 +500,19 @@ else
   ok "listing copy has no integrations/ or production-patterns pages"
 fi
 
-if grep -q 'https://docs.ravi.app' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
-  ok "listing copy links https://docs.ravi.app"
+if grep -q 'https://docs.ravi.id' README.md .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+  ok "listing copy links https://docs.ravi.id"
 else
-  bad "README and plugin listing must link https://docs.ravi.app (no page names)"
+  bad "README and plugin listing must link https://docs.ravi.id (no page names)"
+fi
+
+stale_docs=$(grep -RIn --exclude-dir=.git --exclude-dir=tests \
+  'https://docs.ravi.app' README.md PUBLISHING.md skills scripts 2>/dev/null || true)
+if [ -n "$stale_docs" ]; then
+  echo "$stale_docs"
+  bad "docs cites must use https://docs.ravi.id"
+else
+  ok "public docs cites use https://docs.ravi.id"
 fi
 
 if grep -q 'terminals and CI\|terminals, CI' README.md; then
@@ -524,7 +543,7 @@ else
   bad "PUBLISHING.md must note the root Agent Plugin manifest, shipping/mcp.json, first hop, and that the listing is not live"
 fi
 
-if grep -q 'https://api.ravi.app/mcp' plugin.json .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
+if grep -qE 'https://api\.ravi\.(id|app)/mcp' plugin.json .cursor-plugin/plugin.json .cursor-plugin/marketplace.json; then
   bad "crawler manifests must stay skills-only; MCP URL belongs in mcp.json"
 else
   ok "crawler manifests do not include the MCP URL"

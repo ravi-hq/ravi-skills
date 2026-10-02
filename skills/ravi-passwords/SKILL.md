@@ -105,7 +105,7 @@ PASSWORD=$(echo "$CREDS" | jq -r '.password')
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

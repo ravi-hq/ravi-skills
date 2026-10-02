@@ -52,7 +52,7 @@ Auth commands are **`login`**, **`logout`**, and **`status` only**. There is no 
 
 The CLI will:
 
-1. Initiate a device code flow against `https://api.ravi.app`
+1. Initiate a device code flow against `https://api.ravi.id`
 2. Display a URL and code for the human to visit
 3. Poll until the human approves
 4. Store long-lived `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json`
@@ -63,7 +63,7 @@ Present the **public front door** and code clearly to the human (use this even i
 Please visit https://ravi.id/device and enter the code: ABCD-1234
 ```
 
-The CLI may print `https://api.ravi.app/api/auth/device/verify/` — that is the shipped API verify URL. Still send the human to **https://ravi.id/device**. Never `https://ravi.app/api/auth/device/verify/` (wrong host).
+The CLI may print `https://api.ravi.id/api/auth/device/verify/` — that is the shipped API verify URL. Still send the human to **https://ravi.id/device**. Never `https://ravi.app/api/auth/device/verify/` (wrong host).
 
 The human visits https://ravi.id/device, signs in with Google, and approves the request.
 
@@ -177,7 +177,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Docs
 
-CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys. Docs: https://docs.ravi.app
+CLI auth is `ravi auth login` / `logout` / `status`. Keys land in `~/.ravi/config.json` as `ravi_mgmt_` / `ravi_id_`. The CLI is one identity per machine — extra agents use the HTTP API with per-identity `ravi_id_` keys. Docs: https://docs.ravi.id
 
 ## Related Skills
 

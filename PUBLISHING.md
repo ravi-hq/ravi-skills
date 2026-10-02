@@ -62,7 +62,7 @@ cd packages/mcp
 npm publish --access public
 ```
 
-Default URL: `https://api.ravi.app/mcp`. Alternate host: `https://api.ravi.id/mcp`.
+Default URL: `https://api.ravi.id/mcp`. `https://api.ravi.app/mcp` still dual-serves.
 
 ## Version Strategy
 

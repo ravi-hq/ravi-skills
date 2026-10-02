@@ -6,10 +6,10 @@ Config helper for the Ravi HTTP MCP server. The server is remote. This package d
 
 | | URL |
 | --- | --- |
-| Default | `https://api.ravi.app/mcp` |
-| Also available | `https://api.ravi.id/mcp` |
+| Default | `https://api.ravi.id/mcp` |
+| Also available | `https://api.ravi.app/mcp` |
 
-Use `https://api.ravi.app/mcp` unless you need the `ravi.id` host.
+Use `https://api.ravi.id/mcp`. `https://api.ravi.app/mcp` still dual-serves.
 
 ## Install
 
@@ -28,7 +28,7 @@ Project file `.cursor/mcp.json`, or global `~/.cursor/mcp.json`:
   "mcpServers": {
     "ravi": {
       "type": "http",
-      "url": "https://api.ravi.app/mcp"
+      "url": "https://api.ravi.id/mcp"
     }
   }
 }
@@ -43,7 +43,7 @@ Project file `.mcp.json`:
   "mcpServers": {
     "ravi": {
       "type": "http",
-      "url": "https://api.ravi.app/mcp"
+      "url": "https://api.ravi.id/mcp"
     }
   }
 }
@@ -52,7 +52,7 @@ Project file `.mcp.json`:
 Or from a terminal:
 
 ```bash
-claude mcp add --transport http ravi https://api.ravi.app/mcp
+claude mcp add --transport http ravi https://api.ravi.id/mcp
 ```
 
 Leave headers out of the config. Do not commit API keys.
@@ -63,13 +63,13 @@ Leave headers out of the config. Do not commit API keys.
 import { MCP_SERVER_URL, mcpServers } from "@ravi-hq/mcp";
 
 MCP_SERVER_URL;
-// "https://api.ravi.app/mcp"
+// "https://api.ravi.id/mcp"
 
 mcpServers;
-// { ravi: { type: "http", url: "https://api.ravi.app/mcp" } }
+// { ravi: { type: "http", url: "https://api.ravi.id/mcp" } }
 ```
 
-`ALT_MCP_SERVER_URL` is `https://api.ravi.id/mcp`. `mcpConfig(url)` returns the full `{ mcpServers }` document (`mcp.json` in this package is the default).
+`ALT_MCP_SERVER_URL` is `https://api.ravi.app/mcp` (still dual-serves). `mcpConfig(url)` returns the full `{ mcpServers }` document (`mcp.json` in this package is the default).
 
 ## Publish
 

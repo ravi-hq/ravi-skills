@@ -1,8 +1,8 @@
-/** Default Ravi HTTP MCP endpoint. */
-export const MCP_SERVER_URL = "https://api.ravi.app/mcp";
+/** Canonical Ravi HTTP MCP endpoint. */
+export const MCP_SERVER_URL = "https://api.ravi.id/mcp";
 
-/** Same MCP server on the ravi.id host. */
-export const ALT_MCP_SERVER_URL = "https://api.ravi.id/mcp";
+/** Same MCP server; api.ravi.app still dual-serves. */
+export const ALT_MCP_SERVER_URL = "https://api.ravi.app/mcp";
 
 /** Sample `mcpServers` entry for Cursor and Claude. */
 export const mcpServers = {
@@ -13,7 +13,7 @@ export const mcpServers = {
 };
 
 /**
- * Full mcp.json document. Pass `ALT_MCP_SERVER_URL` to pin the ravi.id host.
+ * Full mcp.json document. Pass `ALT_MCP_SERVER_URL` to pin the ravi.app host.
  * @param {string} [url]
  */
 export function mcpConfig(url = MCP_SERVER_URL) {

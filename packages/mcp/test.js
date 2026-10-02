@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { ALT_MCP_SERVER_URL, MCP_SERVER_URL, mcpConfig, mcpServers } from "./index.js";
 
-test("default URL is api.ravi.app/mcp", () => {
-  assert.equal(MCP_SERVER_URL, "https://api.ravi.app/mcp");
-  assert.equal(ALT_MCP_SERVER_URL, "https://api.ravi.id/mcp");
+test("default URL is api.ravi.id/mcp", () => {
+  assert.equal(MCP_SERVER_URL, "https://api.ravi.id/mcp");
+  assert.equal(ALT_MCP_SERVER_URL, "https://api.ravi.app/mcp");
 });
 
 test("mcpServers matches shipped mcp.json", () => {

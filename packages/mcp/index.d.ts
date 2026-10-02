@@ -1,6 +1,6 @@
-export declare const MCP_SERVER_URL: "https://api.ravi.app/mcp";
+export declare const MCP_SERVER_URL: "https://api.ravi.id/mcp";
 
-export declare const ALT_MCP_SERVER_URL: "https://api.ravi.id/mcp";
+export declare const ALT_MCP_SERVER_URL: "https://api.ravi.app/mcp";
 
 export interface McpHttpServer {
   type: "http";

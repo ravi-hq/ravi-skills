@@ -88,7 +88,7 @@ ravi secrets set GITHUB_TOKEN "ghp_..."
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 
