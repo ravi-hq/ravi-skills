@@ -91,7 +91,7 @@ On hitting a rate limit, you'll get a 429 response with a `retry_after_seconds` 
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

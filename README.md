@@ -2,13 +2,13 @@
 
 Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.
 
-Docs: https://docs.ravi.app
+Docs: https://docs.ravi.id
 
 ## Cursor (plugin)
 
 Install the **Ravi** plugin from the Cursor marketplace (not live as a public listing yet), or add this repo as a plugin marketplace (`.cursor-plugin/marketplace.json`). **Skills are the live surface.**
 
-A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.app/mcp` as a working connector (`shipping/mcp.json` is shipping / not live).
+A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.id/mcp` as a working connector (`shipping/mcp.json` is shipping / not live).
 
 Working auth today is the CLI (one identity per machine):
 

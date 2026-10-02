@@ -114,7 +114,7 @@ This is the primary integration point with **ravi-email-send** and SMS workflows
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

@@ -100,7 +100,7 @@ ravi inbox email "$THREAD_ID" | jq -r '.messages[].text_content' | grep -oE 'htt
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

@@ -91,7 +91,7 @@ Another agent on this host must use the HTTP API with a per-identity `ravi_id_` 
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

@@ -28,7 +28,7 @@ Pass the token to the third-party service however it requires (request body, hea
 
 ## How Third Parties Verify It
 
-The third-party backend calls `POST https://api.ravi.app/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
+The third-party backend calls `POST https://api.ravi.id/api/sso/verify/` with `{ "token": "rvt_..." }` and receives:
 
 ```json
 {
@@ -51,7 +51,7 @@ The third-party backend calls `POST https://api.ravi.app/api/sso/verify/` with `
 
 ## Docs
 
-[Docs](https://docs.ravi.app)
+[Docs](https://docs.ravi.id)
 
 ## Related Skills
 

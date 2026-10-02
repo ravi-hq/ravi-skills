@@ -9,7 +9,7 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted s
 
 ## Cursor: skills are live; Connect is not
 
-Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates, and do not treat `https://api.ravi.app/mcp` as a working connector.
+Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates, and do not treat `https://api.ravi.id/mcp` as a working connector.
 
 Working auth is the CLI. Install it before any `ravi` command:
 
@@ -28,7 +28,7 @@ The bundled copy lives next to this skill at `scripts/install-cli.sh`.
 
 ## Authentication
 
-**Working auth (CLI):** Run `ravi auth login` (`logout` / `status` are the only other auth commands) — this is a one-time setup for a **single agent or CI job** on this machine. The CLI stores `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints `https://api.ravi.app/api/auth/device/verify/`). Never `https://ravi.app/api/...`.
+**Working auth (CLI):** Run `ravi auth login` (`logout` / `status` are the only other auth commands) — this is a one-time setup for a **single agent or CI job** on this machine. The CLI stores `ravi_mgmt_...` / `ravi_id_...` keys in `~/.ravi/config.json` and reads them automatically. Send the human to **https://ravi.id/device** to enter the device code (even if the CLI prints `https://api.ravi.id/api/auth/device/verify/`). Never `https://ravi.app/api/...`.
 
 A Connect card is shipping and is **not live**. Do not tap Connect as if it authenticates.
 
