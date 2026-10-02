@@ -15,6 +15,7 @@ bad() { printf 'FAIL %s\n' "$1" >&2; fail=1; }
 [ -x bin/ravi ] || bad "bin/ravi must be executable"
 [ -f hooks/hooks.json ] || bad "hooks/hooks.json missing"
 [ -f hooks/cursor.json ] || bad "hooks/cursor.json missing"
+[ -f .cursor-plugin/hooks/cursor.json ] || bad ".cursor-plugin/hooks/cursor.json missing (crawler resolving from .cursor-plugin/)"
 [ -f .cursor-plugin/plugin.json ] || bad ".cursor-plugin/plugin.json missing"
 [ -f .cursor-plugin/marketplace.json ] || bad ".cursor-plugin/marketplace.json missing"
 [ -f plugin.json ] || bad "root plugin.json (Agent Plugins manifest) missing"
@@ -192,6 +193,12 @@ if grep -q 'cursor-session-start.sh' hooks/cursor.json; then
   ok "Cursor sessionStart hook runs cursor-session-start.sh"
 else
   bad "hooks/cursor.json must run cursor-session-start.sh"
+fi
+
+if cmp -s hooks/cursor.json .cursor-plugin/hooks/cursor.json; then
+  ok "cursor.json is identical at repo-root and .cursor-plugin/hooks/"
+else
+  bad "hooks/cursor.json and .cursor-plugin/hooks/cursor.json must match"
 fi
 
 if grep -q 'hooks/cursor.json' .cursor-plugin/plugin.json; then
