@@ -82,6 +82,8 @@ plugin.json                   # Agent Plugins manifest (skills only; no mcpServe
 .cursor-plugin/
 ├── marketplace.json          # Cursor marketplace index (ravi only)
 ├── plugin.json               # Cursor plugin manifest (skills plugin + hooks + logo)
+├── hooks/
+│   └── cursor.json           # copy of repo-root hooks/cursor.json (crawler 200 from .cursor-plugin/)
 └── assets/
     └── logo.svg              # copy of repo-root assets/logo.svg (crawler 200 from either base)
 shipping/
