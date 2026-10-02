@@ -5,7 +5,7 @@ set -euo pipefail
 # Consume hook stdin (JSON event payload).
 cat >/dev/null || true
 
-context="Ravi on Cursor is a skills plugin. Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is not live yet — do not tap Connect as if it authenticates, and do not treat https://api.ravi.id/mcp as a working connector. Working auth is the CLI: run scripts/install-cli.sh if ravi is missing, then ravi auth login (human visits https://ravi.id/device). CLI is one identity per machine. Extra agents use the HTTP API with per-identity ravi_id_ keys."
+context="Ravi on Cursor is a skills plugin. Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is not live yet — do not tap Connect as if it authenticates, and do not treat https://api.ravi.id/mcp as a working connector. This hook does not install or download the CLI. Working auth is the CLI, which the user installs explicitly with brew install ravi-hq/tap/ravi, npx skills add ravi-hq/ravi-skills (skills only), or bash scripts/install-cli.sh from a checkout, then ravi auth login (human visits https://ravi.id/device). CLI is one identity per machine. Extra agents use the HTTP API with per-identity ravi_id_ keys."
 
 if command -v python3 >/dev/null 2>&1; then
   CONTEXT_VALUE="$context" python3 - <<'PY'

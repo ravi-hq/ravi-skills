@@ -11,20 +11,21 @@ End-to-end workflows for onboarding to Ravi, signing up for services, logging in
 
 Skills are the live surface on Cursor. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live.
 
-Working auth is the CLI (one identity per machine). Install it before `ravi auth login`:
+Working auth is the CLI (one identity per machine). The user installs it before `ravi auth login`. This skill does not download a binary.
 
 ```bash
-if ! command -v ravi >/dev/null 2>&1; then
-  if [ -f scripts/install-cli.sh ]; then
-    bash scripts/install-cli.sh
-  else
-    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
-  fi
-  export PATH="$HOME/.ravi/bin:$PATH"
-fi
+# Preferred
+brew install ravi-hq/tap/ravi
+
+# Skills only (not the CLI binary)
+npx skills add ravi-hq/ravi-skills
+
+# Manual, from a checkout of this repo (checksummed GitHub release)
+bash scripts/install-cli.sh
+export PATH="$HOME/.ravi/bin:$PATH"
 ```
 
-The bundled copy lives next to this skill at `scripts/install-cli.sh`. Homebrew users can instead run `brew install ravi-hq/tap/ravi`.
+The bundled copy of the manual installer lives next to this skill at `scripts/install-cli.sh`.
 
 ---
 

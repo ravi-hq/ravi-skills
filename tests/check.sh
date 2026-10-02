@@ -10,7 +10,11 @@ ok() { printf 'ok  %s\n' "$1"; }
 bad() { printf 'FAIL %s\n' "$1" >&2; fail=1; }
 
 [ -x scripts/install-cli.sh ] || bad "scripts/install-cli.sh must be executable"
-[ -x scripts/ensure-cli.sh ] || bad "scripts/ensure-cli.sh must be executable"
+if [ -e scripts/ensure-cli.sh ]; then
+  bad "scripts/ensure-cli.sh must not exist (no SessionStart CLI install)"
+else
+  ok "no ensure-cli.sh SessionStart installer"
+fi
 [ -x scripts/cursor-session-start.sh ] || bad "scripts/cursor-session-start.sh must be executable"
 [ -x bin/ravi ] || bad "bin/ravi must be executable"
 [ -f hooks/hooks.json ] || bad "hooks/hooks.json missing"
@@ -183,10 +187,16 @@ else
   ok "no skill tells an agent to tap Connect as live auth"
 fi
 
-if grep -q 'ensure-cli.sh' hooks/hooks.json; then
-  ok "Claude SessionStart hook runs ensure-cli.sh"
+if grep -Eq 'SessionStart|ensure-cli|install-cli' hooks/hooks.json; then
+  bad "hooks/hooks.json must not install the CLI on SessionStart"
 else
-  bad "hooks/hooks.json must run ensure-cli.sh"
+  ok "Claude hooks.json does not install the CLI on session start"
+fi
+
+if grep -RInE 'ensure-cli\.sh|install-cli\.sh' hooks .cursor-plugin/hooks >/dev/null; then
+  bad "hook manifests must not reference the CLI installer"
+else
+  ok "hook manifests do not reference the CLI installer"
 fi
 
 if grep -q 'cursor-session-start.sh' hooks/cursor.json; then
@@ -211,10 +221,17 @@ if grep -q 'install-cli.sh' scripts/cursor-session-start.sh \
    && grep -q 'ravi auth login' scripts/cursor-session-start.sh \
    && grep -q 'https://ravi.id/device' scripts/cursor-session-start.sh \
    && grep -qiE 'not live' scripts/cursor-session-start.sh \
-   && grep -q 'do not tap Connect' scripts/cursor-session-start.sh; then
-  ok "Cursor sessionStart: skills live; CLI working auth; Connect not live"
+   && grep -q 'do not tap Connect' scripts/cursor-session-start.sh \
+   && grep -q 'does not install' scripts/cursor-session-start.sh; then
+  ok "Cursor sessionStart: skills live; CLI working auth; Connect not live; hook does not install"
 else
-  bad "cursor-session-start.sh must use CLI auth and must not treat Connect as live"
+  bad "cursor-session-start.sh must use CLI auth, must not treat Connect as live, and must not install the CLI"
+fi
+
+if grep -E '^[^"#]*[[:space:]](bash|sh)[[:space:]].*install-cli\.sh' scripts/cursor-session-start.sh bin/ravi; then
+  bad "session hook and bin/ravi must not execute the CLI installer"
+else
+  ok "session hook and bin/ravi do not execute the CLI installer"
 fi
 
 if [ -f mcp.json ]; then
@@ -420,10 +437,23 @@ else
   bad "assets/logo.svg and .cursor-plugin/assets/logo.svg must match"
 fi
 
-if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'install-cli.sh'; then
-  ok "README Cursor section documents working CLI auth"
+if awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'install-cli.sh' \
+   && awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'brew install ravi-hq/tap/ravi' \
+   && awk '/^## Cursor/,/^## Other agents/' README.md | grep -q 'npx skills add ravi-hq/ravi-skills'; then
+  ok "README Cursor section documents brew, npx, and manual CLI install"
 else
-  bad "README Cursor section must document install-cli.sh as working auth"
+  bad "README Cursor section must document brew, npx, and scripts/install-cli.sh"
+fi
+
+pipe_to_shell=$(grep -RInE --exclude-dir=.git --exclude-dir=tests --exclude='install-cli.sh' \
+  'curl[^|]*\|[[:space:]]*(bash|sh)' \
+  README.md PUBLISHING.md bin hooks skills .cursor-plugin .claude-plugin plugin.json \
+  2>/dev/null || true)
+if [ -n "$pipe_to_shell" ]; then
+  echo "$pipe_to_shell"
+  bad "curl piped to a shell must not be the install path"
+else
+  ok "no curl piped to a shell in hooks, skills, README, or marketplace copy"
 fi
 
 listing_desc='Ravi gives AI agents their own identity (email inbox, real phone, encrypted vault) so they can sign up for services, receive verification codes, and keep the passwords they create. For teams whose agents have to act on the web, not just talk.'

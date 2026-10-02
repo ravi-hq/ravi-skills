@@ -14,7 +14,7 @@ Users install via `/plugin marketplace add ravi-hq/ravi-skills`. No publishing s
 
 ### 3. Cursor Marketplace (manual review)
 
-This repo is fetchable as an **Agent Plugin** (`plugin.json` at repo root, agent-plugins.org schema, skills only — no `mcpServers`) and as a **Cursor Plugin** (`.cursor-plugin/plugin.json`). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. First hop remains `npx skills add ravi-hq/ravi-skills`. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is `scripts/install-cli.sh` + `ravi auth login` (human at https://ravi.id/device). The MCP product lives at `shipping/mcp.json` (not at the plugin root, so a crawler does not auto-discover a 404). First-class MCP does not go in the listing until the endpoint answers.
+This repo is fetchable as an **Agent Plugin** (`plugin.json` at repo root, agent-plugins.org schema, skills only — no `mcpServers`) and as a **Cursor Plugin** (`.cursor-plugin/plugin.json`). The public listing is a **skills plugin** (not live on cursor.com/marketplace/ravi yet). Skills are the live surface. First hop remains `npx skills add ravi-hq/ravi-skills`. A Connect card is shipping; it is not live. Do not instruct agents to tap Connect as if it authenticates. Working auth is an explicit CLI install (`brew install ravi-hq/tap/ravi`, or `bash scripts/install-cli.sh` from a checkout) plus `ravi auth login` (human at https://ravi.id/device). Session start does not download the CLI. The MCP product lives at `shipping/mcp.json` (not at the plugin root, so a crawler does not auto-discover a 404). First-class MCP does not go in the listing until the endpoint answers.
 
 The listing is already filed. Submit URL for humans: [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). This file does not publish or re-submit the listing.
 
@@ -91,14 +91,13 @@ shipping/
 packages/
 └── mcp/                      # npm package @ravi-hq/mcp (manual publish; no Connect card)
 bin/
-└── ravi                      # Claude Code plugin PATH wrapper (installs CLI on first use)
+└── ravi                      # PATH wrapper; does not download the CLI
 hooks/
-├── hooks.json                # Claude Code SessionStart → install CLI
-└── cursor.json               # Cursor sessionStart → skills live surface (Connect not live)
+├── hooks.json                # no SessionStart installer
+└── cursor.json               # Cursor sessionStart context only (does not download the CLI)
 scripts/
-├── install-cli.sh            # downloads official ravi-hq/cli release into ~/.ravi/bin
-├── ensure-cli.sh             # SessionStart helper (install + CLAUDE_ENV_FILE PATH)
-└── cursor-session-start.sh   # Cursor hook helper
+├── install-cli.sh            # manual checksummed install of the ravi-hq/cli release into ~/.ravi/bin
+└── cursor-session-start.sh   # Cursor hook helper (context only; does not install)
 skills/                       # skills for the `ravi` plugin (all of them)
 ├── ravi/                     # includes scripts/install-cli.sh for skills.sh installs
 ├── ravi-identity/
