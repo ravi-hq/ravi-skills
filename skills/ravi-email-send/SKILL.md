@@ -7,7 +7,7 @@ description: Send, compose, reply, reply-all, or forward emails with HTML format
 
 Compose new emails, reply to existing ones, or forward them from your Ravi email address.
 
-> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, `curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash` then `export PATH="$HOME/.ravi/bin:$PATH"`. Then `ravi auth login` (human visits https://ravi.id/device).
+> **Cursor:** Skills are the live surface. A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates. Remote MCP is not live. Working auth is the CLI (one identity per machine): if `ravi` is missing, the user installs it (do not download it from a hook): `brew install ravi-hq/tap/ravi`, or from a checkout `bash scripts/install-cli.sh` (checksummed release) then `export PATH="$HOME/.ravi/bin:$PATH"`. Skills only: `npx skills add ravi-hq/ravi-skills`. Then `ravi auth login` (human visits https://ravi.id/device).
 
 > **Writing quality matters.** Before drafting email content, see the **ravi-email-writing** skill for subject lines, HTML formatting, tone, and anti-spam best practices.
 

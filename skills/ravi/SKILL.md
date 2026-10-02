@@ -11,20 +11,21 @@ Ravi gives you (the agent) your own email address, phone number, and encrypted s
 
 Skills are the live surface (identity, inbox, vault, send email, send SMS). A Connect card is shipping and is **not live** — do not tap Connect as if it authenticates, and do not treat `https://api.ravi.id/mcp` as a working connector.
 
-Working auth is the CLI. Install it before any `ravi` command:
+Working auth is the CLI. The user installs it before any `ravi` command. This skill does not download a binary.
 
 ```bash
-if ! command -v ravi >/dev/null 2>&1; then
-  if [ -f scripts/install-cli.sh ]; then
-    bash scripts/install-cli.sh
-  else
-    curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
-  fi
-  export PATH="$HOME/.ravi/bin:$PATH"
-fi
+# Preferred
+brew install ravi-hq/tap/ravi
+
+# Skills only (not the CLI binary)
+npx skills add ravi-hq/ravi-skills
+
+# Manual, from a checkout of this repo (checksummed GitHub release)
+bash scripts/install-cli.sh
+export PATH="$HOME/.ravi/bin:$PATH"
 ```
 
-The bundled copy lives next to this skill at `scripts/install-cli.sh`.
+The bundled copy of the manual installer lives next to this skill at `scripts/install-cli.sh`.
 
 ## Authentication
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code plugin bin/: added to the Bash tool PATH while the plugin is enabled.
-# Skills/plugins do not vendor the Go CLI; this wrapper installs it on first use.
+# Does not download or install the CLI. If the real binary is missing, print an
+# explicit install command and exit.
 set -euo pipefail
 
 SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -34,18 +35,11 @@ if [ -x "$REAL" ] && ! head -c 2 "$REAL" 2>/dev/null | grep -q '^#!'; then
   exec "$REAL" "$@"
 fi
 
-INSTALL="${SELF_DIR}/../scripts/install-cli.sh"
-if [ ! -f "$INSTALL" ]; then
-  echo "ravi: CLI is not installed. Run:" >&2
-  echo "  curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash" >&2
-  echo "  export PATH=\"\$HOME/.ravi/bin:\$PATH\"" >&2
-  exit 127
-fi
-
-export RAVI_SKIP_BREW="${RAVI_SKIP_BREW:-}"
-bash "$INSTALL"
-if [ ! -x "$REAL" ]; then
-  echo "ravi: install finished but ${REAL} is missing" >&2
-  exit 127
-fi
-exec "$REAL" "$@"
+echo "ravi: CLI is not installed. This wrapper does not download it." >&2
+echo "Install explicitly, then retry:" >&2
+echo "  brew install ravi-hq/tap/ravi" >&2
+echo "  # skills only (not the CLI binary): npx skills add ravi-hq/ravi-skills" >&2
+echo "  # or, from a checkout of this repo (checksummed release):" >&2
+echo "  bash scripts/install-cli.sh" >&2
+echo "  export PATH=\"\$HOME/.ravi/bin:\$PATH\"" >&2
+exit 127

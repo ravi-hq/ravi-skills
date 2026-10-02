@@ -10,13 +10,19 @@ Install the **Ravi** plugin from the Cursor marketplace (not live as a public li
 
 A Connect card is shipping; it is **not live yet**. Do not tap Connect as if it authenticates. Do not treat `https://api.ravi.id/mcp` as a working connector (`shipping/mcp.json` is shipping / not live).
 
-Working auth today is the CLI (one identity per machine):
+Working auth today is the CLI (one identity per machine). Nothing in this plugin downloads the CLI for you.
 
 ```bash
-if ! command -v ravi >/dev/null 2>&1; then
-  bash scripts/install-cli.sh
-  export PATH="$HOME/.ravi/bin:$PATH"
-fi
+# Preferred: Homebrew
+brew install ravi-hq/tap/ravi
+
+# Skills only (does not install the CLI binary)
+npx skills add ravi-hq/ravi-skills
+
+# Manual, from a checkout of this repo (checksummed GitHub release)
+bash scripts/install-cli.sh
+export PATH="$HOME/.ravi/bin:$PATH"
+
 ravi auth login
 ```
 
@@ -35,15 +41,18 @@ npx skills add ravi-hq/ravi-skills
 # Individual skill
 npx skills add ravi-hq/ravi-skills --skill ravi-identity
 
-# Required on this path: install the Ravi CLI (skills do not include the binary)
-curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+# CLI (skills do not include the binary). Prefer Homebrew:
+brew install ravi-hq/tap/ravi
+
+# Or, from a checkout that already has the script (checksummed GitHub release):
+bash scripts/install-cli.sh
 export PATH="$HOME/.ravi/bin:$PATH"
 
 # Authenticate once (human approves at https://ravi.id/device)
 ravi auth login
 ```
 
-If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install) instead of curl.
+If the skill directory is already on disk, run `bash scripts/install-cli.sh` from this repo (or `skills/ravi/scripts/install-cli.sh` after a skills.sh install). That script verifies the release checksum when `sha256sum` is available.
 
 The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads them automatically — no manual API key management needed. Do **not** flip that file to multiplex agents. Extra agents on the same host use the HTTP API with per-identity `ravi_id_` keys.
 
@@ -54,7 +63,7 @@ The CLI stores `ravi_mgmt_` / `ravi_id_` keys in `~/.ravi/config.json` and reads
 /plugin install ravi
 ```
 
-The plugin puts a `ravi` wrapper on PATH (`bin/ravi`) and installs the real CLI on first use (or at session start). Then run:
+The plugin puts a `ravi` wrapper on PATH (`bin/ravi`). The wrapper does not download the CLI, and session start does not either. Install with Homebrew or `bash scripts/install-cli.sh`, then run:
 
 ```bash
 ravi auth login
@@ -70,11 +79,13 @@ for s in ravi ravi-identity ravi-inbox ravi-email-send ravi-email-writing ravi-l
   clawdhub install "$s"
 done
 
-# Required: install the Ravi CLI
-curl -fsSL https://raw.githubusercontent.com/ravi-hq/ravi-skills/main/scripts/install-cli.sh | bash
+# Required: install the Ravi CLI. Prefer Homebrew.
+brew install ravi-hq/tap/ravi
 export PATH="$HOME/.ravi/bin:$PATH"
 ravi auth login
 ```
+
+From a checkout, `bash scripts/install-cli.sh` is the manual checksummed path (same script as above).
 
 ## Skills
 

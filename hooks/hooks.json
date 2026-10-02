@@ -1,15 +1,4 @@
 {
-  "description": "Install the Ravi CLI on session start and put ~/.ravi/bin on PATH",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/ensure-cli.sh\""
-          }
-        ]
-      }
-    ]
-  }
+  "description": "Ravi does not install or download the CLI on session start. Install explicitly with Homebrew, npx skills, or the checksummed script in a checkout.",
+  "hooks": {}
 }
